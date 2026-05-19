@@ -75,7 +75,22 @@ public class MatchApiClient : MonoBehaviour
     private void HandleResponse<T>(UnityWebRequest request,
                                    Action<T> onSuccess, Action<ApiError> onError)
     {
-        string body = request.downloadHandler.text;
+        // Conexión fallida — API no disponible
+        if (request.result == UnityWebRequest.Result.ConnectionError ||
+            request.result == UnityWebRequest.Result.DataProcessingError)
+        {
+            var connError = new ApiError
+            {
+                status  = 0,
+                error   = "CONNECTION_ERROR",
+                message = "No se puede conectar con el servidor. Comprueba que la API está corriendo."
+            };
+            Debug.LogError($"[MatchApiClient] {connError.message}");
+            onError?.Invoke(connError);
+            return;
+        }
+
+        string body = request.downloadHandler?.text ?? string.Empty;
         Debug.Log($"[MatchApiClient] HTTP {request.responseCode} ← {request.url}\n{body}");
 
         if (request.result == UnityWebRequest.Result.Success)

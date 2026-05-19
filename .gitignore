@@ -87,3 +87,7 @@ desktop.ini
 # Node (por si usas herramientas JS auxiliares)
 node_modules/
 npm-debug.log*
+
+# TextMesh Pro (generado automáticamente por Unity)
+Assets/TextMesh Pro/
+Assets/TextMesh Pro.meta
