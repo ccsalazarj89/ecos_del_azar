@@ -10,7 +10,7 @@ public class Score : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
-        dice = FindObjectOfType<DiceRoll>();
+        dice = FindFirstObjectByType<DiceRoll>();
     }
     void Start()
     {

@@ -38,7 +38,7 @@ public class DuelUI : MonoBehaviour
     }
 
     /// <summary>Muestra el overlay con las cartas y el resultado.</summary>
-    public void ShowResult(CardDto playerCard, CardDto npcCard, MatchResultDto result, string playerId)
+    public void ShowResult(Card playerCard, Card npcCard, MatchResult result, string playerId)
     {
         errorText.gameObject.SetActive(false);
         playerCardImage.gameObject.SetActive(true);
@@ -47,16 +47,12 @@ public class DuelUI : MonoBehaviour
         playerCardImage.sprite = spriteMapper.GetSprite(playerCard);
         npcCardImage.sprite    = spriteMapper.GetSprite(npcCard);
 
-        if (result == null)
-        {
-            resultText.text = "Esperando resultado...";
-        }
-        else if (result.status == "DRAW")
+        if (result.Status == MatchResultStatus.DRAW)
         {
             resultText.text  = "EMPATE";
             resultText.color = Color.yellow;
         }
-        else if (result.winnerId == playerId)
+        else if (result.WinnerId == playerId)
         {
             resultText.text  = "¡GANASTE!";
             resultText.color = Color.green;
@@ -70,12 +66,12 @@ public class DuelUI : MonoBehaviour
         duelOverlay.SetActive(true);
     }
 
-    /// <summary>Muestra el overlay con un mensaje de error de servidor.</summary>
+    /// <summary>Muestra el overlay con un mensaje de error.</summary>
     public void ShowServerError(string message = "Servidor no disponible.\nComprueba que la API está corriendo.")
     {
         playerCardImage.gameObject.SetActive(false);
         npcCardImage.gameObject.SetActive(false);
-        resultText.text  = string.Empty;
+        resultText.text = string.Empty;
 
         errorText.text          = message;
         errorText.color         = Color.red;

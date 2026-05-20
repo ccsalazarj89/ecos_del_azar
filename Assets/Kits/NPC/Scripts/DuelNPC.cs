@@ -1,3 +1,4 @@
+using EcosDelAzar.Betting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,14 +14,22 @@ public class DuelNPC : MonoBehaviour
     public string promptMessage = "Pulsa E para duelo";
 
     private bool _playerInRange = false;
-    private DuelManager _duelManager;
+    private DuelManager    _duelManager;
+    private BettingUI      _bettingUI;
+    private BettingManager _bettingManager;
 
     void Awake()
     {
-        _duelManager = FindFirstObjectByType<DuelManager>();
+        _duelManager    = FindFirstObjectByType<DuelManager>();
+        _bettingUI      = FindFirstObjectByType<BettingUI>();
+        _bettingManager = FindFirstObjectByType<BettingManager>();
 
         if (_duelManager == null)
-            Debug.LogError("[DuelNPC] No se encontró DuelManager en la escena. Asegúrate de que el GameManager tiene el componente DuelManager.");
+            Debug.LogError("[DuelNPC] No se encontró DuelManager en la escena.");
+        if (_bettingUI == null)
+            Debug.LogError("[DuelNPC] No se encontró BettingUI en la escena.");
+        if (_bettingManager == null)
+            Debug.LogError("[DuelNPC] No se encontró BettingManager en la escena.");
     }
 
     void Update()
@@ -28,7 +37,14 @@ public class DuelNPC : MonoBehaviour
         if (_duelManager == null) return;
         if (_playerInRange && Keyboard.current[Key.E].wasPressedThisFrame && !_duelManager.DuelInProgress)
         {
+            if (_bettingManager != null && _bettingManager.PlayerChips < _bettingManager.minimumBet)
+            {
+                Debug.Log("[DuelNPC] El jugador no tiene fichas suficientes para apostar.");
+                return;
+            }
+
             _duelManager.StartDuel(npcId);
+            _bettingUI?.ShowPanel();
         }
     }
 
@@ -49,7 +65,11 @@ public class DuelNPC : MonoBehaviour
         if (_duelManager == null) return;
         if (_playerInRange && !_duelManager.DuelInProgress)
         {
-            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 80, 200, 30), promptMessage);
+            bool sinFichas = _bettingManager != null &&
+                             _bettingManager.PlayerChips < _bettingManager.minimumBet;
+
+            string mensaje = sinFichas ? "No hay fichas suficientes" : promptMessage;
+            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 80, 200, 30), mensaje);
         }
     }
 }

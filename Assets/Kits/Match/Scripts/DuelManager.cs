@@ -1,102 +1,110 @@
+using EcosDelAzar.Betting;
 using EcosDelAzar.Match;
 using UnityEngine;
 
 /// <summary>
-/// Orquesta el flujo completo de un duelo:
-/// CreateMatch → DrawCard (jugador) → DrawCard (NPC) → resultado.
-/// Coloca este script en un GameObject vacío llamado "GameManager".
+/// Orquesta el flujo de carta alta:
+/// Apuesta → DrawCard (jugador + NPC) → Resultado → ResolveResult (genérico).
 /// </summary>
 public class DuelManager : MonoBehaviour
 {
     [Header("Dependencias")]
-    public MatchApiClient apiClient;
-    public DuelUI duelUI;
+    public DuelUI         duelUI;
+    public BettingManager bettingManager;
 
     [Header("Jugador")]
-    public string playerId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; // UUID del jugador humano
+    public string playerId   = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+    public string opponentId = "b2c3d4e5-f6a7-8901-bcde-f12345678901";
 
     public bool DuelInProgress { get; private set; } = false;
 
-    private string _currentMatchId;
-    private DrawCardResponse _playerDraw;
+    private GameSession _session;
+    private Deck        _deck;
 
-    // ── Flujo principal ───────────────────────────────────────
+    void Awake()
+    {
+        _deck = new Deck();
 
-    public void StartDuel(string opponentId)
+        bettingManager.OnBetConfirmed  += OnBetConfirmed;
+        bettingManager.OnRoundFolded   += OnRoundFolded;
+        bettingManager.OnGameAbandoned += OnGameAbandoned;
+        bettingManager.OnGameOver      += OnGameOver;
+    }
+
+    void OnDestroy()
+    {
+        bettingManager.OnBetConfirmed  -= OnBetConfirmed;
+        bettingManager.OnRoundFolded   -= OnRoundFolded;
+        bettingManager.OnGameAbandoned -= OnGameAbandoned;
+        bettingManager.OnGameOver      -= OnGameOver;
+    }
+
+    // ── Entrada ───────────────────────────────────────────────
+
+    public void StartDuel(string npcId)
     {
         if (DuelInProgress) return;
-
+        opponentId     = npcId;
         DuelInProgress = true;
-        Debug.Log($"[DuelManager] Iniciando duelo contra {opponentId}...");
-
-        apiClient.CreateMatch(playerId, opponentId,
-            onSuccess: match =>
-            {
-                _currentMatchId = match.matchId;
-                Debug.Log($"[DuelManager] Partida creada — {match.matchId}");
-                PlayerDraw(opponentId);
-            },
-            onError: err =>
-            {
-                Debug.LogError($"[DuelManager] Error al crear partida: {err.message}");
-                DuelInProgress = false;
-                if (err.error == "CONNECTION_ERROR")
-                    duelUI?.ShowServerError();
-            }
-        );
+        Debug.Log("[DuelManager] Esperando apuesta del jugador...");
     }
 
-    private void PlayerDraw(string opponentId)
-    {
-        Debug.Log("[DuelManager] Jugador roba carta...");
-        apiClient.DrawCard(_currentMatchId, playerId,
-            onSuccess: draw =>
-            {
-                _playerDraw = draw;
-                Debug.Log($"[DuelManager] Jugador robó {draw.card.rank} de {draw.card.suit}");
-                NPCDraw(opponentId);
-            },
-            onError: err =>
-            {
-                Debug.LogError($"[DuelManager] Error al robar carta (jugador): {err.message}");
-                DuelInProgress = false;
-            }
-        );
-    }
+    // ── Eventos de BettingManager ─────────────────────────────
 
-    private void NPCDraw(string opponentId)
+    private void OnBetConfirmed(int playerBet, int npcBet)
     {
-        Debug.Log("[DuelManager] NPC roba carta...");
-        apiClient.DrawCard(_currentMatchId, opponentId,
-            onSuccess: draw =>
-            {
-                Debug.Log($"[DuelManager] NPC robó {draw.card.rank} de {draw.card.suit}");
-                HandleResult(_playerDraw.card, draw.card, draw.result);
-            },
-            onError: err =>
-            {
-                Debug.LogError($"[DuelManager] Error al robar carta (NPC): {err.message}");
-                DuelInProgress = false;
-            }
-        );
-    }
+        if (!DuelInProgress) return;
 
-    private void HandleResult(CardDto playerCard, CardDto npcCard, MatchResultDto result)
-    {
-        DuelInProgress = false;
+        Debug.Log("[DuelManager] Apuesta confirmada — iniciando duelo...");
 
-        if (result == null)
+        if (_deck.Count < 2)
         {
-            Debug.LogWarning("[DuelManager] Partida sin resultado todavía.");
-            return;
+            Debug.Log("[DuelManager] Mazo agotado — reseteando...");
+            _deck.Reset();
         }
 
-        Debug.Log(result.status == "DRAW"
-            ? "[DuelManager] 🤝 ¡Empate!"
-            : result.winnerId == playerId
-                ? "[DuelManager] 🏆 ¡El jugador gana!"
-                : "[DuelManager] 💀 El NPC gana.");
+        Debug.Log($"[DuelManager] Cartas restantes: {_deck.Count}");
 
-        duelUI?.ShowResult(playerCard, npcCard, result, playerId);
+        _session = new GameSession(playerId, opponentId, _deck);
+
+        var playerCard   = _session.DrawCard(playerId);
+        var opponentCard = _session.DrawCard(opponentId);
+
+        Debug.Log($"[DuelManager] Jugador robó {playerCard}");
+        Debug.Log($"[DuelManager] NPC robó {opponentCard}");
+
+        var matchResult = _session.ResolveResult();
+
+        // Traducir a RoundOutcome genérico para BettingManager
+        RoundOutcome outcome = matchResult.Status == MatchResultStatus.DRAW
+            ? RoundOutcome.Draw
+            : matchResult.WinnerId == playerId
+                ? RoundOutcome.Win
+                : RoundOutcome.Lose;
+
+        bettingManager.ResolveResult(outcome);
+
+        DuelInProgress = false;
+        duelUI?.ShowResult(playerCard, opponentCard, matchResult, playerId);
+    }
+
+    private void OnRoundFolded()
+    {
+        DuelInProgress = false;
+        Debug.Log("[DuelManager] Ronda cancelada por retiro del jugador.");
+    }
+
+    private void OnGameAbandoned()
+    {
+        DuelInProgress = false;
+        Debug.Log("[DuelManager] Partida abandonada.");
+        // TODO: volver al menú principal
+    }
+
+    private void OnGameOver()
+    {
+        DuelInProgress = false;
+        Debug.Log("[DuelManager] Game Over.");
+        // TODO: mostrar pantalla de Game Over
     }
 }
