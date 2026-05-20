@@ -3,74 +3,70 @@ using EcosDelAzar.Match;
 using UnityEngine;
 
 /// <summary>
-/// Mapea suit+rank de la API al nombre del sprite correspondiente en el spritesheet.
+/// Mapea suit+rank al nombre del sprite correspondiente en el spritesheet.
 /// </summary>
 public class CardSpriteMapper : MonoBehaviour
 {
     [Header("Spritesheet")]
-    public Sprite[] cardSprites; // Arrastra aquí todos los sprites del spritesheet
+    public Sprite[] cardSprites;
 
-    // Traducción de ranks de la API → sufijo en el sprite
-    private static readonly Dictionary<string, string> RankMap = new()
+    // Rank → sufijo en el sprite
+    private static readonly Dictionary<Rank, string> RankMap = new()
     {
-        { "TWO",   "TWO"   },
-        { "THREE", "THREE" },
-        { "FOUR",  "FOUR"  },
-        { "FIVE",  "FIVE"  },
-        { "SIX",   "SIX"   },
-        { "SEVEN", "SEVEN" },
-        { "EIGHT", "EIGHT" },
-        { "NINE",  "NINE"  },
-        { "TEN",   "TEN"   },
-        { "JACK",  "J"     },
-        { "QUEEN", "Q"     },
-        { "KING",  "K"     },
-        { "ACE",   "ACE"   },
+        { Rank.TWO,   "TWO"   },
+        { Rank.THREE, "THREE" },
+        { Rank.FOUR,  "FOUR"  },
+        { Rank.FIVE,  "FIVE"  },
+        { Rank.SIX,   "SIX"   },
+        { Rank.SEVEN, "SEVEN" },
+        { Rank.EIGHT, "EIGHT" },
+        { Rank.NINE,  "NINE"  },
+        { Rank.TEN,   "TEN"   },
+        { Rank.JACK,  "J"     },
+        { Rank.QUEEN, "Q"     },
+        { Rank.KING,  "K"     },
+        { Rank.ACE,   "ACE"   },
     };
 
-    // Traducción de suits de la API → prefijo en el sprite
-    private static readonly Dictionary<string, string> SuitMap = new()
+    // Suit → prefijo en el sprite
+    private static readonly Dictionary<Suit, string> SuitMap = new()
     {
-        { "HEARTS",   "HEARTS"   },
-        { "DIAMONDS", "DIAMONDS" },
-        { "CLUBS",    "CLUBS"    },
-        { "SPADES",   "SPADES"   },
+        { Suit.HEARTS,   "HEARTS"   },
+        { Suit.DIAMONDS, "DIAMONDS" },
+        { Suit.CLUBS,    "CLUBS"    },
+        { Suit.SPADES,   "SPADES"   },
     };
 
-    public Sprite GetSprite(CardDto card)
+    public Sprite GetSprite(Card card)
     {
         if (card == null) return null;
 
         string spriteName;
 
-        // Joker
-        if (card.rank == "JOKER")
+        if (card.Rank == Rank.JOKER)
         {
-            spriteName = (card.suit == "NONE" || card.suit == "SPADES" || card.suit == "CLUBS")
+            spriteName = (card.Suit == Suit.NONE || card.Suit == Suit.SPADES || card.Suit == Suit.CLUBS)
                 ? "BLACK_JOKER"
                 : "RED_JOKER";
         }
         else
         {
-            if (!SuitMap.TryGetValue(card.suit, out string suit) ||
-                !RankMap.TryGetValue(card.rank, out string rank))
+            if (!SuitMap.TryGetValue(card.Suit, out string suit) ||
+                !RankMap.TryGetValue(card.Rank, out string rank))
             {
-                Debug.LogWarning($"[CardSpriteMapper] Combinación no reconocida: {card.suit}_{card.rank}");
+                Debug.LogWarning($"[CardSpriteMapper] Combinación no reconocida: {card.Suit}_{card.Rank}");
                 return null;
             }
             spriteName = $"{suit}_{rank}";
         }
 
-        // Buscar el sprite por nombre
         foreach (var sprite in cardSprites)
         {
             if (sprite.name == spriteName)
                 return sprite;
         }
 
-        // Log de diagnóstico: muestra nombres disponibles
         Debug.LogWarning($"[CardSpriteMapper] Sprite no encontrado: '{spriteName}'");
-        Debug.Log($"[CardSpriteMapper] Sprites disponibles: {string.Join(", ", System.Array.ConvertAll(cardSprites, s => s.name))}");
         return null;
     }
 }
