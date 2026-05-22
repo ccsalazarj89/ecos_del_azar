@@ -9,18 +9,18 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager GameManagerInstance { get; private set; }
 
     void Awake()
     {
         // Singleton — solo puede existir una instancia
-        if (Instance != null && Instance != this)
+        if (GameManagerInstance != null && GameManagerInstance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        Instance = this;
+        GameManagerInstance = this;
         DontDestroyOnLoad(gameObject);
     }
 }
