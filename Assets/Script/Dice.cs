@@ -29,10 +29,10 @@ public class Dice : MonoBehaviour {
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.B))
+       /* if(Input.GetKeyDown(KeyCode.B))
         {
             StartCoroutine("RollTheDice");
-        }
+        }*/
     }
 
     // Coroutine that rolls the dice
