@@ -1,28 +1,37 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Dice_manager : MonoBehaviour
 {
-    public Text player_Dice;
-    public Text NPC_Dice;
-    public GameObject player_text;
+   // public TextMeshProUGUI player_Dice;
+    public TextMeshProUGUI NPC_Dice;
+    public TextMeshProUGUI text;
     public GameObject npc_text;
+    public string newvalor = "";
+    public int aux;
     public GameObject player;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       // player.text = GetComponent<player_text>();
-        player_Dice.text = this.player_text.GetComponent<Text>().text;
-        NPC_Dice.text = this.npc_text.GetComponent<Text>().text;
-        int.Parse(player_Dice.text);
-        int.Parse(NPC_Dice.text);
+        // player.text = GetComponent<player_text>();
+        //player_Dice = GetComponent<TextMeshProUGUI>().text;
+        //NPC_Dice.text = this.npc_text.GetComponent<Text>().text;
+        // int.Parse(player_Dice.text);
+        // int.Parse(NPC_Dice.text);
+        //player_Dice.text = "200";
+        newvalor = "200";
+        text.text = "hola que tal";
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        Debug.Log("el valor de " + player_Dice.text);
+        string prueba = "200";
+        aux = int.Parse(prueba); 
+        Debug.Log("el valor de " + aux);
+        //text.text= player_Dice.text;
+        text.text = prueba;
 
     }
 }

@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.InputSystem;
 
 public class Dice : MonoBehaviour {
 
     // Array of dice sides sprites to load from Resources folder
     public Sprite[] diceSides;
-    public GameObject text;
+    public TextMeshProUGUI text;
     public Text text_dice;
     // Reference to sprite renderer to change sprites
     private SpriteRenderer rend;
@@ -16,20 +18,20 @@ public class Dice : MonoBehaviour {
 
         // Assign Renderer component
         rend = GetComponent<SpriteRenderer>();
-        text_dice.text = GetComponent<Text>().text;
+        text.text = "hola que tal";
 
         // Load dice sides sprites to array from DiceSides subfolder of Resources folder
        // diceSides = Resources.LoadAll<Sprite>("DiceSides/");
 	}
 	
     // If you left click over the dice then RollTheDice coroutine is started
-    private void OnMouseDown()
+    public void girarDado()
     {
         StartCoroutine("RollTheDice");
     }
     private void Update()
     {
-       /* if(Input.GetKeyDown(KeyCode.B))
+       /* if()
         {
             StartCoroutine("RollTheDice");
         }*/
@@ -65,6 +67,6 @@ public class Dice : MonoBehaviour {
 
         // Show final dice value in Console
         Debug.Log(finalSide);
-        text_dice.text = finalSide.ToString();
+        text.text = finalSide.ToString();
     }
 }
