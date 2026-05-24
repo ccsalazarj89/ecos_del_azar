@@ -7,13 +7,13 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5f;
 
     private Rigidbody _rb;
-    private PlayerInputActions _inputActions;
+    private IA_PlayerControls _inputActions;
     private Vector2 _moveInput;
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _inputActions = new PlayerInputActions();
+        _inputActions = new IA_PlayerControls();
     }
 
     void OnEnable()

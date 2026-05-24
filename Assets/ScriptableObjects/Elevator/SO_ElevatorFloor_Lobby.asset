@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a797e0a98fcea48a90191420ada72d, type: 3}
+  m_Name: SO_ElevatorFloor_Lobby
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorFloorData
+  floorId: 0
+  floorNumber: 0
+  displayName: Lobby
+  description: Tutorial
+  sceneName: SCN_Floor_00_Lobby
+  unlockedByDefault: 1
