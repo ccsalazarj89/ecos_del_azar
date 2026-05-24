@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using EcosDelAzar.AI;
+using EcosDelAzar.MiniGames.Betting;
 
 namespace EcosDelAzar.UI
 {

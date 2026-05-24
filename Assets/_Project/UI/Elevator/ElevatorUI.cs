@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using EcosDelAzar.Elevator;
-using EcosDelAzar.Progression;
+using EcosDelAzar.Economy;
 
 namespace EcosDelAzar.UI
 {
