@@ -28,6 +28,7 @@ public class Dice : MonoBehaviour {
     public void girarDado()
     {
         StartCoroutine("RollTheDice");
+        Debug.Log("dado tirado");
     }
     private void Update()
     {
@@ -40,6 +41,7 @@ public class Dice : MonoBehaviour {
     // Coroutine that rolls the dice
     private IEnumerator RollTheDice()
     {
+        Debug.Log("Empece");
         // Variable to contain random dice side number.
         // It needs to be assigned. Let it be 0 initially
         int randomDiceSide = 0;
@@ -68,5 +70,6 @@ public class Dice : MonoBehaviour {
         // Show final dice value in Console
         Debug.Log(finalSide);
         text.text = finalSide.ToString();
+        Debug.Log("termine");
     }
 }
