@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4334915913496393114}
-  - component: {fileID: 3246822209171126820}
   - component: {fileID: 4237490830999922667}
+  - component: {fileID: 3123603491796564546}
   m_Layer: 0
   m_Name: Elevator
   m_TagString: Untagged
@@ -35,24 +35,6 @@ Transform:
   - {fileID: 8783002771067186291}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3246822209171126820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3460805961794689433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb307c1aa5c6d0543a06e6539a8abb05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Elevator
-  elevatorUI: {fileID: 7509687130962048361}
-  floors:
-  - {fileID: 11400000, guid: 4a18cabbbc157d345b394e4bd538d2e0, type: 2}
-  - {fileID: 11400000, guid: 2f0f2f646bd4fca46a966fa2b44d5509, type: 2}
-  - {fileID: 11400000, guid: 2c0af344821caf944b3fb2c1d76fe6db, type: 2}
-  interactAction: {fileID: 8038336070660516234, guid: 0397743c114b08e47860b67407bbd7c3, type: 3}
 --- !u!65 &4237490830999922667
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -74,6 +56,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &3123603491796564546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3460805961794689433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8714d9a966c32f9469ebf4e6a8274800, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Elevator
+  elevatorUI: {fileID: 7681383730612607270}
+  floors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  interactAction: {fileID: 0}
 --- !u!1 &4794551005007881811
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,7 +84,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8783002771067186291}
   - component: {fileID: 7595521235044616978}
-  - component: {fileID: 7509687130962048361}
+  - component: {fileID: 7681383730612607270}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
---- !u!114 &7509687130962048361
+--- !u!114 &7681383730612607270
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4794551005007881811}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3706430cab1e6824cbf01ae10e54ee79, type: 3}
+  m_Script: {fileID: 11500000, guid: 02e9484e8dfb03a4aa101cf07076ee2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElevatorUI
   currentFloorDisplayMode: 0
