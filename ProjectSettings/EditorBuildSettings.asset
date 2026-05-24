@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Scenes/SCN_Floor_00_Lobby.unity
-    guid: fa6af12251c76104ba5ca6cc41a6d6d8
-  - enabled: 1
     path: Assets/_Project/Scenes/SampleScene.unity
     guid: 2f4203548ac4ff64790858412f12bae5
+  - enabled: 1
+    path: Assets/_Project/Scenes/SCN_Floor_00_Lobby.unity
+    guid: fa6af12251c76104ba5ca6cc41a6d6d8
   - enabled: 1
     path: Assets/_Project/Scenes/SCN_Floor_01_Level1.unity
     guid: a14b8505f4b8a5e41adf77a80d8fa1e8
@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/SCN_Floor_03_FinalBoss.unity
     guid: dbd2fdcd4601b7e46a410a4206b24563
   - enabled: 1
-    path: Assets/_Project/Scenes/Dice_Game.unity
+    path: Assets/_Project/Scenes/SCN_Game_DiceGame.unity
     guid: 228680f7254374a4e82bb16b8ea4ea23
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

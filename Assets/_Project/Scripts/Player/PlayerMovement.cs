@@ -27,6 +27,7 @@ namespace EcosDelAzar.Player
 
         void OnEnable()
         {
+            if (inputActions == null) inputActions = new IA_PlayerControls();
             inputActions.Player.Enable();
             inputActions.Player.Move.performed += OnMove;
             inputActions.Player.Move.canceled += OnMove;
@@ -34,9 +35,12 @@ namespace EcosDelAzar.Player
 
         void OnDisable()
         {
-            inputActions.Player.Move.performed -= OnMove;
-            inputActions.Player.Move.canceled -= OnMove;
-            inputActions.Player.Disable();
+            if (inputActions != null)
+            {
+                inputActions.Player.Move.performed -= OnMove;
+                inputActions.Player.Move.canceled -= OnMove;
+                inputActions.Player.Disable();
+            }
         }
 
         void OnDestroy() => inputActions?.Dispose();

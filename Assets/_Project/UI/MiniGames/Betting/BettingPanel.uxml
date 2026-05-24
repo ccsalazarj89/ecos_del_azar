@@ -1,0 +1,67 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="BettingPanel.uss" />
+
+    <ui:VisualElement name="betting-panel" class="panel">
+
+        <!-- Header: always visible coins display -->
+        <ui:VisualElement class="coins-row">
+            <ui:VisualElement class="coins-group">
+                <ui:Label text="TÚ" class="coins-label" />
+                <ui:Label name="player-coins" text="0" class="coins-value coins-value--player" />
+            </ui:VisualElement>
+            <ui:VisualElement class="vs-separator">
+                <ui:Label text="VS" class="vs-label" />
+            </ui:VisualElement>
+            <ui:VisualElement class="coins-group">
+                <ui:Label text="RIVAL" class="coins-label" />
+                <ui:Label name="opponent-coins" text="0" class="coins-value coins-value--opponent" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Phase 1: Place initial bet -->
+        <ui:VisualElement name="bet-phase" class="phase">
+            <ui:Label text="Tu apuesta:" class="phase-label" />
+            <ui:VisualElement class="bet-input-row">
+                <ui:Button name="btn-bet-down" text="-" class="bet-adjust-btn" />
+                <ui:Label name="bet-amount" text="10" class="bet-amount-label" />
+                <ui:Button name="btn-bet-up" text="+" class="bet-adjust-btn" />
+            </ui:VisualElement>
+            <ui:VisualElement class="bet-shortcuts">
+                <ui:Button name="btn-bet-min" text="MÍN" class="shortcut-btn" />
+                <ui:Button name="btn-bet-half" text="50%" class="shortcut-btn" />
+                <ui:Button name="btn-bet-max" text="MAX" class="shortcut-btn" />
+            </ui:VisualElement>
+            <ui:Button name="btn-play" text="JUGAR" class="action-btn action-btn--play" />
+        </ui:VisualElement>
+
+        <!-- Phase 2: Playing (dice rolling) - just a status label -->
+        <ui:VisualElement name="playing-phase" class="phase">
+            <ui:Label name="playing-status" text="Lanzando dados..." class="status-label" />
+            <ui:Label name="current-bet-display" text="Apuesta: 10" class="bet-display" />
+        </ui:VisualElement>
+
+        <!-- Phase 3: Result -->
+        <ui:VisualElement name="result-phase" class="phase">
+            <ui:Label name="result-text" text="" class="result-text" />
+            <ui:Label name="result-amount" text="" class="result-amount" />
+        </ui:VisualElement>
+
+        <!-- Phase 4: NPC Proposal (continue or leave) -->
+        <ui:VisualElement name="proposal-phase" class="phase">
+            <ui:Label name="proposal-text" text="" class="proposal-text" />
+            <ui:VisualElement class="proposal-buttons">
+                <ui:Button name="btn-match" text="IGUALAR" class="action-btn action-btn--match" />
+                <ui:Button name="btn-double" text="DOBLAR" class="action-btn action-btn--double" />
+                <ui:Button name="btn-fold" text="RETIRARSE" class="action-btn action-btn--fold" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Phase 5: Game Over -->
+        <ui:VisualElement name="gameover-phase" class="phase gameover-phase">
+            <ui:Label name="gameover-text" text="" class="gameover-title" />
+            <ui:Label name="gameover-subtext" text="" class="gameover-subtext" />
+            <ui:Button name="btn-leave" text="SALIR" class="action-btn action-btn--leave" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

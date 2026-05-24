@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/UI/Dialogue/DialoguePanel_Styles.uss"/>
+    <ui:VisualElement name="dialogue-root" class="dialogue-root dialogue-hidden" picking-mode="Ignore">
+        <ui:VisualElement name="dialogue-panel" class="dialogue-panel">
+            <ui:VisualElement class="dialogue-speaker-box">
+                <ui:Label name="speaker-name" text="???" class="dialogue-speaker"/>
+            </ui:VisualElement>
+            <ui:Label name="dialogue-text" text="" class="dialogue-text"/>
+            <ui:VisualElement name="dialogue-prompt" class="dialogue-prompt dialogue-hidden">
+                <ui:VisualElement class="dialogue-prompt__key-box">
+                    <ui:Label text="E" class="dialogue-prompt__key"/>
+                </ui:VisualElement>
+                <ui:Label name="dialogue-prompt-label" text="[E] Continuar" class="dialogue-prompt__label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

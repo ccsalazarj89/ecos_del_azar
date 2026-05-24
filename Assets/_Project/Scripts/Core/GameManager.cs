@@ -2,9 +2,16 @@ using UnityEngine;
 
 namespace EcosDelAzar.Core
 {
+    [RequireComponent(typeof(Wallet))]
+    [RequireComponent(typeof(OxygenTank))]
+    [RequireComponent(typeof(FloorProgress))]
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
+
+        public Wallet Wallet { get; private set; }
+        public OxygenTank OxygenTank { get; private set; }
+        public FloorProgress FloorProgress { get; private set; }
 
         void Awake()
         {
@@ -16,6 +23,28 @@ namespace EcosDelAzar.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            Wallet = GetComponent<Wallet>();
+            OxygenTank = GetComponent<OxygenTank>();
+            FloorProgress = GetComponent<FloorProgress>();
+        }
+
+        void OnEnable()
+        {
+            if (OxygenTank != null)
+                OxygenTank.OnDepleted += HandlePlayerDeath;
+        }
+
+        void OnDisable()
+        {
+            if (OxygenTank != null)
+                OxygenTank.OnDepleted -= HandlePlayerDeath;
+        }
+
+        void HandlePlayerDeath()
+        {
+            Debug.Log("[GameManager] Player oxygen depleted — handling death.");
+            // TODO: Trigger death screen / respawn at lobby
         }
     }
 }

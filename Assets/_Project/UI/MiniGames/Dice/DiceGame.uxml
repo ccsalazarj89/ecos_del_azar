@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="DiceGame.uss" />
+
+    <ui:VisualElement name="dice-board" class="dice-board" picking-mode="Ignore">
+        <ui:VisualElement class="dice-container">
+            <ui:Label text="TÚ" class="dice-label" />
+            <ui:VisualElement name="player-dice-bg" class="dice-bg">
+                <ui:VisualElement name="player-dice-img" class="dice-img" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement class="dice-container">
+            <ui:Label text="RIVAL" class="dice-label" />
+            <ui:VisualElement name="opponent-dice-bg" class="dice-bg">
+                <ui:VisualElement name="opponent-dice-img" class="dice-img" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

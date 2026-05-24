@@ -9,6 +9,7 @@ namespace EcosDelAzar.Elevator
         [SerializeField] ElevatorUI elevatorUI;
         [SerializeField] ElevatorFloorData[] floors;
         [SerializeField] InputActionReference interactAction;
+        [SerializeField] InputActionReference exitAction;
 
         bool playerInside;
 
@@ -17,6 +18,9 @@ namespace EcosDelAzar.Elevator
             if (interactAction?.action == null) return;
             interactAction.action.performed += OnInteract;
             interactAction.action.Enable();
+            if (exitAction?.action == null) return;
+            exitAction.action.performed += OnExit;
+            exitAction.action.Enable();
         }
 
         void OnDisable()
@@ -24,6 +28,15 @@ namespace EcosDelAzar.Elevator
             if (interactAction?.action == null) return;
             interactAction.action.performed -= OnInteract;
             interactAction.action.Disable();
+            if (exitAction?.action == null) return;
+            exitAction.action.performed -= OnExit;
+            exitAction.action.Disable();
+        }
+
+        void OnExit(InputAction.CallbackContext ctx)
+        {
+            if (elevatorUI == null) return;
+            elevatorUI.Close();
         }
 
         void OnInteract(InputAction.CallbackContext ctx)

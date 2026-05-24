@@ -1,88 +1,18 @@
-<ui:UXML
-    xmlns:ui="UnityEngine.UIElements"
-    editor-extension-mode="False">
-
-    <Style src="./UI_Elevator_Styles.uss" />
-
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/UI/Elevator/UI_Elevator_Styles.uss?fileID=7433441132597879392&amp;guid=0ca1be7c989118a41bcd798bcd09c4e0&amp;type=3#UI_Elevator_Styles"/>
     <ui:VisualElement name="Root" class="elevator-root elevator-hidden">
-
-        <ui:VisualElement name="DarkOverlay" class="elevator-overlay" />
-
+        <ui:VisualElement name="DarkOverlay" class="elevator-overlay"/>
         <ui:VisualElement name="ElevatorPanel" class="elevator-panel">
-
             <ui:VisualElement name="Header" class="elevator-header">
-                <ui:Label
-                    name="TitleLabel"
-                    text="ASCENSOR A-13"
-                    class="elevator-title" />
-
-                <ui:Label
-                    name="SubtitleLabel"
-                    text="TORRE DEL AZAR"
-                    class="elevator-subtitle" />
+                <ui:VisualElement style="flex-direction: column;">
+                    <ui:Label name="TitleLabel" text="ASCENSOR" class="elevator-title"/>
+                    <ui:Label text="SELECCIONA DESTINO" class="elevator-subtitle"/>
+                </ui:VisualElement>
             </ui:VisualElement>
-
-            <ui:VisualElement name="StatusRow" class="elevator-status-row">
-
-                <ui:Label
-                    text="ENERGÍA:"
-                    class="status-label" />
-
-                <ui:Label
-                    name="EnergyValue"
-                    text="ESTABLE"
-                    class="status-value status-value--safe" />
-
-                <ui:Label
-                    text="|"
-                    class="status-separator" />
-
-                <ui:Label
-                    text="RIESGO:"
-                    class="status-label" />
-
-                <ui:Label
-                    name="RiskValue"
-                    text="MODERADO"
-                    class="status-value status-value--warning" />
-
-                <ui:Label
-                    text="|"
-                    class="status-separator" />
-
-                <ui:Label
-                    text="CRÉDITOS:"
-                    class="status-label" />
-
-                <ui:Label
-                    name="CurrencyValue"
-                    text="0"
-                    class="status-value status-value--currency" />
-
-            </ui:VisualElement>
-
-            <ui:VisualElement name="DividerTop" class="elevator-divider" />
-
-            <ui:VisualElement name="FloorsContainer" class="floors-container" />
-
-            <ui:VisualElement name="DividerBottom" class="elevator-divider" />
-
+            <ui:VisualElement name="FloorsContainer" class="floors-container"/>
             <ui:VisualElement name="Footer" class="elevator-footer">
-
-                <ui:Label
-                    name="FooterMessage"
-                    text="LA SUERTE SIEMPRE OBSERVA"
-                    class="footer-message" />
-
-                <ui:Button
-                    name="CloseButton"
-                    text="CERRAR"
-                    class="close-button" />
-
+                <ui:Button name="CloseButton" text="CERRAR" class="close-button"/>
             </ui:VisualElement>
-
         </ui:VisualElement>
-
     </ui:VisualElement>
-
 </ui:UXML>

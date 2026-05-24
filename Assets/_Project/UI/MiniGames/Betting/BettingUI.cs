@@ -1,0 +1,375 @@
+using UnityEngine;
+using UnityEngine.UIElements;
+using EcosDelAzar.MiniGames;
+using EcosDelAzar.MiniGames.Betting;
+
+namespace EcosDelAzar.UI
+{
+    [RequireComponent(typeof(UIDocument))]
+    public class BettingUI : MonoBehaviour
+    {
+        [SerializeField] MiniGameSession session;
+        [SerializeField] int betStep = 10;
+
+        // Phases
+        VisualElement betPhase;
+        VisualElement playingPhase;
+        VisualElement resultPhase;
+        VisualElement proposalPhase;
+        VisualElement gameOverPhase;
+
+        // Coins
+        Label playerCoinsLabel;
+        Label opponentCoinsLabel;
+
+        // Bet phase
+        Label betAmountLabel;
+        Button btnBetDown;
+        Button btnBetUp;
+        Button btnBetMin;
+        Button btnBetHalf;
+        Button btnBetMax;
+        Button btnPlay;
+
+        // Playing phase
+        Label currentBetDisplay;
+
+        // Result phase
+        Label resultText;
+        Label resultAmount;
+
+        // Proposal phase
+        Label proposalText;
+        Button btnMatch;
+        Button btnDouble;
+        Button btnFold;
+
+        // Game over phase
+        Label gameOverText;
+        Label gameOverSubtext;
+        Button btnLeave;
+
+        int currentBet;
+
+        void OnEnable()
+        {
+            var doc = GetComponent<UIDocument>();
+            if (doc?.rootVisualElement == null) return;
+
+            var root = doc.rootVisualElement;
+
+            betPhase = root.Q("bet-phase");
+            playingPhase = root.Q("playing-phase");
+            resultPhase = root.Q("result-phase");
+            proposalPhase = root.Q("proposal-phase");
+            gameOverPhase = root.Q("gameover-phase");
+
+            playerCoinsLabel = root.Q<Label>("player-coins");
+            opponentCoinsLabel = root.Q<Label>("opponent-coins");
+
+            betAmountLabel = root.Q<Label>("bet-amount");
+            btnBetDown = root.Q<Button>("btn-bet-down");
+            btnBetUp = root.Q<Button>("btn-bet-up");
+            btnBetMin = root.Q<Button>("btn-bet-min");
+            btnBetHalf = root.Q<Button>("btn-bet-half");
+            btnBetMax = root.Q<Button>("btn-bet-max");
+            btnPlay = root.Q<Button>("btn-play");
+
+            currentBetDisplay = root.Q<Label>("current-bet-display");
+
+            resultText = root.Q<Label>("result-text");
+            resultAmount = root.Q<Label>("result-amount");
+
+            proposalText = root.Q<Label>("proposal-text");
+            btnMatch = root.Q<Button>("btn-match");
+            btnDouble = root.Q<Button>("btn-double");
+            btnFold = root.Q<Button>("btn-fold");
+
+            gameOverText = root.Q<Label>("gameover-text");
+            gameOverSubtext = root.Q<Label>("gameover-subtext");
+            btnLeave = root.Q<Button>("btn-leave");
+
+            BindButtons();
+            BindEvents();
+            SetPhase(null);
+        }
+
+        void OnDisable()
+        {
+            UnbindButtons();
+            UnbindEvents();
+        }
+
+        // ─── Binding ───
+
+        void BindButtons()
+        {
+            btnBetDown?.RegisterCallback<ClickEvent>(OnBetDown);
+            btnBetUp?.RegisterCallback<ClickEvent>(OnBetUp);
+            btnBetMin?.RegisterCallback<ClickEvent>(OnBetMin);
+            btnBetHalf?.RegisterCallback<ClickEvent>(OnBetHalf);
+            btnBetMax?.RegisterCallback<ClickEvent>(OnBetMax);
+            btnPlay?.RegisterCallback<ClickEvent>(OnPlay);
+            btnMatch?.RegisterCallback<ClickEvent>(OnMatch);
+            btnDouble?.RegisterCallback<ClickEvent>(OnDouble);
+            btnFold?.RegisterCallback<ClickEvent>(OnFoldClicked);
+            btnLeave?.RegisterCallback<ClickEvent>(OnLeave);
+        }
+
+        void UnbindButtons()
+        {
+            btnBetDown?.UnregisterCallback<ClickEvent>(OnBetDown);
+            btnBetUp?.UnregisterCallback<ClickEvent>(OnBetUp);
+            btnBetMin?.UnregisterCallback<ClickEvent>(OnBetMin);
+            btnBetHalf?.UnregisterCallback<ClickEvent>(OnBetHalf);
+            btnBetMax?.UnregisterCallback<ClickEvent>(OnBetMax);
+            btnPlay?.UnregisterCallback<ClickEvent>(OnPlay);
+            btnMatch?.UnregisterCallback<ClickEvent>(OnMatch);
+            btnDouble?.UnregisterCallback<ClickEvent>(OnDouble);
+            btnFold?.UnregisterCallback<ClickEvent>(OnFoldClicked);
+            btnLeave?.UnregisterCallback<ClickEvent>(OnLeave);
+        }
+
+        void BindEvents()
+        {
+            if (session == null) return;
+
+            session.OnSessionStarted += OnSessionReady;
+
+            if (session.Game != null)
+            {
+                session.Game.OnRoundStarted += ShowPlayingPhase;
+                session.Game.OnRoundResolved += ShowResultPhase;
+            }
+
+            if (session.Betting != null)
+            {
+                session.Betting.OnCoinsUpdated += RefreshCoins;
+                session.Betting.OnNpcProposal += ShowProposalPhase;
+                session.Betting.OnGameOver += ShowGameOver;
+            }
+        }
+
+        void UnbindEvents()
+        {
+            if (session == null) return;
+
+            session.OnSessionStarted -= OnSessionReady;
+
+            if (session.Game != null)
+            {
+                session.Game.OnRoundStarted -= ShowPlayingPhase;
+                session.Game.OnRoundResolved -= ShowResultPhase;
+            }
+
+            if (session.Betting != null)
+            {
+                session.Betting.OnCoinsUpdated -= RefreshCoins;
+                session.Betting.OnNpcProposal -= ShowProposalPhase;
+                session.Betting.OnGameOver -= ShowGameOver;
+            }
+        }
+
+        void OnSessionReady()
+        {
+            currentBet = session.Betting.MinimumBet;
+            ShowBetPhase();
+        }
+
+        // ─── Phase Display ───
+
+        void SetPhase(VisualElement active)
+        {
+            SetVisible(betPhase, active == betPhase);
+            SetVisible(playingPhase, active == playingPhase);
+            SetVisible(resultPhase, active == resultPhase);
+            SetVisible(proposalPhase, active == proposalPhase);
+            SetVisible(gameOverPhase, active == gameOverPhase);
+        }
+
+        void SetVisible(VisualElement el, bool visible)
+        {
+            if (el != null)
+                el.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        void ShowBetPhase()
+        {
+            RefreshCoins();
+            ClampBet();
+            RefreshBetDisplay();
+            SetPhase(betPhase);
+        }
+
+        void ShowPlayingPhase()
+        {
+            RefreshCoins();
+            if (currentBetDisplay != null)
+                currentBetDisplay.text = $"Apuesta: {currentBet}";
+            SetPhase(playingPhase);
+        }
+
+        void ShowResultPhase(RoundResult result)
+        {
+            RefreshCoins();
+            SetPhase(resultPhase);
+
+            if (resultText != null)
+            {
+                resultText.text = result.Outcome switch
+                {
+                    RoundOutcome.Win => "¡GANASTE!",
+                    RoundOutcome.Lose => "PERDISTE",
+                    _ => "EMPATE"
+                };
+
+                resultText.RemoveFromClassList("result--win");
+                resultText.RemoveFromClassList("result--lose");
+                resultText.RemoveFromClassList("result--draw");
+                resultText.AddToClassList(result.Outcome switch
+                {
+                    RoundOutcome.Win => "result--win",
+                    RoundOutcome.Lose => "result--lose",
+                    _ => "result--draw"
+                });
+            }
+
+            if (resultAmount != null && session?.Betting != null)
+            {
+                int winnings = session.Betting.LastWinnings;
+                resultAmount.text = winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0";
+            }
+        }
+
+        void ShowProposalPhase(int npcBet)
+        {
+            RefreshCoins();
+            SetPhase(proposalPhase);
+
+            if (proposalText != null)
+                proposalText.text = $"El rival propone: {npcBet} monedas";
+
+            if (btnDouble != null)
+                btnDouble.SetEnabled(session.Betting.PlayerCoins >= npcBet * 2);
+
+            if (btnMatch != null)
+                btnMatch.SetEnabled(session.Betting.PlayerCoins >= npcBet);
+        }
+
+        void ShowGameOver(bool playerWon)
+        {
+            RefreshCoins();
+            SetPhase(gameOverPhase);
+
+            if (gameOverText != null)
+                gameOverText.text = playerWon ? "¡VICTORIA!" : "DERROTA";
+
+            if (gameOverSubtext != null)
+            {
+                gameOverSubtext.text = playerWon
+                    ? "El rival se quedó sin monedas"
+                    : "No tienes más dinero para jugar";
+            }
+
+            if (gameOverText != null)
+            {
+                gameOverText.RemoveFromClassList("result--win");
+                gameOverText.RemoveFromClassList("result--lose");
+                gameOverText.AddToClassList(playerWon ? "result--win" : "result--lose");
+            }
+        }
+
+        // ─── Bet Input ───
+
+        void OnBetDown(ClickEvent _)
+        {
+            currentBet = Mathf.Max(session.Betting.MinimumBet, currentBet - betStep);
+            RefreshBetDisplay();
+        }
+
+        void OnBetUp(ClickEvent _)
+        {
+            currentBet = Mathf.Min(session.Betting.PlayerCoins, currentBet + betStep);
+            RefreshBetDisplay();
+        }
+
+        void OnBetMin(ClickEvent _)
+        {
+            currentBet = session.Betting.MinimumBet;
+            RefreshBetDisplay();
+        }
+
+        void OnBetHalf(ClickEvent _)
+        {
+            currentBet = Mathf.Max(session.Betting.MinimumBet, session.Betting.PlayerCoins / 2);
+            RefreshBetDisplay();
+        }
+
+        void OnBetMax(ClickEvent _)
+        {
+            currentBet = session.Betting.PlayerCoins;
+            RefreshBetDisplay();
+        }
+
+        void ClampBet()
+        {
+            if (session?.Betting == null) return;
+            currentBet = Mathf.Clamp(currentBet, session.Betting.MinimumBet, session.Betting.PlayerCoins);
+        }
+
+        void RefreshBetDisplay()
+        {
+            if (betAmountLabel != null)
+                betAmountLabel.text = currentBet.ToString();
+
+            if (session?.Betting == null) return;
+            if (btnBetDown != null)
+                btnBetDown.SetEnabled(currentBet > session.Betting.MinimumBet);
+            if (btnBetUp != null)
+                btnBetUp.SetEnabled(currentBet < session.Betting.PlayerCoins);
+        }
+
+        // ─── Actions ───
+
+        void OnPlay(ClickEvent _)
+        {
+            if (session == null) return;
+            session.StartRound(currentBet);
+        }
+
+        void OnMatch(ClickEvent _)
+        {
+            if (session == null) return;
+            currentBet = session.Betting.NpcProposedBet;
+            session.RespondToProposal(BetResponse.Match);
+        }
+
+        void OnDouble(ClickEvent _)
+        {
+            if (session == null) return;
+            currentBet = session.Betting.NpcProposedBet * 2;
+            session.RespondToProposal(BetResponse.Double);
+        }
+
+        void OnFoldClicked(ClickEvent _)
+        {
+            if (session == null) return;
+            session.RespondToProposal(BetResponse.Fold);
+        }
+
+        void OnLeave(ClickEvent _)
+        {
+            if (session == null) return;
+            session.Leave();
+        }
+
+        // ─── Refresh ───
+
+        void RefreshCoins()
+        {
+            if (session?.Betting == null) return;
+            if (playerCoinsLabel != null) playerCoinsLabel.text = session.Betting.PlayerCoins.ToString();
+            if (opponentCoinsLabel != null) opponentCoinsLabel.text = session.Betting.OpponentCoins.ToString();
+        }
+    }
+}

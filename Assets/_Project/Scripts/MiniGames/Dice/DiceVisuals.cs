@@ -1,78 +1,91 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace EcosDelAzar.MiniGames.Dice
 {
     public class DiceVisuals : MonoBehaviour
     {
         [SerializeField] DiceGame game;
-        [SerializeField] SpriteRenderer playerDiceRenderer;
-        [SerializeField] SpriteRenderer opponentDiceRenderer;
-        [SerializeField] Sprite[] faceSprites = new Sprite[6];
-        [SerializeField] float rotationSpeed = 720f;
-        [SerializeField] float maxScaleMultiplier = 1.15f;
+        [SerializeField] UIDocument uiDocument;
+        [SerializeField] Sprite[] diceFaces;
 
-        Vector3 playerOriginalScale;
-        Vector3 opponentOriginalScale;
-        bool isAnimating;
+        [Header("Animation Settings")]
+        [SerializeField] float rotationSpeed = 360f;
+        [SerializeField] float scaleBump = 1.2f;
 
-        void Awake()
-        {
-            playerOriginalScale = playerDiceRenderer.transform.localScale;
-            opponentOriginalScale = opponentDiceRenderer.transform.localScale;
-        }
+        VisualElement playerDiceImg;
+        VisualElement opponentDiceImg;
 
         void OnEnable()
         {
-            game.OnRolling += AnimateFrame;
-            game.OnRollFinished += ShowFinalResult;
-            game.OnRoundStarted += OnRoundStart;
+            if (uiDocument?.rootVisualElement != null)
+            {
+                playerDiceImg = uiDocument.rootVisualElement.Q<VisualElement>("player-dice-img");
+                opponentDiceImg = uiDocument.rootVisualElement.Q<VisualElement>("opponent-dice-img");
+            }
+
+            if (game != null)
+            {
+                game.OnRolling += HandleRolling;
+                game.OnRollFinished += HandleRollFinished;
+            }
+
+            // Set initial blank or face 1
+            SetFace(playerDiceImg, 1);
+            SetFace(opponentDiceImg, 1);
         }
 
         void OnDisable()
         {
-            game.OnRolling -= AnimateFrame;
-            game.OnRollFinished -= ShowFinalResult;
-            game.OnRoundStarted -= OnRoundStart;
+            if (game != null)
+            {
+                game.OnRolling -= HandleRolling;
+                game.OnRollFinished -= HandleRollFinished;
+            }
         }
 
-        void OnRoundStart()
+        void HandleRolling(int playerVal, int opponentVal)
         {
-            isAnimating = true;
+            if (this == null || !gameObject.activeInHierarchy) return;
+
+            SetFace(playerDiceImg, playerVal);
+            SetFace(opponentDiceImg, opponentVal);
+
+            // Calculate rotation and scale based on time to create a "wobble"
+            float angle = Mathf.Sin(Time.time * rotationSpeed * Mathf.Deg2Rad) * 45f;
+            float scale = 1f + Mathf.PingPong(Time.time * 5f, scaleBump - 1f);
+
+            ApplyTransform(playerDiceImg, angle, scale);
+            ApplyTransform(opponentDiceImg, angle, scale);
         }
 
-        void AnimateFrame(int playerVal, int opponentVal)
+        void HandleRollFinished(int playerVal, int opponentVal)
         {
-            SetFace(playerDiceRenderer, playerVal);
-            SetFace(opponentDiceRenderer, opponentVal);
+            if (this == null || !gameObject.activeInHierarchy) return;
 
-            playerDiceRenderer.transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
-            opponentDiceRenderer.transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
+            SetFace(playerDiceImg, playerVal);
+            SetFace(opponentDiceImg, opponentVal);
 
-            float scale = maxScaleMultiplier;
-            playerDiceRenderer.transform.localScale = playerOriginalScale * scale;
-            opponentDiceRenderer.transform.localScale = opponentOriginalScale * scale;
+            // Reset rotation and scale
+            ApplyTransform(playerDiceImg, 0f, 1f);
+            ApplyTransform(opponentDiceImg, 0f, 1f);
         }
 
-        void ShowFinalResult(int playerVal, int opponentVal)
+        void SetFace(VisualElement el, int faceValue)
         {
-            isAnimating = false;
-            SetFace(playerDiceRenderer, playerVal);
-            SetFace(opponentDiceRenderer, opponentVal);
-            ResetTransforms();
+            if (el == null || diceFaces == null || diceFaces.Length == 0) return;
+            
+            int index = Mathf.Clamp(faceValue - 1, 0, diceFaces.Length - 1);
+            el.style.backgroundImage = new StyleBackground(diceFaces[index]);
         }
 
-        void SetFace(SpriteRenderer renderer, int value)
+        void ApplyTransform(VisualElement el, float angle, float scale)
         {
-            if (value < 1 || value > faceSprites.Length) return;
-            renderer.sprite = faceSprites[value - 1];
-        }
-
-        void ResetTransforms()
-        {
-            playerDiceRenderer.transform.localScale = playerOriginalScale;
-            playerDiceRenderer.transform.rotation = Quaternion.identity;
-            opponentDiceRenderer.transform.localScale = opponentOriginalScale;
-            opponentDiceRenderer.transform.rotation = Quaternion.identity;
+            if (el == null) return;
+            el.style.rotate = new Rotate(new Angle(angle, AngleUnit.Degree));
+            el.style.scale = new Scale(new Vector2(scale, scale));
         }
     }
 }

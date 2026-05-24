@@ -16,7 +16,7 @@ MonoBehaviour:
   floorNumber: 2
   displayName: Nivel 2
   description: Intenta llegar hasta aqui
-  sceneName: SCN_Floor_01_Level2
-  unlockedByDefault: 1
+  sceneName: SCN_Floor_02_Level2
+  unlockedByDefault: 0
   canBePurchased: 1
   accessCost: 200

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using EcosDelAzar.Core;
 using EcosDelAzar.Elevator;
-using EcosDelAzar.Economy;
 
 namespace EcosDelAzar.UI
 {
@@ -15,7 +15,6 @@ namespace EcosDelAzar.UI
         VisualElement root;
         VisualElement floorsContainer;
         Button closeButton;
-        Label currencyLabel;
         ElevatorFloorData[] currentFloors;
         bool initialized;
 
@@ -41,7 +40,6 @@ namespace EcosDelAzar.UI
             root = doc.rootVisualElement.Q("Root");
             floorsContainer = doc.rootVisualElement.Q("FloorsContainer");
             closeButton = doc.rootVisualElement.Q<Button>("CloseButton");
-            currencyLabel = doc.rootVisualElement.Q<Label>("CurrencyValue");
 
             if (root == null || floorsContainer == null || closeButton == null) return;
 
@@ -73,8 +71,8 @@ namespace EcosDelAzar.UI
 
         void Refresh()
         {
-            if (currencyLabel != null)
-                currencyLabel.text = ProgressManager.Currency.ToString();
+            var wallet = GameManager.Instance?.Wallet;
+            var floorProgress = GameManager.Instance?.FloorProgress;
 
             floorsContainer.Clear();
 
@@ -85,18 +83,18 @@ namespace EcosDelAzar.UI
                 bool isCurrent = ElevatorSceneLoader.IsCurrentScene(floor);
                 if (isCurrent && currentFloorMode == CurrentFloorDisplayMode.Hide) continue;
 
-                floorsContainer.Add(CreateFloorButton(floor));
+                floorsContainer.Add(CreateFloorButton(floor, wallet, floorProgress));
             }
         }
 
-        VisualElement CreateFloorButton(ElevatorFloorData floor)
+        VisualElement CreateFloorButton(ElevatorFloorData floor, Wallet wallet, FloorProgress floorProgress)
         {
-            var state = GetState(floor);
+            var state = GetState(floor, wallet, floorProgress);
             var button = new Button { name = $"FloorButton_{floor.FloorId}" };
             button.AddToClassList("floor-button");
             button.AddToClassList(StateClass(state));
 
-            SetupInteraction(button, floor, state);
+            SetupInteraction(button, floor, wallet, floorProgress, state);
 
             var numberBox = new VisualElement();
             numberBox.AddToClassList("floor-button__number-box");
@@ -104,10 +102,17 @@ namespace EcosDelAzar.UI
 
             var content = new VisualElement();
             content.AddToClassList("floor-button__content");
-            content.Add(new Label(floor.DisplayName));
-            content.Add(new Label(floor.Description));
 
-            var action = new Label(ActionText(floor, state));
+            var nameLabel = new Label(floor.DisplayName);
+            nameLabel.AddToClassList("floor-button__name");
+
+            var descLabel = new Label(floor.Description);
+            descLabel.AddToClassList("floor-button__description");
+
+            content.Add(nameLabel);
+            content.Add(descLabel);
+
+            var action = new Label(ActionText(floor, state, wallet));
             action.AddToClassList("floor-button__action-text");
 
             button.Add(numberBox);
@@ -117,12 +122,12 @@ namespace EcosDelAzar.UI
             return button;
         }
 
-        FloorState GetState(ElevatorFloorData floor)
+        FloorState GetState(ElevatorFloorData floor, Wallet wallet, FloorProgress floorProgress)
         {
             if (ElevatorSceneLoader.IsCurrentScene(floor)) return FloorState.Current;
-            if (ProgressManager.IsFloorUnlocked(floor)) return FloorState.Travel;
+            if (floorProgress != null && floorProgress.IsUnlocked(floor)) return FloorState.Travel;
             if (!floor.CanBePurchased) return FloorState.Locked;
-            if (!ProgressManager.CanAfford(floor.AccessCost)) return FloorState.CannotAfford;
+            if (wallet == null || !wallet.CanAfford(floor.AccessCost)) return FloorState.CannotAfford;
             return FloorState.Purchase;
         }
 
@@ -135,7 +140,7 @@ namespace EcosDelAzar.UI
             _ => "floor-button--locked"
         };
 
-        void SetupInteraction(Button button, ElevatorFloorData floor, FloorState state)
+        void SetupInteraction(Button button, ElevatorFloorData floor, Wallet wallet, FloorProgress floorProgress, FloorState state)
         {
             switch (state)
             {
@@ -143,7 +148,14 @@ namespace EcosDelAzar.UI
                     button.clicked += () => ElevatorSceneLoader.LoadFloor(floor);
                     break;
                 case FloorState.Purchase:
-                    button.clicked += () => { ProgressManager.TryPurchaseFloorAccess(floor); Refresh(); };
+                    button.clicked += () =>
+                    {
+                        if (floorProgress != null)
+                        {
+                            floorProgress.TryPurchaseAccess(floor, wallet);
+                        }
+                        Refresh();
+                    };
                     break;
                 default:
                     button.SetEnabled(false);
@@ -151,12 +163,12 @@ namespace EcosDelAzar.UI
             }
         }
 
-        string ActionText(ElevatorFloorData floor, FloorState state) => state switch
+        string ActionText(ElevatorFloorData floor, FloorState state, Wallet wallet) => state switch
         {
             FloorState.Current => "ACTUAL",
             FloorState.Travel => "IR",
             FloorState.Purchase => $"COMPRAR {floor.AccessCost}",
-            FloorState.CannotAfford => $"FALTAN {floor.AccessCost - ProgressManager.Currency}",
+            FloorState.CannotAfford => $"FALTAN {floor.AccessCost - (wallet?.Coins ?? 0)}",
             _ => "BLOQUEADO"
         };
     }

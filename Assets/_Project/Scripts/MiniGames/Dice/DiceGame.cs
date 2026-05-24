@@ -13,9 +13,7 @@ namespace EcosDelAzar.MiniGames.Dice
         public int PlayerRoll { get; private set; }
         public int OpponentRoll { get; private set; }
 
-        // Fired during the animation with intermediate random values
         public event Action<int, int> OnRolling;
-        // Fired once when final values are determined
         public event Action<int, int> OnRollFinished;
 
         protected override IEnumerator PlayRoundRoutine()
@@ -26,6 +24,7 @@ namespace EcosDelAzar.MiniGames.Dice
             {
                 int tempPlayer = UnityEngine.Random.Range(1, faces + 1);
                 int tempOpponent = UnityEngine.Random.Range(1, faces + 1);
+
                 OnRolling?.Invoke(tempPlayer, tempOpponent);
 
                 yield return new WaitForSeconds(frameInterval);

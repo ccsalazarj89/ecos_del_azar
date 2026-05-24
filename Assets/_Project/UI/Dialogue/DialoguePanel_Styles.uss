@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════
+   DIALOGUE UI — Wasteland radio transmission
+   ═══════════════════════════════════════════════ */
+
+.dialogue-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 60px;
+}
+
+.dialogue-hidden {
+    display: none;
+}
+
+/* ═══════════════════════════════════════════════
+   INTERACT HINT — Floating prompt near NPC
+   ═══════════════════════════════════════════════ */
+
+.interact-hint {
+    position: absolute;
+    bottom: 200px;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(10, 8, 6, 0.9);
+    padding: 10px 20px;
+    border-radius: 4px;
+    border-width: 2px;
+    border-color: rgba(0, 200, 240, 0.4);
+    transition-property: opacity, scale;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+}
+
+.interact-hint:hover {
+    scale: 1.05;
+    border-color: rgba(0, 200, 240, 0.7);
+}
+
+.interact-hint__key-box {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0, 200, 240, 0.15);
+    border-width: 2px;
+    border-color: rgb(0, 200, 240);
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+    transition-property: background-color, scale;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+}
+
+.interact-hint__key {
+    color: rgb(0, 220, 255);
+    font-size: 18px;
+    -unity-font-style: bold;
+    text-shadow: 0 0 8px rgba(0, 220, 255, 0.6);
+}
+
+.interact-hint__label {
+    color: rgb(200, 190, 170);
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════
+   DIALOGUE PANEL — Conversation box
+   ═══════════════════════════════════════════════ */
+
+.dialogue-panel {
+    width: 70%;
+    max-width: 800px;
+    min-height: 150px;
+    background-color: rgba(10, 8, 6, 0.95);
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-top-width: 4px;
+    border-top-color: rgb(200, 140, 40);
+    border-radius: 3px;
+    padding: 22px 28px;
+    flex-direction: column;
+    transition-property: opacity, translate;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+}
+
+/* ── Speaker name ── */
+
+.dialogue-speaker-box {
+    flex-direction: row;
+    margin-bottom: 14px;
+}
+
+.dialogue-speaker {
+    color: rgb(255, 200, 80);
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    text-shadow: 0 0 8px rgba(255, 200, 80, 0.5);
+    background-color: rgba(255, 200, 80, 0.08);
+    padding: 4px 14px;
+    border-radius: 2px;
+    border-width: 1px;
+    border-color: rgba(255, 200, 80, 0.25);
+}
+
+/* ── Dialogue text ── */
+
+.dialogue-text {
+    color: rgb(220, 210, 190);
+    font-size: 20px;
+    white-space: normal;
+    -unity-text-align: upper-left;
+    padding: 4px 0;
+    transition-property: opacity;
+    transition-duration: 0.15s;
+}
+
+/* ── Continue / Reward prompt ── */
+
+.dialogue-prompt {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.06);
+    transition-property: opacity;
+    transition-duration: 0.3s;
+}
+
+.dialogue-prompt__key-box {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 200, 240, 0.12);
+    border-width: 2px;
+    border-color: rgb(0, 200, 240);
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    transition-property: background-color, scale;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-in-out;
+}
+
+.dialogue-prompt__key {
+    color: rgb(0, 220, 255);
+    font-size: 14px;
+    -unity-font-style: bold;
+    text-shadow: 0 0 6px rgba(0, 220, 255, 0.5);
+}
+
+.dialogue-prompt__label {
+    color: rgb(0, 200, 240);
+    font-size: 14px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    text-shadow: 0 0 6px rgba(0, 200, 240, 0.4);
+}

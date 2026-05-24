@@ -14,6 +14,7 @@ namespace EcosDelAzar.MiniGames
 
         public event Action OnRoundStarted;
         public event Action<RoundResult> OnRoundResolved;
+        public event Action OnReadyForNextRound;
         public event Action OnMatchEnded;
 
         public void Begin()
@@ -48,16 +49,16 @@ namespace EcosDelAzar.MiniGames
             OnRoundResolved?.Invoke(LastResult);
 
             yield return new WaitForSeconds(GetResultDisplayTime());
+
             State = MiniGameState.WaitingForBet;
+            OnReadyForNextRound?.Invoke();
         }
 
-        // Each game implements these:
         protected abstract IEnumerator PlayRoundRoutine();
         protected abstract RoundResult EvaluateResult();
 
-        // Optional overrides:
         protected virtual void OnBegin() { }
         protected virtual void OnEnd() { }
-        protected virtual float GetResultDisplayTime() => 1.5f;
+        protected virtual float GetResultDisplayTime() => 2f;
     }
 }

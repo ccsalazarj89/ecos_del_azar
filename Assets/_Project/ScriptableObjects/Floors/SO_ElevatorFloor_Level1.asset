@@ -17,6 +17,6 @@ MonoBehaviour:
   displayName: Nivel 1
   description: Tus primeras apuestas estan aqui
   sceneName: SCN_Floor_01_Level1
-  unlockedByDefault: 1
+  unlockedByDefault: 0
   canBePurchased: 1
   accessCost: 50

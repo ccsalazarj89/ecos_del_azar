@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/UI/HUD/GameHUD_Styles.uss?fileID=7433441132597879392&amp;guid=c88c52e1c20358a4fa9ff5d241c32add&amp;type=3#GameHUD_Styles"/>
+    <ui:VisualElement name="HUDContainer" class="hud-container" picking-mode="Ignore">
+        <ui:VisualElement name="TopLeft" class="hud-top-left" picking-mode="Ignore">
+            <ui:VisualElement name="OxygenModule" class="hud-module oxygen-module">
+                <ui:VisualElement class="oxygen-header">
+                    <ui:VisualElement class="oxygen-icon"/>
+                    <ui:Label text="O2" class="oxygen-label"/>
+                    <ui:Label name="oxygen-percent" text="100%" class="oxygen-percent"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="oxygen-bar-bg">
+                    <ui:VisualElement name="oxygen-fill" class="oxygen-bar-fill"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="TopRight" class="hud-top-right" picking-mode="Ignore">
+            <ui:VisualElement name="CoinsModule" class="hud-module coins-module">
+                <ui:VisualElement class="coin-icon"/>
+                <ui:Label name="coins-value" text="0" class="coins-value"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,7 +1,11 @@
 using UnityEngine;
+using EcosDelAzar.Core;
 
 namespace EcosDelAzar.Economy
 {
+    /// <summary>
+    /// Demo trigger for testing currency rewards.
+    /// </summary>
     public class CurrencyRewardTrigger : MonoBehaviour
     {
         [SerializeField] int amount = 10;
@@ -10,7 +14,11 @@ namespace EcosDelAzar.Economy
         void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player")) return;
-            ProgressManager.AddCurrency(amount);
+
+            var wallet = GameManager.Instance.Wallet;
+            if (wallet == null) return;
+
+            wallet.Add(amount);
             if (destroyAfterCollect) Destroy(gameObject);
         }
     }

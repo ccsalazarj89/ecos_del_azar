@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8277458455876625851}
   - component: {fileID: 1369627885818836912}
   - component: {fileID: 3558331519609252224}
-  - component: {fileID: 1681274464407973274}
   m_Layer: 0
   m_Name: NPCPrefab
   m_TagString: Untagged
@@ -137,18 +136,3 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1681274464407973274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3123972946447844184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e03b5718a51b31d4eb8c40941dc48367, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DuelNPC
-  npcId: b2c3d4e5-f6a7-8901-bcde-f12345678901
-  interactKey: e
-  promptMessage: Pulsa E para duelo

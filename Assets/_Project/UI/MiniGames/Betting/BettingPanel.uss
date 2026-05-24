@@ -1,0 +1,325 @@
+/* ═══════════════════════════════════════════════
+   BETTING PANEL — Casino Post-Apocalyptic
+   ═══════════════════════════════════════════════ */
+
+.panel {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    translate: -50% 0;
+    width: 480px;
+    background-color: rgba(14, 10, 8, 0.95);
+    border-radius: 4px;
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-top-width: 4px;
+    border-top-color: rgb(200, 140, 40);
+    padding: 22px 26px;
+    align-items: center;
+}
+
+/* ── Coins Row (always visible) ── */
+
+.coins-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: rgba(255, 200, 50, 0.1);
+}
+
+.coins-group {
+    align-items: center;
+    width: 40%;
+}
+
+.coins-label {
+    font-size: 11px;
+    color: rgba(200, 180, 150, 0.5);
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+
+.coins-value {
+    font-size: 26px;
+    -unity-font-style: bold;
+    transition-property: color, scale;
+    transition-duration: 0.3s;
+}
+
+.coins-value--player {
+    color: rgb(255, 220, 100);
+    text-shadow: 0 0 6px rgba(255, 200, 0, 0.3);
+}
+
+.coins-value--opponent {
+    color: rgb(220, 100, 80);
+    text-shadow: 0 0 6px rgba(220, 80, 60, 0.3);
+}
+
+.vs-separator {
+    justify-content: center;
+    align-items: center;
+}
+
+.vs-label {
+    color: rgba(200, 180, 150, 0.3);
+    font-size: 13px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+/* ── Phases ── */
+
+.phase {
+    width: 100%;
+    align-items: center;
+}
+
+.phase-label {
+    font-size: 14px;
+    color: rgb(180, 160, 130);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+/* ── Bet Input Phase ── */
+
+.bet-input-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.bet-adjust-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: rgb(255, 220, 100);
+    background-color: rgba(255, 200, 50, 0.1);
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-radius: 4px;
+    transition-property: scale, background-color;
+    transition-duration: 0.1s;
+}
+
+.bet-adjust-btn:hover {
+    scale: 1.1;
+    background-color: rgba(255, 200, 50, 0.2);
+}
+
+.bet-adjust-btn:active {
+    scale: 0.9;
+}
+
+.bet-amount-label {
+    font-size: 36px;
+    -unity-font-style: bold;
+    color: rgb(255, 230, 120);
+    text-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+    min-width: 120px;
+    -unity-text-align: middle-center;
+    margin: 0 16px;
+}
+
+.bet-shortcuts {
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.shortcut-btn {
+    width: 70px;
+    height: 32px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: rgb(180, 160, 130);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-width: 1px;
+    border-color: rgba(180, 160, 130, 0.3);
+    border-radius: 3px;
+    margin: 0 4px;
+    letter-spacing: 1px;
+    transition-property: scale, color, border-color;
+    transition-duration: 0.1s;
+}
+
+.shortcut-btn:hover {
+    scale: 1.05;
+    color: rgb(255, 220, 100);
+    border-color: rgb(200, 150, 50);
+}
+
+/* ── Playing Phase ── */
+
+.status-label {
+    font-size: 20px;
+    color: rgb(200, 190, 170);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.bet-display {
+    font-size: 16px;
+    color: rgb(255, 200, 80);
+    text-shadow: 0 0 4px rgba(255, 200, 80, 0.3);
+}
+
+/* ── Result Phase ── */
+
+.result-text {
+    font-size: 34px;
+    -unity-font-style: bold;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+}
+
+.result--win {
+    color: rgb(80, 220, 80);
+    text-shadow: 0 0 14px rgba(80, 220, 80, 0.5);
+}
+
+.result--lose {
+    color: rgb(220, 60, 50);
+    text-shadow: 0 0 14px rgba(220, 60, 50, 0.5);
+}
+
+.result--draw {
+    color: rgb(200, 180, 100);
+    text-shadow: 0 0 8px rgba(200, 180, 100, 0.4);
+}
+
+.result-amount {
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: rgb(255, 220, 100);
+    text-shadow: 0 0 6px rgba(255, 200, 0, 0.3);
+}
+
+/* ── Proposal Phase ── */
+
+.proposal-text {
+    font-size: 16px;
+    color: rgb(220, 100, 80);
+    -unity-font-style: bold;
+    margin-bottom: 16px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 0 4px rgba(220, 80, 60, 0.3);
+}
+
+.proposal-buttons {
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+/* ── Action Buttons ── */
+
+.action-btn {
+    height: 48px;
+    font-size: 15px;
+    -unity-font-style: bold;
+    border-radius: 3px;
+    margin: 0 5px;
+    color: white;
+    border-width: 2px;
+    letter-spacing: 1px;
+    transition-property: scale, background-color, border-color;
+    transition-duration: 0.12s;
+}
+
+.action-btn:hover {
+    scale: 1.06;
+}
+
+.action-btn:active {
+    scale: 0.95;
+}
+
+.action-btn--play {
+    width: 200px;
+    height: 54px;
+    font-size: 20px;
+    letter-spacing: 3px;
+    background-color: rgb(30, 120, 50);
+    border-color: rgb(50, 180, 70);
+}
+
+.action-btn--play:hover {
+    background-color: rgb(40, 150, 60);
+    border-color: rgb(70, 220, 90);
+}
+
+.action-btn--match {
+    width: 130px;
+    background-color: rgb(35, 100, 45);
+    border-color: rgb(50, 140, 60);
+}
+
+.action-btn--match:hover {
+    background-color: rgb(45, 130, 55);
+}
+
+.action-btn--double {
+    width: 130px;
+    background-color: rgb(160, 110, 20);
+    border-color: rgb(200, 140, 30);
+}
+
+.action-btn--double:hover {
+    background-color: rgb(190, 130, 25);
+}
+
+.action-btn--fold {
+    width: 130px;
+    background-color: rgb(55, 45, 40);
+    border-color: rgb(100, 70, 60);
+}
+
+.action-btn--fold:hover {
+    background-color: rgb(80, 55, 50);
+    border-color: rgb(140, 80, 60);
+}
+
+/* ── Game Over Phase ── */
+
+.gameover-phase {
+    padding: 20px 0;
+}
+
+.gameover-title {
+    font-size: 36px;
+    -unity-font-style: bold;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.gameover-subtext {
+    font-size: 16px;
+    color: rgb(180, 160, 140);
+    margin-bottom: 20px;
+    -unity-text-align: middle-center;
+}
+
+.action-btn--leave {
+    width: 180px;
+    height: 52px;
+    font-size: 18px;
+    letter-spacing: 4px;
+    background-color: rgb(140, 40, 40);
+    border-color: rgb(200, 60, 50);
+}
+
+.action-btn--leave:hover {
+    background-color: rgb(180, 50, 50);
+    border-color: rgb(240, 80, 60);
+}
