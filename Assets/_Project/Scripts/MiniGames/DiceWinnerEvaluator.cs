@@ -1,22 +1,12 @@
-using TMPro;
-public sealed class DiceWinnerEvaluator
+namespace EcosDelAzar.MiniGames
 {
-    public DiceWinner Evaluate(DiceResult playerOne, DiceResult playerTwo)
+    public sealed class DiceWinnerEvaluator
     {
-        if (playerOne.Value > playerTwo.Value)
+        public DiceWinner Evaluate(DiceResult playerOne, DiceResult playerTwo)
         {
-            
-            return DiceWinner.PlayerOne;
+            if (playerOne.Value > playerTwo.Value) return DiceWinner.PlayerOne;
+            if (playerTwo.Value > playerOne.Value) return DiceWinner.PlayerTwo;
+            return DiceWinner.Draw;
         }
-            
-
-        if (playerTwo.Value > playerOne.Value)
-        {
-           
-            return DiceWinner.PlayerTwo;
-        }
-            
-
-        return DiceWinner.Draw;
     }
 }

@@ -1,156 +1,103 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
-public class DiceRoundController : MonoBehaviour
+namespace EcosDelAzar.MiniGames
 {
-    [Header("Dice Rollers")]
-    [SerializeField] private DiceRoller playerOneDiceRoller;
-    [SerializeField] private DiceRoller playerTwoDiceRoller;
-
-    [Header("UI")]
-    [SerializeField] private Button rollButton;
-    [SerializeField] private TMP_Text playerOneResultText;
-    [SerializeField] private TMP_Text playerTwoResultText;
-    [SerializeField] private TMP_Text winnerText;
-    public int valor = 500;
-    private bool pulsado = false;
-
-    private DiceResult? playerOneResult;
-    private DiceResult? playerTwoResult;
-
-    private readonly DiceWinnerEvaluator winnerEvaluator = new();
-
-    private void OnEnable()
+    [RequireComponent(typeof(UIDocument))]
+    public class DiceRoundController : MonoBehaviour
     {
-        if (playerOneDiceRoller != null)
-            playerOneDiceRoller.OnRollFinished += HandlePlayerOneRollFinished;
+        [SerializeField] DiceRoller playerDiceRoller;
+        [SerializeField] DiceRoller opponentDiceRoller;
 
-        if (playerTwoDiceRoller != null)
-            playerTwoDiceRoller.OnRollFinished += HandlePlayerTwoRollFinished;
+        Label playerResultLabel;
+        Label opponentResultLabel;
+        Label winnerLabel;
+        Button rollButton;
 
-        if (rollButton != null)
+        DiceResult? playerResult;
+        DiceResult? opponentResult;
+        readonly DiceWinnerEvaluator evaluator = new();
+
+        void OnEnable()
         {
-            rollButton.onClick.AddListener(StartRound);
-            
-        }
-            
-    }
+            var root = GetComponent<UIDocument>().rootVisualElement;
+            playerResultLabel = root.Q<Label>("player-result");
+            opponentResultLabel = root.Q<Label>("opponent-result");
+            winnerLabel = root.Q<Label>("winner-label");
+            rollButton = root.Q<Button>("roll-button");
 
-    private void OnDisable()
-    {
-        if (playerOneDiceRoller != null)
-            playerOneDiceRoller.OnRollFinished -= HandlePlayerOneRollFinished;
+            rollButton.clicked += StartRound;
 
-        if (playerTwoDiceRoller != null)
-            playerTwoDiceRoller.OnRollFinished -= HandlePlayerTwoRollFinished;
+            if (playerDiceRoller != null)
+                playerDiceRoller.OnRollFinished += OnPlayerRollFinished;
+            if (opponentDiceRoller != null)
+                opponentDiceRoller.OnRollFinished += OnOpponentRollFinished;
 
-        if (rollButton != null)
-            rollButton.onClick.RemoveListener(StartRound);
-    }
-
-    private void Start()
-    {
-        ResetUI();
-        
-    }
-
-    public void StartRound()
-    {
-        if (playerOneDiceRoller == null || playerTwoDiceRoller == null)
-        {
-            Debug.LogError("DiceRoundController needs both DiceRollers assigned.", this);
-            return;
+            ResetUI();
         }
 
-        if (playerOneDiceRoller.IsRolling || playerTwoDiceRoller.IsRolling)
-            return;
-
-        playerOneResult = null;
-        playerTwoResult = null;
-
-        SetRollButtonInteractable(false);
-
-        playerOneResultText.text = "";
-        playerTwoResultText.text = "";
-        winnerText.text = "";
-
-        playerOneDiceRoller.Roll();
-        playerTwoDiceRoller.Roll();
-    }
-
-    private void HandlePlayerOneRollFinished(DiceResult result)
-    {
-        playerOneResult = result;
-
-        if (playerOneResultText != null)
-            playerOneResultText.text = $"{result.Value}";
-
-        TryResolveRound();
-    }
-
-    private void HandlePlayerTwoRollFinished(DiceResult result)
-    {
-        playerTwoResult = result;
-
-        if (playerTwoResultText != null)
-            playerTwoResultText.text = $"{result.Value}";
-
-        TryResolveRound();
-    }
-
-    private void TryResolveRound()
-    {
-        if (!playerOneResult.HasValue || !playerTwoResult.HasValue)
-            return;
-
-        DiceWinner winner = winnerEvaluator.Evaluate(
-            playerOneResult.Value,
-            playerTwoResult.Value
-        );
-
-        if (winnerText != null)
-            winnerText.text = GetWinnerText(winner);
-
-        SetRollButtonInteractable(true);
-    }
-
-    private void ResetUI()
-    {
-        if (playerOneResultText != null)
-            playerOneResultText.text = "";
-
-        if (playerTwoResultText != null)
-            playerTwoResultText.text = "";
-
-        if (winnerText != null)
-            winnerText.text = "Presiona tirar dados";
-
-        SetRollButtonInteractable(true);
-    }
-
-    private void SetRollButtonInteractable(bool interactable)
-    {
-        if (rollButton != null)
+        void OnDisable()
         {
-            rollButton.interactable = interactable;
-           
+            rollButton.clicked -= StartRound;
+
+            if (playerDiceRoller != null)
+                playerDiceRoller.OnRollFinished -= OnPlayerRollFinished;
+            if (opponentDiceRoller != null)
+                opponentDiceRoller.OnRollFinished -= OnOpponentRollFinished;
         }
-            
-    }
 
-    private string GetWinnerText(DiceWinner winner)
-    {
-        return winner switch
+        void StartRound()
         {
-            DiceWinner.PlayerOne => "Jugador 1 ganó",
-            DiceWinner.PlayerTwo => "Jugador 2 ganó",
-            DiceWinner.Draw => "Empate",
-            _ => "Sin resultado"
-        };
-    }
-    public void Update()
-    {
-      
+            if (playerDiceRoller == null || opponentDiceRoller == null) return;
+            if (playerDiceRoller.IsRolling || opponentDiceRoller.IsRolling) return;
+
+            playerResult = null;
+            opponentResult = null;
+            rollButton.SetEnabled(false);
+            playerResultLabel.text = "";
+            opponentResultLabel.text = "";
+            winnerLabel.text = "";
+
+            playerDiceRoller.Roll();
+            opponentDiceRoller.Roll();
+        }
+
+        void OnPlayerRollFinished(DiceResult result)
+        {
+            playerResult = result;
+            playerResultLabel.text = result.Value.ToString();
+            TryResolve();
+        }
+
+        void OnOpponentRollFinished(DiceResult result)
+        {
+            opponentResult = result;
+            opponentResultLabel.text = result.Value.ToString();
+            TryResolve();
+        }
+
+        void TryResolve()
+        {
+            if (!playerResult.HasValue || !opponentResult.HasValue) return;
+
+            DiceWinner winner = evaluator.Evaluate(playerResult.Value, opponentResult.Value);
+            winnerLabel.text = winner switch
+            {
+                DiceWinner.PlayerOne => "Ganaste!",
+                DiceWinner.PlayerTwo => "Perdiste...",
+                DiceWinner.Draw => "Empate",
+                _ => ""
+            };
+
+            rollButton.SetEnabled(true);
+        }
+
+        void ResetUI()
+        {
+            playerResultLabel.text = "";
+            opponentResultLabel.text = "";
+            winnerLabel.text = "Tira los dados";
+            rollButton.SetEnabled(true);
+        }
     }
 }

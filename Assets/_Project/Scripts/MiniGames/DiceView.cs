@@ -1,68 +1,45 @@
 using UnityEngine;
 
-public class DiceView : MonoBehaviour
+namespace EcosDelAzar.MiniGames
 {
-    [Header("References")]
-    [SerializeField] private SpriteRenderer spriteRenderer;
-
-    [Header("Dice Faces")]
-    [SerializeField] private Sprite[] faceSprites = new Sprite[6];
-
-    [Header("Animation")]
-    [SerializeField] private float rotationSpeed = 720f;
-    [SerializeField] private float maxScaleMultiplier = 1.15f;
-
-    private Vector3 originalScale;
-    private Quaternion originalRotation;
-
-    private void Awake()
+    public class DiceView : MonoBehaviour
     {
-        originalScale = transform.localScale;
-        originalRotation = transform.rotation;
+        [SerializeField] SpriteRenderer spriteRenderer;
+        [SerializeField] Sprite[] faceSprites = new Sprite[6];
+        [SerializeField] float rotationSpeed = 720f;
+        [SerializeField] float maxScaleMultiplier = 1.15f;
 
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+        Vector3 originalScale;
+        Quaternion originalRotation;
 
-    public void SetFace(int value)
-    {
-        if (value < 1 || value > 6)
+        void Awake()
         {
-            Debug.LogError($"Invalid dice value: {value}", this);
-            return;
+            originalScale = transform.localScale;
+            originalRotation = transform.rotation;
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        if (spriteRenderer == null)
+        public void SetFace(int value)
         {
-            Debug.LogError("Missing SpriteRenderer reference.", this);
-            return;
+            if (value < 1 || value > 6) return;
+            if (spriteRenderer == null || faceSprites[value - 1] == null) return;
+            spriteRenderer.sprite = faceSprites[value - 1];
         }
 
-        if (faceSprites == null || faceSprites.Length < 6 || faceSprites[value - 1] == null)
+        public void SetRandomFace() => SetFace(Random.Range(1, 7));
+
+        public void AnimateRolling(float normalizedTime)
         {
-            Debug.LogError($"Missing sprite for dice face {value}.", this);
-            return;
+            transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
+            float scale = Mathf.Lerp(maxScaleMultiplier, 1f, normalizedTime);
+            transform.localScale = originalScale * scale;
         }
 
-        spriteRenderer.sprite = faceSprites[value - 1];
-    }
-
-    public void SetRandomFace()
-    {
-        SetFace(Random.Range(1, 7));
-    }
-
-    public void AnimateRolling(float normalizedTime)
-    {
-        transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
-
-        float scale = Mathf.Lerp(maxScaleMultiplier, 1f, normalizedTime);
-        transform.localScale = originalScale * scale;
-    }
-
-    public void ResetVisuals()
-    {
-        transform.rotation = originalRotation;
-        transform.localScale = originalScale;
+        public void ResetVisuals()
+        {
+            transform.rotation = originalRotation;
+            transform.localScale = originalScale;
+        }
     }
 }

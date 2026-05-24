@@ -1,40 +1,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public static class ElevatorSceneLoader
+namespace EcosDelAzar.Elevator
 {
-    public static bool IsCurrentScene(ElevatorFloorData floor)
+    public static class ElevatorSceneLoader
     {
-        if (floor == null)
+        public static bool IsCurrentScene(ElevatorFloorData floor)
         {
-            return false;
+            if (floor == null) return false;
+            return SceneManager.GetActiveScene().name == floor.SceneName;
         }
 
-        Scene activeScene = SceneManager.GetActiveScene();
-
-        return activeScene.name == floor.SceneName;
-    }
-
-    public static void LoadFloor(ElevatorFloorData floor)
-    {
-        if (floor == null)
+        public static void LoadFloor(ElevatorFloorData floor)
         {
-            Debug.LogWarning("Cannot load floor because floor data is null.");
-            return;
+            if (floor == null || string.IsNullOrWhiteSpace(floor.SceneName)) return;
+            if (IsCurrentScene(floor)) return;
+            SceneManager.LoadScene(floor.SceneName);
         }
-
-        if (string.IsNullOrWhiteSpace(floor.SceneName))
-        {
-            Debug.LogWarning($"Cannot load floor '{floor.DisplayName}' because scene name is empty.");
-            return;
-        }
-
-        if (IsCurrentScene(floor))
-        {
-            Debug.Log($"Already in scene: {floor.SceneName}");
-            return;
-        }
-
-        SceneManager.LoadScene(floor.SceneName);
     }
 }

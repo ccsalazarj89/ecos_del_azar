@@ -1,72 +1,50 @@
 using System.Collections.Generic;
-using EcosDelAzar.Match;
 using UnityEngine;
 
-/// <summary>
-/// Mapea suit+rank al nombre del sprite correspondiente en el spritesheet.
-/// </summary>
-public class CardSpriteMapper : MonoBehaviour
+namespace EcosDelAzar.MiniGames
 {
-    [Header("Spritesheet")]
-    public Sprite[] cardSprites;
-
-    // Rank → sufijo en el sprite
-    private static readonly Dictionary<Rank, string> RankMap = new()
+    public class CardSpriteMapper : MonoBehaviour
     {
-        { Rank.TWO,   "TWO"   },
-        { Rank.THREE, "THREE" },
-        { Rank.FOUR,  "FOUR"  },
-        { Rank.FIVE,  "FIVE"  },
-        { Rank.SIX,   "SIX"   },
-        { Rank.SEVEN, "SEVEN" },
-        { Rank.EIGHT, "EIGHT" },
-        { Rank.NINE,  "NINE"  },
-        { Rank.TEN,   "TEN"   },
-        { Rank.JACK,  "J"     },
-        { Rank.QUEEN, "Q"     },
-        { Rank.KING,  "K"     },
-        { Rank.ACE,   "ACE"   },
-    };
+        [SerializeField] Sprite[] cardSprites;
 
-    // Suit → prefijo en el sprite
-    private static readonly Dictionary<Suit, string> SuitMap = new()
-    {
-        { Suit.HEARTS,   "HEARTS"   },
-        { Suit.DIAMONDS, "DIAMONDS" },
-        { Suit.CLUBS,    "CLUBS"    },
-        { Suit.SPADES,   "SPADES"   },
-    };
-
-    public Sprite GetSprite(Card card)
-    {
-        if (card == null) return null;
-
-        string spriteName;
-
-        if (card.Rank == Rank.JOKER)
+        static readonly Dictionary<Rank, string> RankNames = new()
         {
-            spriteName = (card.Suit == Suit.NONE || card.Suit == Suit.SPADES || card.Suit == Suit.CLUBS)
-                ? "BLACK_JOKER"
-                : "RED_JOKER";
-        }
-        else
+            { Rank.Two, "TWO" }, { Rank.Three, "THREE" }, { Rank.Four, "FOUR" },
+            { Rank.Five, "FIVE" }, { Rank.Six, "SIX" }, { Rank.Seven, "SEVEN" },
+            { Rank.Eight, "EIGHT" }, { Rank.Nine, "NINE" }, { Rank.Ten, "TEN" },
+            { Rank.Jack, "J" }, { Rank.Queen, "Q" }, { Rank.King, "K" }, { Rank.Ace, "ACE" }
+        };
+
+        static readonly Dictionary<Suit, string> SuitNames = new()
         {
-            if (!SuitMap.TryGetValue(card.Suit, out string suit) ||
-                !RankMap.TryGetValue(card.Rank, out string rank))
+            { Suit.Hearts, "HEARTS" }, { Suit.Diamonds, "DIAMONDS" },
+            { Suit.Clubs, "CLUBS" }, { Suit.Spades, "SPADES" }
+        };
+
+        public Sprite GetSprite(Card card)
+        {
+            if (card == null) return null;
+
+            string spriteName;
+
+            if (card.Rank == Rank.Joker)
             {
-                Debug.LogWarning($"[CardSpriteMapper] Combinación no reconocida: {card.Suit}_{card.Rank}");
-                return null;
+                spriteName = (card.Suit == Suit.None || card.Suit == Suit.Spades || card.Suit == Suit.Clubs)
+                    ? "BLACK_JOKER" : "RED_JOKER";
             }
-            spriteName = $"{suit}_{rank}";
-        }
+            else
+            {
+                if (!SuitNames.TryGetValue(card.Suit, out string suit) ||
+                    !RankNames.TryGetValue(card.Rank, out string rank))
+                    return null;
+                spriteName = $"{suit}_{rank}";
+            }
 
-        foreach (var sprite in cardSprites)
-        {
-            if (sprite.name == spriteName)
-                return sprite;
-        }
+            foreach (var sprite in cardSprites)
+                if (sprite.name == spriteName)
+                    return sprite;
 
-        Debug.LogWarning($"[CardSpriteMapper] Sprite no encontrado: '{spriteName}'");
-        return null;
+            return null;
+        }
     }
 }

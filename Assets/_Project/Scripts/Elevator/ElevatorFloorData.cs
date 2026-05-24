@@ -1,33 +1,26 @@
 using UnityEngine;
 
-[CreateAssetMenu(
-    fileName = "SO_ElevatorFloor_NewFloor",
-    menuName = "Ecos del Azar/Elevator/Floor Data"
-)]
-public class ElevatorFloorData : ScriptableObject
+namespace EcosDelAzar.Elevator
 {
-    [Header("Identity")]
-    [SerializeField] private string floorId;
-    [SerializeField] private string floorNumber;
-    [SerializeField] private string displayName;
-    [SerializeField] private string description;
+    [CreateAssetMenu(fileName = "SO_ElevatorFloor", menuName = "Ecos del Azar/Elevator/Floor Data")]
+    public class ElevatorFloorData : ScriptableObject
+    {
+        [SerializeField] string floorId;
+        [SerializeField] string floorNumber;
+        [SerializeField] string displayName;
+        [SerializeField] string description;
+        [SerializeField] string sceneName;
+        [SerializeField] bool unlockedByDefault;
+        [SerializeField] bool canBePurchased = true;
+        [SerializeField] int accessCost = 10;
 
-    [Header("Scene")]
-    [SerializeField] private string sceneName;
-
-    [Header("Progression")]
-    [SerializeField] private bool unlockedByDefault;
-
-    [Header("Access Purchase")]
-    [SerializeField] private bool canBePurchased = true;
-    [SerializeField] private int accessCost = 10;
-
-    public string FloorId => floorId;
-    public string FloorNumber => floorNumber;
-    public string DisplayName => displayName;
-    public string Description => description;
-    public string SceneName => sceneName;
-    public bool UnlockedByDefault => unlockedByDefault;
-    public bool CanBePurchased => canBePurchased;
-    public int AccessCost => accessCost;
+        public string FloorId => floorId;
+        public string FloorNumber => floorNumber;
+        public string DisplayName => displayName;
+        public string Description => description;
+        public string SceneName => sceneName;
+        public bool UnlockedByDefault => unlockedByDefault;
+        public bool CanBePurchased => canBePurchased;
+        public int AccessCost => accessCost;
+    }
 }

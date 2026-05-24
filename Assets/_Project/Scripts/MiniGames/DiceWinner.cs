@@ -1,7 +1,4 @@
-public enum DiceWinner
+namespace EcosDelAzar.MiniGames
 {
-    None,
-    PlayerOne,
-    PlayerTwo,
-    Draw
+    public enum DiceWinner { None, PlayerOne, PlayerTwo, Draw }
 }

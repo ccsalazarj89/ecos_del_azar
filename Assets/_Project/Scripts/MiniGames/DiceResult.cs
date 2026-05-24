@@ -1,9 +1,8 @@
-public readonly struct DiceResult
+namespace EcosDelAzar.MiniGames
 {
-    public int Value { get; }
-
-    public DiceResult(int value)
+    public readonly struct DiceResult
     {
-        Value = value;
+        public int Value { get; }
+        public DiceResult(int value) => Value = value;
     }
 }

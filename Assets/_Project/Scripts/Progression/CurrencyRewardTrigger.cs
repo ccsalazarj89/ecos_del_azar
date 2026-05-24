@@ -1,22 +1,18 @@
 using UnityEngine;
+using EcosDelAzar.Progression;
 
-public class CurrencyRewardTrigger : MonoBehaviour
+namespace EcosDelAzar.Progression
 {
-    [SerializeField] private int amount = 10;
-    [SerializeField] private bool destroyAfterCollect = true;
-
-    private void OnTriggerEnter(Collider other)
+    public class CurrencyRewardTrigger : MonoBehaviour
     {
-        if (!other.CompareTag("Player"))
-        {
-            return;
-        }
+        [SerializeField] int amount = 10;
+        [SerializeField] bool destroyAfterCollect = true;
 
-        ProgressManager.AddCurrency(amount);
-
-        if (destroyAfterCollect)
+        void OnTriggerEnter(Collider other)
         {
-            Destroy(gameObject);
+            if (!other.CompareTag("Player")) return;
+            ProgressManager.AddCurrency(amount);
+            if (destroyAfterCollect) Destroy(gameObject);
         }
     }
 }

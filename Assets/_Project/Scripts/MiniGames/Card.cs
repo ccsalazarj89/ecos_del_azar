@@ -1,36 +1,15 @@
-namespace EcosDelAzar.Match
+namespace EcosDelAzar.MiniGames
 {
-    public enum Suit
-    {
-        HEARTS,
-        DIAMONDS,
-        SPADES,
-        CLUBS,
-        NONE  // Jokers
-    }
+    public enum Suit { Hearts, Diamonds, Spades, Clubs, None }
 
     public enum Rank
     {
-        JOKER = 0,
-        TWO   = 2,
-        THREE = 3,
-        FOUR  = 4,
-        FIVE  = 5,
-        SIX   = 6,
-        SEVEN = 7,
-        EIGHT = 8,
-        NINE  = 9,
-        TEN   = 10,
-        JACK  = 11,
-        QUEEN = 12,
-        KING  = 13,
-        ACE   = 14
+        Joker = 0,
+        Two = 2, Three = 3, Four = 4, Five = 5, Six = 6,
+        Seven = 7, Eight = 8, Nine = 9, Ten = 10,
+        Jack = 11, Queen = 12, King = 13, Ace = 14
     }
 
-    /// <summary>
-    /// Modelo de carta. La comparación se hace solo por Rank (valor numérico),
-    /// el Suit no afecta al resultado — igual que en la API Java.
-    /// </summary>
     public class Card
     {
         public Suit Suit { get; }
@@ -42,9 +21,7 @@ namespace EcosDelAzar.Match
             Rank = rank;
         }
 
-        /// <summary>Compara por valor de rank. Positivo = this gana.</summary>
         public int CompareTo(Card other) => ((int)Rank).CompareTo((int)other.Rank);
-
         public override string ToString() => $"{Rank} of {Suit}";
     }
 }

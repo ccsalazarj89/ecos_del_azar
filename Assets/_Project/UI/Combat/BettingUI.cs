@@ -1,69 +1,59 @@
-using EcosDelAzar.Betting;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using EcosDelAzar.AI;
 
-/// <summary>
-/// Panel de apuestas. Muestra las fichas y los 5 botones de acción.
-/// Asigna las referencias en el Inspector.
-/// </summary>
-public class BettingUI : MonoBehaviour
+namespace EcosDelAzar.UI
 {
-    [Header("Panel")]
-    public GameObject bettingPanel;
-
-    [Header("Fichas")]
-    public TextMeshProUGUI playerChipsText;
-    public TextMeshProUGUI npcChipsText;
-    public TextMeshProUGUI minimumBetText;
-
-    [Header("Botones")]
-    public Button equalButton;
-    public Button doubleButton;
-    public Button allInButton;
-    public Button foldRoundButton;
-    public Button abandonGameButton;
-
-    [Header("Dependencias")]
-    public BettingManager bettingManager;
-
-    void Awake()
+    [RequireComponent(typeof(UIDocument))]
+    public class BettingUI : MonoBehaviour
     {
-        equalButton.onClick.AddListener(()       => OnAction(BetAction.Equal));
-        doubleButton.onClick.AddListener(()      => OnAction(BetAction.Double));
-        allInButton.onClick.AddListener(()       => OnAction(BetAction.AllIn));
-        foldRoundButton.onClick.AddListener(()   => OnAction(BetAction.FoldRound));
-        abandonGameButton.onClick.AddListener(() => OnAction(BetAction.AbandonGame));
+        [SerializeField] BettingManager bettingManager;
 
-        bettingManager.OnBetConfirmed  += (_, __) => HidePanel();
-        bettingManager.OnRoundFolded   += HidePanel;
-        bettingManager.OnGameAbandoned += HidePanel;
-        bettingManager.OnGameOver      += HidePanel;
+        VisualElement root;
+        Label playerChipsLabel;
+        Label npcChipsLabel;
+        Label minBetLabel;
 
-        HidePanel();
-    }
+        void OnEnable()
+        {
+            var doc = GetComponent<UIDocument>().rootVisualElement;
+            root = doc.Q("betting-panel");
+            playerChipsLabel = doc.Q<Label>("player-chips");
+            npcChipsLabel = doc.Q<Label>("npc-chips");
+            minBetLabel = doc.Q<Label>("min-bet");
 
-    /// <summary>Muestra el panel con las fichas actualizadas.</summary>
-    public void ShowPanel()
-    {
-        RefreshChips();
-        bettingPanel.SetActive(true);
-    }
+            doc.Q<Button>("btn-equal").clicked += () => Act(BetAction.Equal);
+            doc.Q<Button>("btn-double").clicked += () => Act(BetAction.Double);
+            doc.Q<Button>("btn-allin").clicked += () => Act(BetAction.AllIn);
+            doc.Q<Button>("btn-fold").clicked += () => Act(BetAction.FoldRound);
+            doc.Q<Button>("btn-abandon").clicked += () => Act(BetAction.AbandonGame);
 
-    public void HidePanel()
-    {
-        bettingPanel.SetActive(false);
-    }
+            bettingManager.OnBetConfirmed += (_, __) => Hide();
+            bettingManager.OnRoundFolded += Hide;
+            bettingManager.OnGameAbandoned += Hide;
+            bettingManager.OnGameOver += Hide;
 
-    private void OnAction(BetAction action)
-    {
-        bettingManager.ProcessPlayerAction(action);
-    }
+            Hide();
+        }
 
-    private void RefreshChips()
-    {
-        playerChipsText.text = $"Tus fichas: {bettingManager.PlayerChips}";
-        npcChipsText.text    = $"NPC fichas: {bettingManager.NpcChips}";
-        minimumBetText.text  = $"Apuesta mínima: {bettingManager.minimumBet}";
+        public void Show()
+        {
+            Refresh();
+            root.style.display = DisplayStyle.Flex;
+        }
+
+        public void Hide()
+        {
+            root.style.display = DisplayStyle.None;
+        }
+
+        void Act(BetAction action) => bettingManager.ProcessPlayerAction(action);
+
+        void Refresh()
+        {
+            playerChipsLabel.text = bettingManager.PlayerChips.ToString();
+            npcChipsLabel.text = bettingManager.NpcChips.ToString();
+            minBetLabel.text = bettingManager.minimumBet.ToString();
+        }
     }
 }

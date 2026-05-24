@@ -1,346 +1,162 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using EcosDelAzar.Elevator;
+using EcosDelAzar.Progression;
 
-[RequireComponent(typeof(UIDocument))]
-public class ElevatorUI : MonoBehaviour
+namespace EcosDelAzar.UI
 {
-    private const string HiddenClass = "elevator-hidden";
-
-    private const string RootName = "Root";
-    private const string FloorsContainerName = "FloorsContainer";
-    private const string CloseButtonName = "CloseButton";
-    private const string CurrencyValueName = "CurrencyValue";
-
-    [Header("Current Floor")]
-    [SerializeField]
-    private CurrentFloorDisplayMode currentFloorDisplayMode =
-        CurrentFloorDisplayMode.ShowDisabled;
-
-    private UIDocument uiDocument;
-    private VisualElement root;
-    private VisualElement floorsContainer;
-    private Button closeButton;
-    private Label currencyValueLabel;
-
-    private ElevatorFloorData[] currentFloors;
-
-    private bool isInitialized;
-
-    private enum FloorButtonState
+    [RequireComponent(typeof(UIDocument))]
+    public class ElevatorUI : MonoBehaviour
     {
-        Current,
-        Travel,
-        Purchase,
-        CannotAfford,
-        Locked
-    }
+        [SerializeField] CurrentFloorDisplayMode currentFloorMode = CurrentFloorDisplayMode.ShowDisabled;
 
-    public enum CurrentFloorDisplayMode
-    {
-        ShowDisabled,
-        Hide
-    }
+        const string HiddenClass = "elevator-hidden";
 
-    private void Awake()
-    {
-        uiDocument = GetComponent<UIDocument>();
-        Initialize();
-        Close();
-    }
+        VisualElement root;
+        VisualElement floorsContainer;
+        Button closeButton;
+        Label currencyLabel;
+        ElevatorFloorData[] currentFloors;
+        bool initialized;
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
+        public enum CurrentFloorDisplayMode { ShowDisabled, Hide }
 
-    private void Initialize()
-    {
-        if (isInitialized)
+        enum FloorState { Current, Travel, Purchase, CannotAfford, Locked }
+
+        void Awake()
         {
-            return;
+            Initialize();
+            Close();
         }
 
-        if (uiDocument == null)
+        void OnEnable() => Initialize();
+
+        void Initialize()
         {
-            uiDocument = GetComponent<UIDocument>();
+            if (initialized) return;
+
+            var doc = GetComponent<UIDocument>();
+            if (doc?.rootVisualElement == null) return;
+
+            root = doc.rootVisualElement.Q("Root");
+            floorsContainer = doc.rootVisualElement.Q("FloorsContainer");
+            closeButton = doc.rootVisualElement.Q<Button>("CloseButton");
+            currencyLabel = doc.rootVisualElement.Q<Label>("CurrencyValue");
+
+            if (root == null || floorsContainer == null || closeButton == null) return;
+
+            closeButton.clicked += Close;
+            initialized = true;
         }
 
-        if (uiDocument == null || uiDocument.rootVisualElement == null)
+        void OnDestroy()
         {
-            Debug.LogWarning("UIDocument or rootVisualElement is missing.");
-            return;
+            if (closeButton != null) closeButton.clicked -= Close;
         }
 
-        root = uiDocument.rootVisualElement.Q<VisualElement>(RootName);
-        floorsContainer = uiDocument.rootVisualElement.Q<VisualElement>(FloorsContainerName);
-        closeButton = uiDocument.rootVisualElement.Q<Button>(CloseButtonName);
-        currencyValueLabel = uiDocument.rootVisualElement.Q<Label>(CurrencyValueName);
-
-        if (root == null)
+        public void Open(ElevatorFloorData[] floors)
         {
-            Debug.LogWarning($"Could not find VisualElement with name '{RootName}'.");
-            return;
+            Initialize();
+            if (!initialized || floors == null) return;
+
+            currentFloors = floors;
+            root.RemoveFromClassList(HiddenClass);
+            Refresh();
         }
 
-        if (floorsContainer == null)
+        public void Close()
         {
-            Debug.LogWarning($"Could not find VisualElement with name '{FloorsContainerName}'.");
-            return;
+            if (root == null) return;
+            if (!root.ClassListContains(HiddenClass))
+                root.AddToClassList(HiddenClass);
         }
 
-        if (closeButton == null)
+        void Refresh()
         {
-            Debug.LogWarning($"Could not find Button with name '{CloseButtonName}'.");
-            return;
-        }
+            if (currencyLabel != null)
+                currencyLabel.text = ProgressManager.Currency.ToString();
 
-        closeButton.clicked += Close;
+            floorsContainer.Clear();
 
-        isInitialized = true;
-    }
-
-    private void OnDestroy()
-    {
-        if (closeButton != null)
-        {
-            closeButton.clicked -= Close;
-        }
-    }
-
-    public void Open(ElevatorFloorData[] floors)
-    {
-        Initialize();
-
-        if (!isInitialized)
-        {
-            return;
-        }
-
-        if (floors == null)
-        {
-            Debug.LogWarning("Elevator floors are null.");
-            return;
-        }
-
-        currentFloors = floors;
-
-        root.RemoveFromClassList(HiddenClass);
-
-        Refresh();
-    }
-
-    public void Close()
-    {
-        if (root == null)
-        {
-            return;
-        }
-
-        if (!root.ClassListContains(HiddenClass))
-        {
-            root.AddToClassList(HiddenClass);
-        }
-    }
-
-    private void Refresh()
-    {
-        UpdateCurrencyLabel();
-        ClearFloorButtons();
-
-        foreach (ElevatorFloorData floor in currentFloors)
-        {
-            if (floor == null)
+            foreach (var floor in currentFloors)
             {
-                continue;
+                if (floor == null) continue;
+
+                bool isCurrent = ElevatorSceneLoader.IsCurrentScene(floor);
+                if (isCurrent && currentFloorMode == CurrentFloorDisplayMode.Hide) continue;
+
+                floorsContainer.Add(CreateFloorButton(floor));
             }
-
-            bool isCurrentScene = ElevatorSceneLoader.IsCurrentScene(floor);
-
-            if (isCurrentScene && currentFloorDisplayMode == CurrentFloorDisplayMode.Hide)
-            {
-                continue;
-            }
-
-            VisualElement floorButton = CreateFloorButton(floor);
-            floorsContainer.Add(floorButton);
-        }
-    }
-
-    private void UpdateCurrencyLabel()
-    {
-        if (currencyValueLabel == null)
-        {
-            return;
         }
 
-        currencyValueLabel.text = ProgressManager.Currency.ToString();
-    }
-
-    private void ClearFloorButtons()
-    {
-        floorsContainer.Clear();
-    }
-
-    private VisualElement CreateFloorButton(ElevatorFloorData floor)
-    {
-        FloorButtonState state = GetFloorButtonState(floor);
-
-        Button button = new Button
+        VisualElement CreateFloorButton(ElevatorFloorData floor)
         {
-            name = $"FloorButton_{floor.FloorId}"
-        };
+            var state = GetState(floor);
+            var button = new Button { name = $"FloorButton_{floor.FloorId}" };
+            button.AddToClassList("floor-button");
+            button.AddToClassList(StateClass(state));
 
-        button.AddToClassList("floor-button");
-        button.AddToClassList(GetStateClassName(state));
+            SetupInteraction(button, floor, state);
 
-        SetupButtonInteraction(button, floor, state);
+            var numberBox = new VisualElement();
+            numberBox.AddToClassList("floor-button__number-box");
+            numberBox.Add(new Label(floor.FloorNumber) { name = "number" });
 
-        VisualElement numberBox = CreateNumberBox(floor);
-        VisualElement content = CreateContent(floor);
-        VisualElement actionBox = CreateActionBox(floor, state);
+            var content = new VisualElement();
+            content.AddToClassList("floor-button__content");
+            content.Add(new Label(floor.DisplayName));
+            content.Add(new Label(floor.Description));
 
-        button.Add(numberBox);
-        button.Add(content);
-        button.Add(actionBox);
+            var action = new Label(ActionText(floor, state));
+            action.AddToClassList("floor-button__action-text");
 
-        return button;
-    }
+            button.Add(numberBox);
+            button.Add(content);
+            button.Add(action);
 
-    private FloorButtonState GetFloorButtonState(ElevatorFloorData floor)
-    {
-        if (ElevatorSceneLoader.IsCurrentScene(floor))
-        {
-            return FloorButtonState.Current;
+            return button;
         }
 
-        if (ProgressManager.IsFloorUnlocked(floor))
+        FloorState GetState(ElevatorFloorData floor)
         {
-            return FloorButtonState.Travel;
+            if (ElevatorSceneLoader.IsCurrentScene(floor)) return FloorState.Current;
+            if (ProgressManager.IsFloorUnlocked(floor)) return FloorState.Travel;
+            if (!floor.CanBePurchased) return FloorState.Locked;
+            if (!ProgressManager.CanAfford(floor.AccessCost)) return FloorState.CannotAfford;
+            return FloorState.Purchase;
         }
 
-        if (!floor.CanBePurchased)
+        string StateClass(FloorState state) => state switch
         {
-            return FloorButtonState.Locked;
-        }
-
-        if (!ProgressManager.CanAfford(floor.AccessCost))
-        {
-            return FloorButtonState.CannotAfford;
-        }
-
-        return FloorButtonState.Purchase;
-    }
-
-    private string GetStateClassName(FloorButtonState state)
-    {
-        return state switch
-        {
-            FloorButtonState.Current => "floor-button--current",
-            FloorButtonState.Travel => "floor-button--travel",
-            FloorButtonState.Purchase => "floor-button--purchase",
-            FloorButtonState.CannotAfford => "floor-button--cannot-afford",
-            FloorButtonState.Locked => "floor-button--locked",
+            FloorState.Current => "floor-button--current",
+            FloorState.Travel => "floor-button--travel",
+            FloorState.Purchase => "floor-button--purchase",
+            FloorState.CannotAfford => "floor-button--cannot-afford",
             _ => "floor-button--locked"
         };
-    }
 
-    private void SetupButtonInteraction(
-        Button button,
-        ElevatorFloorData floor,
-        FloorButtonState state
-    )
-    {
-        switch (state)
+        void SetupInteraction(Button button, ElevatorFloorData floor, FloorState state)
         {
-            case FloorButtonState.Travel:
-                button.clicked += () =>
-                {
-                    ElevatorSceneLoader.LoadFloor(floor);
-                };
-                break;
-
-            case FloorButtonState.Purchase:
-                button.clicked += () =>
-                {
-                    bool purchased = ProgressManager.TryPurchaseFloorAccess(floor);
-
-                    if (!purchased)
-                    {
-                        Refresh();
-                        return;
-                    }
-
-                    Refresh();
-                };
-                break;
-
-            case FloorButtonState.Current:
-            case FloorButtonState.CannotAfford:
-            case FloorButtonState.Locked:
-            default:
-                button.SetEnabled(false);
-                break;
+            switch (state)
+            {
+                case FloorState.Travel:
+                    button.clicked += () => ElevatorSceneLoader.LoadFloor(floor);
+                    break;
+                case FloorState.Purchase:
+                    button.clicked += () => { ProgressManager.TryPurchaseFloorAccess(floor); Refresh(); };
+                    break;
+                default:
+                    button.SetEnabled(false);
+                    break;
+            }
         }
-    }
 
-    private VisualElement CreateNumberBox(ElevatorFloorData floor)
-    {
-        VisualElement numberBox = new VisualElement();
-        numberBox.AddToClassList("floor-button__number-box");
-
-        Label numberLabel = new Label(floor.FloorNumber);
-        numberLabel.AddToClassList("floor-button__number");
-
-        numberBox.Add(numberLabel);
-
-        return numberBox;
-    }
-
-    private VisualElement CreateContent(ElevatorFloorData floor)
-    {
-        VisualElement content = new VisualElement();
-        content.AddToClassList("floor-button__content");
-
-        Label nameLabel = new Label(floor.DisplayName);
-        nameLabel.AddToClassList("floor-button__name");
-
-        Label descriptionLabel = new Label(floor.Description);
-        descriptionLabel.AddToClassList("floor-button__description");
-
-        content.Add(nameLabel);
-        content.Add(descriptionLabel);
-
-        return content;
-    }
-
-    private VisualElement CreateActionBox(
-        ElevatorFloorData floor,
-        FloorButtonState state
-    )
-    {
-        VisualElement actionBox = new VisualElement();
-        actionBox.AddToClassList("floor-button__action");
-
-        Label actionLabel = new Label(GetActionText(floor, state));
-        actionLabel.AddToClassList("floor-button__action-text");
-
-        actionBox.Add(actionLabel);
-
-        return actionBox;
-    }
-
-    private string GetActionText(
-        ElevatorFloorData floor,
-        FloorButtonState state
-    )
-    {
-        return state switch
+        string ActionText(ElevatorFloorData floor, FloorState state) => state switch
         {
-            FloorButtonState.Current => "ACTUAL",
-            FloorButtonState.Travel => "IR",
-            FloorButtonState.Purchase => $"COMPRAR {floor.AccessCost}",
-            FloorButtonState.CannotAfford => $"FALTAN {floor.AccessCost - ProgressManager.Currency}",
-            FloorButtonState.Locked => "BLOQUEADO",
+            FloorState.Current => "ACTUAL",
+            FloorState.Travel => "IR",
+            FloorState.Purchase => $"COMPRAR {floor.AccessCost}",
+            FloorState.CannotAfford => $"FALTAN {floor.AccessCost - ProgressManager.Currency}",
             _ => "BLOQUEADO"
         };
     }

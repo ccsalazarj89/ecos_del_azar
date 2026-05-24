@@ -1,43 +1,66 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+namespace EcosDelAzar.Player
 {
-    [Header("Configuración")]
-    public float speed = 5f;
-
-    private Rigidbody _rb;
-    private IA_PlayerControls _inputActions;
-    private Vector2 _moveInput;
-
-    void Awake()
+    [RequireComponent(typeof(Rigidbody))]
+    public class PlayerMovement : MonoBehaviour
     {
-        _rb = GetComponent<Rigidbody>();
-        _inputActions = new IA_PlayerControls();
-    }
+        [SerializeField] float speed = 5f;
 
-    void OnEnable()
-    {
-        _inputActions.Player.Move.Enable();
-        _inputActions.Player.Move.performed += OnMove;
-        _inputActions.Player.Move.canceled += OnMove;
-    }
+        Rigidbody rb;
+        IA_PlayerControls inputActions;
+        Vector2 moveInput;
+        Transform cameraTransform;
 
-    void OnDisable()
-    {
-        _inputActions.Player.Move.performed -= OnMove;
-        _inputActions.Player.Move.canceled -= OnMove;
-        _inputActions.Player.Move.Disable();
-    }
+        void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+            rb.freezeRotation = true;
+            inputActions = new IA_PlayerControls();
+        }
 
-    void OnMove(InputAction.CallbackContext ctx)
-    {
-        _moveInput = ctx.ReadValue<Vector2>();
-    }
+        void Start()
+        {
+            cameraTransform = UnityEngine.Camera.main.transform;
+        }
 
-    void FixedUpdate()
-    {
-        Vector3 direction = new Vector3(_moveInput.x, 0f, _moveInput.y).normalized;
-        _rb.MovePosition(_rb.position + direction * speed * Time.fixedDeltaTime);
+        void OnEnable()
+        {
+            inputActions.Player.Enable();
+            inputActions.Player.Move.performed += OnMove;
+            inputActions.Player.Move.canceled += OnMove;
+        }
+
+        void OnDisable()
+        {
+            inputActions.Player.Move.performed -= OnMove;
+            inputActions.Player.Move.canceled -= OnMove;
+            inputActions.Player.Disable();
+        }
+
+        void OnDestroy() => inputActions?.Dispose();
+
+        void FixedUpdate()
+        {
+            if (moveInput == Vector2.zero)
+            {
+                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+                return;
+            }
+
+            // Get camera-relative directions projected on ground plane
+            Vector3 camForward = cameraTransform.forward;
+            Vector3 camRight = cameraTransform.right;
+            camForward.y = 0f;
+            camRight.y = 0f;
+            camForward.Normalize();
+            camRight.Normalize();
+
+            Vector3 direction = (camForward * moveInput.y + camRight * moveInput.x).normalized;
+            rb.linearVelocity = new Vector3(direction.x * speed, rb.linearVelocity.y, direction.z * speed);
+        }
+
+        void OnMove(InputAction.CallbackContext ctx) => moveInput = ctx.ReadValue<Vector2>();
     }
 }

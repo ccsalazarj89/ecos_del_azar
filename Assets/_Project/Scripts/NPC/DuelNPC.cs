@@ -1,75 +1,56 @@
-using EcosDelAzar.Betting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using EcosDelAzar.AI;
+using EcosDelAzar.MiniGames;
 
-/// <summary>
-/// Coloca este script en el GameObject del NPC.
-/// Requiere un Collider con isTrigger = true para detectar al jugador.
-/// </summary>
-public class DuelNPC : MonoBehaviour
+namespace EcosDelAzar.NPC
 {
-    [Header("Configuración")]
-    public string npcId = "b2c3d4e5-f6a7-8901-bcde-f12345678901"; // UUID del NPC como jugador
-    public string interactKey = "e";
-    public string promptMessage = "Pulsa E para duelo";
-
-    private bool _playerInRange = false;
-    private DuelManager    _duelManager;
-    private BettingUI      _bettingUI;
-    private BettingManager _bettingManager;
-
-    void Awake()
+    public class DuelNPC : MonoBehaviour
     {
-        _duelManager    = FindFirstObjectByType<DuelManager>();
-        _bettingUI      = FindFirstObjectByType<BettingUI>();
-        _bettingManager = FindFirstObjectByType<BettingManager>();
+        [SerializeField] string npcId = "npc_001";
+        [SerializeField] InputActionReference interactAction;
 
-        if (_duelManager == null)
-            Debug.LogError("[DuelNPC] No se encontró DuelManager en la escena.");
-        if (_bettingUI == null)
-            Debug.LogError("[DuelNPC] No se encontró BettingUI en la escena.");
-        if (_bettingManager == null)
-            Debug.LogError("[DuelNPC] No se encontró BettingManager en la escena.");
-    }
+        bool playerInRange;
+        DuelManager duelManager;
+        BettingManager bettingManager;
 
-    void Update()
-    {
-        if (_duelManager == null) return;
-        if (_playerInRange && Keyboard.current[Key.E].wasPressedThisFrame && !_duelManager.DuelInProgress)
+        void Awake()
         {
-            if (_bettingManager != null && _bettingManager.PlayerChips < _bettingManager.minimumBet)
-            {
-                Debug.Log("[DuelNPC] El jugador no tiene fichas suficientes para apostar.");
-                return;
-            }
-
-            _duelManager.StartDuel(npcId);
-            _bettingUI?.ShowPanel();
+            duelManager = FindFirstObjectByType<DuelManager>();
+            bettingManager = FindFirstObjectByType<BettingManager>();
         }
-    }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-            _playerInRange = true;
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-            _playerInRange = false;
-    }
-
-    void OnGUI()
-    {
-        if (_duelManager == null) return;
-        if (_playerInRange && !_duelManager.DuelInProgress)
+        void OnEnable()
         {
-            bool sinFichas = _bettingManager != null &&
-                             _bettingManager.PlayerChips < _bettingManager.minimumBet;
+            if (interactAction?.action == null) return;
+            interactAction.action.performed += OnInteract;
+            interactAction.action.Enable();
+        }
 
-            string mensaje = sinFichas ? "No hay fichas suficientes" : promptMessage;
-            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 80, 200, 30), mensaje);
+        void OnDisable()
+        {
+            if (interactAction?.action == null) return;
+            interactAction.action.performed -= OnInteract;
+            interactAction.action.Disable();
+        }
+
+        void OnInteract(InputAction.CallbackContext ctx)
+        {
+            if (!playerInRange) return;
+            if (duelManager == null || duelManager.DuelInProgress) return;
+            if (bettingManager != null && bettingManager.PlayerChips < bettingManager.minimumBet) return;
+
+            duelManager.StartDuel(npcId);
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player")) playerInRange = true;
+        }
+
+        void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Player")) playerInRange = false;
         }
     }
 }

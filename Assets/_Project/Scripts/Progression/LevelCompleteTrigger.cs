@@ -1,22 +1,18 @@
 using UnityEngine;
+using EcosDelAzar.Elevator;
+using EcosDelAzar.Progression;
 
-public class LevelCompleteTrigger : MonoBehaviour
+namespace EcosDelAzar.Progression
 {
-    [SerializeField] private ElevatorFloorData floorToUnlock;
-
-    private void OnTriggerEnter(Collider other)
+    public class LevelCompleteTrigger : MonoBehaviour
     {
-        if (!other.CompareTag("Player"))
-        {
-            return;
-        }
+        [SerializeField] ElevatorFloorData floorToUnlock;
 
-        if (floorToUnlock == null)
+        void OnTriggerEnter(Collider other)
         {
-            Debug.LogWarning("No floor assigned to unlock.");
-            return;
+            if (!other.CompareTag("Player")) return;
+            if (floorToUnlock == null) return;
+            ProgressManager.UnlockFloor(floorToUnlock);
         }
-
-        ProgressManager.UnlockFloor(floorToUnlock);
     }
 }

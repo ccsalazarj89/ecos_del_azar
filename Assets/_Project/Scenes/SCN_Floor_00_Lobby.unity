@@ -340,9 +340,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 142894272}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!135 &142894274
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -465,9 +467,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 253027297}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!135 &253027299
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -590,9 +594,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 260431724}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!135 &260431726
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -715,9 +721,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 302139532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!135 &302139534
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -840,9 +848,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 408181402}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!135 &408181404
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1092,9 +1102,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 861773620}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!135 &861773622
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1260,15 +1272,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1667408426834063373, guid: 5d1b42534d899074f8ab80d458c1e29c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.56406
+      value: -10.3
       objectReference: {fileID: 0}
     - target: {fileID: 1667408426834063373, guid: 5d1b42534d899074f8ab80d458c1e29c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 15.7
       objectReference: {fileID: 0}
     - target: {fileID: 1667408426834063373, guid: 5d1b42534d899074f8ab80d458c1e29c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.52255
+      value: -12.6
       objectReference: {fileID: 0}
     - target: {fileID: 1667408426834063373, guid: 5d1b42534d899074f8ab80d458c1e29c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1494,9 +1506,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1747726109}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 95e153af7d39e0149b4df291e775ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
+  amount: 10
+  destroyAfterCollect: 1
 --- !u!1 &2010051216
 GameObject:
   m_ObjectHideFlags: 0
