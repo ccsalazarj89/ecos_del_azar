@@ -12,9 +12,7 @@ public class BettingUI : MonoBehaviour
     [Header("Panel")]
     public GameObject bettingPanel;
 
-    [Header("Fichas")]
-    public TextMeshProUGUI playerChipsText;
-    public TextMeshProUGUI npcChipsText;
+    [Header("Apuesta mínima (solo visible en duelo)")]
     public TextMeshProUGUI minimumBetText;
 
     [Header("Botones")]
@@ -43,9 +41,10 @@ public class BettingUI : MonoBehaviour
         HidePanel();
     }
 
-    /// <summary>Muestra el panel con las fichas actualizadas.</summary>
+    /// <summary>Muestra el panel. El NPC pre-compromete su apuesta para que el jugador la vea.</summary>
     public void ShowPanel()
     {
+        bettingManager.PrepareDuel();
         RefreshChips();
         bettingPanel.SetActive(true);
     }
@@ -62,8 +61,7 @@ public class BettingUI : MonoBehaviour
 
     private void RefreshChips()
     {
-        playerChipsText.text = $"Tus fichas: {bettingManager.PlayerChips}";
-        npcChipsText.text    = $"NPC fichas: {bettingManager.NpcChips}";
-        minimumBetText.text  = $"Apuesta mínima: {bettingManager.minimumBet}";
+        if (minimumBetText != null)
+            minimumBetText.text = $"Apuesta mínima: {bettingManager.minimumBet}";
     }
 }

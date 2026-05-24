@@ -2,6 +2,10 @@
 # Unity .gitignore
 # ================================
 
+# Carpetas de recovery automático de Unity
+Assets/_Recovery/
+Assets/_Recovery.meta
+
 # Carpetas generadas por Unity
 [Ll]ibrary/
 [Tt]emp/

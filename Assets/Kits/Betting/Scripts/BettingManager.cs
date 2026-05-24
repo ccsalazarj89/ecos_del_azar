@@ -26,17 +26,35 @@ namespace EcosDelAzar.Betting
 
         // ── Eventos ───────────────────────────────────────────
         public event Action<int, int> OnBetConfirmed;   // playerBet, npcBet
+        public event Action<int>      OnDuelPrepared;   // npcOpeningBet — se muestra antes de que el jugador actúe
         public event Action           OnRoundFolded;
         public event Action           OnGameAbandoned;
-        public event Action           OnGameOver;
+        public event Action           OnGameOver;       // jugador sin fichas
+        public event Action           OnNpcBankrupt;    // NPC sin fichas → jugador gana
+        public event Action           OnChipsChanged;   // fichas cambiaron (HUD persistente)
 
-        private int _lastBet;
+        private int  _lastBet;
+        private bool _duelPrepared; // true si PrepareDuel ya fijó NpcBet
 
         void Awake()
         {
             PlayerChips = startingChips;
             NpcChips    = startingChips;
             _lastBet    = minimumBet;
+        }
+
+        // ── Preparación del duelo ─────────────────────────────
+
+        /// <summary>
+        /// Llamar cuando se abre el panel de apuestas.
+        /// El NPC decide su apuesta de apertura para que el jugador la vea antes de actuar.
+        /// </summary>
+        public void PrepareDuel()
+        {
+            NpcBet        = NpcBettingAI.DecideBet(NpcChips, _lastBet, minimumBet);
+            _duelPrepared = true;
+            Debug.Log($"[BettingManager] NPC abre con {NpcBet} fichas.");
+            OnDuelPrepared?.Invoke(NpcBet);
         }
 
         // ── Acciones del jugador ──────────────────────────────
@@ -46,11 +64,11 @@ namespace EcosDelAzar.Betting
             switch (action)
             {
                 case BetAction.Equal:
-                    ConfirmBet(minimumBet);
+                    ConfirmBet(Mathf.Min(NpcBet, PlayerChips));
                     break;
 
                 case BetAction.Double:
-                    ConfirmBet(Mathf.Min(_lastBet * 2, PlayerChips));
+                    ConfirmBet(Mathf.Min(NpcBet * 2, PlayerChips));
                     break;
 
                 case BetAction.AllIn:
@@ -79,12 +97,14 @@ namespace EcosDelAzar.Betting
                     PlayerChips += EffectiveBet;
                     NpcChips    -= EffectiveBet;
                     Debug.Log($"[BettingManager] Jugador gana {EffectiveBet} fichas → {PlayerChips}");
+                    OnChipsChanged?.Invoke();
                     break;
 
                 case RoundOutcome.Lose:
                     PlayerChips -= EffectiveBet;
                     NpcChips    += EffectiveBet;
                     Debug.Log($"[BettingManager] NPC gana {EffectiveBet} fichas → jugador: {PlayerChips}");
+                    OnChipsChanged?.Invoke();
                     break;
 
                 case RoundOutcome.Draw:
@@ -100,9 +120,15 @@ namespace EcosDelAzar.Betting
 
         private void ConfirmBet(int playerBet)
         {
-            CurrentBet   = playerBet;
-            NpcBet       = NpcBettingAI.DecideBet(NpcChips, playerBet, minimumBet);
-            EffectiveBet = Mathf.Min(CurrentBet, NpcBet);
+            CurrentBet = playerBet;
+
+            // Si PrepareDuel ya fijó la apuesta del NPC, se respeta.
+            // Si no (caso sin panel de apuestas), el NPC decide ahora.
+            if (!_duelPrepared)
+                NpcBet = NpcBettingAI.DecideBet(NpcChips, playerBet, minimumBet);
+
+            _duelPrepared = false;
+            EffectiveBet  = Mathf.Min(CurrentBet, NpcBet);
 
             Debug.Log($"[BettingManager] Jugador apuesta {CurrentBet} | NPC apuesta {NpcBet} | Efectiva: {EffectiveBet}");
             OnBetConfirmed?.Invoke(CurrentBet, NpcBet);
@@ -116,16 +142,14 @@ namespace EcosDelAzar.Betting
             _lastBet     = minimumBet;
 
             Debug.Log($"[BettingManager] Jugador se retira — pierde {penalty} fichas → {PlayerChips}");
+            OnChipsChanged?.Invoke();
             OnRoundFolded?.Invoke();
             CheckGameOver();
         }
 
         private void AbandonGame()
         {
-            int penalty = Mathf.RoundToInt(PlayerChips * 0.1f);
-            PlayerChips -= penalty;
-
-            Debug.Log($"[BettingManager] Jugador abandona — penalización {penalty} fichas → {PlayerChips}");
+            Debug.Log("[BettingManager] Jugador abandona la partida.");
             OnGameAbandoned?.Invoke();
         }
 
@@ -135,6 +159,11 @@ namespace EcosDelAzar.Betting
             {
                 Debug.Log("[BettingManager] Game Over — el jugador se quedó sin fichas");
                 OnGameOver?.Invoke();
+            }
+            else if (NpcChips <= 0)
+            {
+                Debug.Log("[BettingManager] ¡El jugador gana! El NPC se quedó sin fichas");
+                OnNpcBankrupt?.Invoke();
             }
         }
     }

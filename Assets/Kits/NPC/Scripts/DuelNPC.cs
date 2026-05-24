@@ -3,73 +3,95 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Coloca este script en el GameObject del NPC.
+/// Coloca este script en el GameObject del NPC o mesa interactuable.
 /// Requiere un Collider con isTrigger = true para detectar al jugador.
+/// Al pulsar E carga la escena del minijuego indicada.
 /// </summary>
 public class DuelNPC : MonoBehaviour
 {
     [Header("Configuración")]
-    public string npcId = "b2c3d4e5-f6a7-8901-bcde-f12345678901"; // UUID del NPC como jugador
-    public string interactKey = "e";
-    public string promptMessage = "Pulsa E para duelo";
+    public string     promptMessage = "Pulsa E para jugar";
+    public string     targetScene   = "HighCardScene"; // escena del minijuego a cargar
 
-    private bool _playerInRange = false;
-    private DuelManager    _duelManager;
-    private BettingUI      _bettingUI;
-    private BettingManager _bettingManager;
+    [Header("UI (opcional)")]
+    public GameObject promptCanvas; // canvas/panel que se muestra al entrar en rango
+
+    private bool               _playerInRange = false;
+    private BettingManager     _bettingManager;
+    private PlayerInputActions _inputActions;
 
     void Awake()
     {
-        _duelManager    = FindFirstObjectByType<DuelManager>();
-        _bettingUI      = FindFirstObjectByType<BettingUI>();
         _bettingManager = FindFirstObjectByType<BettingManager>();
+        _inputActions   = new PlayerInputActions();
 
-        if (_duelManager == null)
-            Debug.LogError("[DuelNPC] No se encontró DuelManager en la escena.");
-        if (_bettingUI == null)
-            Debug.LogError("[DuelNPC] No se encontró BettingUI en la escena.");
         if (_bettingManager == null)
             Debug.LogError("[DuelNPC] No se encontró BettingManager en la escena.");
     }
 
-    void Update()
+    void OnEnable()
     {
-        if (_duelManager == null) return;
-        if (_playerInRange && Keyboard.current[Key.E].wasPressedThisFrame && !_duelManager.DuelInProgress)
+        if (_inputActions == null) _inputActions = new PlayerInputActions();
+        _inputActions.Player.Interact.performed += OnInteract;
+        _inputActions.Player.Interact.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (_inputActions == null) return;
+        _inputActions.Player.Interact.performed -= OnInteract;
+        _inputActions.Player.Interact.Disable();
+    }
+
+    private void OnInteract(InputAction.CallbackContext ctx)
+    {
+        if (!_playerInRange) return;
+
+        if (_bettingManager != null)
         {
-            if (_bettingManager != null && _bettingManager.PlayerChips < _bettingManager.minimumBet)
+            if (_bettingManager.PlayerChips < _bettingManager.minimumBet)
             {
-                Debug.Log("[DuelNPC] El jugador no tiene fichas suficientes para apostar.");
+                Debug.Log("[DuelNPC] El jugador no tiene fichas suficientes.");
                 return;
             }
-
-            _duelManager.StartDuel(npcId);
-            _bettingUI?.ShowPanel();
+            if (_bettingManager.NpcChips < _bettingManager.minimumBet)
+            {
+                Debug.Log("[DuelNPC] El NPC no tiene fichas suficientes.");
+                return;
+            }
         }
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(targetScene);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-            _playerInRange = true;
+        if (!other.CompareTag("Player")) return;
+        _playerInRange = true;
+        if (promptCanvas != null) promptCanvas.SetActive(true);
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-            _playerInRange = false;
+        if (!other.CompareTag("Player")) return;
+        _playerInRange = false;
+        if (promptCanvas != null) promptCanvas.SetActive(false);
     }
 
     void OnGUI()
     {
-        if (_duelManager == null) return;
-        if (_playerInRange && !_duelManager.DuelInProgress)
-        {
-            bool sinFichas = _bettingManager != null &&
-                             _bettingManager.PlayerChips < _bettingManager.minimumBet;
+        if (!_playerInRange) return;
 
-            string mensaje = sinFichas ? "No hay fichas suficientes" : promptMessage;
-            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 80, 200, 30), mensaje);
+        string mensaje = promptMessage;
+
+        if (_bettingManager != null)
+        {
+            if (_bettingManager.PlayerChips < _bettingManager.minimumBet)
+                mensaje = "No tienes fichas suficientes";
+            else if (_bettingManager.NpcChips < _bettingManager.minimumBet)
+                mensaje = "El NPC no tiene fichas";
         }
+
+        GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 80, 200, 30), mensaje);
     }
 }

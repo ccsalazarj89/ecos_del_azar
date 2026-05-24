@@ -1,7 +1,7 @@
+using System;
 using EcosDelAzar.Match;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 /// <summary>
@@ -25,16 +25,13 @@ public class DuelUI : MonoBehaviour
     [Header("Dependencias")]
     public CardSpriteMapper spriteMapper;
 
+    /// <summary>Se dispara cuando el jugador pulsa Continuar tras ver el resultado.</summary>
+    public event Action OnContinue;
+
     void Awake()
     {
         HideOverlay();
-        continueButton.onClick.AddListener(HideOverlay);
-    }
-
-    void Update()
-    {
-        if (duelOverlay.activeSelf && Keyboard.current.escapeKey.wasPressedThisFrame)
-            HideOverlay();
+        continueButton.onClick.AddListener(OnContinueClicked);
     }
 
     /// <summary>Muestra el overlay con las cartas y el resultado.</summary>
@@ -84,5 +81,11 @@ public class DuelUI : MonoBehaviour
     public void HideOverlay()
     {
         duelOverlay.SetActive(false);
+    }
+
+    private void OnContinueClicked()
+    {
+        HideOverlay();
+        OnContinue?.Invoke();
     }
 }
