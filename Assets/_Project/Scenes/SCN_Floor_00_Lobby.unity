@@ -343,8 +343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!135 &142894274
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -470,8 +468,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!135 &253027299
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -597,8 +593,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!135 &260431726
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -724,8 +718,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!135 &302139534
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -851,8 +843,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!135 &408181404
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1105,8 +1095,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!135 &861773622
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1331,6 +1319,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3123603491796564546, guid: 8e67df63d2276e54592ff8df85b6984c, type: 3}
+      propertyPath: interactAction
+      value: 
+      objectReference: {fileID: 8038336070660516234, guid: d2b0bd47aafe82049b853d85d945ac0d, type: 3}
     - target: {fileID: 3460805961794689433, guid: 8e67df63d2276e54592ff8df85b6984c, type: 3}
       propertyPath: m_Name
       value: Elevator
@@ -1505,8 +1497,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2322a018e987d4a4190b8eb2515ef1c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyRewardTrigger
-  amount: 10
-  destroyAfterCollect: 1
 --- !u!1 &2010051216
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,12 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2a797e0a98fcea48a90191420ada72d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ac81d523ff100140a8a3d637b24e69b, type: 3}
   m_Name: SO_ElevatorFloor_Level2
   m_EditorClassIdentifier: Assembly-CSharp::ElevatorFloorData
   floorId: 02
   floorNumber: 2
-  displayName: Segunda planta
-  description: Aqui encontraras unos mas retadores
-  sceneName: SCN_Floor_02_Level2
-  unlockedByDefault: 0
+  displayName: Nivel 2
+  description: Intenta llegar hasta aqui
+  sceneName: SCN_Floor_01_Level2
+  unlockedByDefault: 1
+  canBePurchased: 1
+  accessCost: 200

@@ -6,26 +6,23 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_ProjectMain/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_Project/Scenes/SCN_Floor_00_Lobby.unity
+    guid: fa6af12251c76104ba5ca6cc41a6d6d8
   - enabled: 1
-    path: Assets/_ProjectMain/Scenes/SCN_Floor_00_Lobby.unity
-    guid: 24f940063a6ad8d4d9675d6cccecd4e7
+    path: Assets/_Project/Scenes/SampleScene.unity
+    guid: 2f4203548ac4ff64790858412f12bae5
   - enabled: 1
-    path: Assets/_ProjectMain/Scenes/SCN_Floor_01_Level1.unity
-    guid: eb79b0266ba640b42900db046e74bf20
+    path: Assets/_Project/Scenes/SCN_Floor_01_Level1.unity
+    guid: a14b8505f4b8a5e41adf77a80d8fa1e8
   - enabled: 1
-    path: Assets/_ProjectMain/Scenes/SCN_Floor_02_Level2.unity
-    guid: f7e2f9fb79bd96f45a32e0b7a14788ef
+    path: Assets/_Project/Scenes/SCN_Floor_02_Level2.unity
+    guid: 12af83ef2f2648f4f87d8eee79e400ae
   - enabled: 1
-    path: Assets/Scenes/Level3.unity
-    guid: 87bd45da773c0164598ccfa39353b8c6
+    path: Assets/_Project/Scenes/SCN_Floor_03_FinalBoss.unity
+    guid: dbd2fdcd4601b7e46a410a4206b24563
   - enabled: 1
-    path: Assets/_ProjectMain/Scenes/SCN_Floor_03_FinalBoss.unity
-    guid: 7a7634bc184317f4e94921b202c78aa9
-  - enabled: 1
-    path: Assets/_ProjectMain/Scenes/Dice_Game.unity
-    guid: d023f641e4289a04ca92076c9297be62
+    path: Assets/_Project/Scenes/Dice_Game.unity
+    guid: 228680f7254374a4e82bb16b8ea4ea23
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
