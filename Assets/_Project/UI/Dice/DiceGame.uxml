@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="DiceGame.uss" />
+
+    <ui:VisualElement name="dice-hud" class="dice-hud">
+        <ui:VisualElement class="results-row">
+            <ui:VisualElement class="result-slot">
+                <ui:Label text="Tu dado" class="result-slot__label" />
+                <ui:Label name="player-result" text="" class="result-slot__value" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="result-slot">
+                <ui:Label text="Oponente" class="result-slot__label" />
+                <ui:Label name="opponent-result" text="" class="result-slot__value" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label name="winner-label" text="Tira los dados" class="winner-label" />
+        <ui:Button name="roll-button" text="Tirar" class="roll-btn" />
+    </ui:VisualElement>
+</ui:UXML>

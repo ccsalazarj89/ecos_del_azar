@@ -1,0 +1,94 @@
+.panel {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    translate: -50% 0;
+    width: 420px;
+    background-color: rgba(15, 15, 20, 0.92);
+    border-radius: 12px;
+    border-width: 2px;
+    border-color: rgba(255, 200, 50, 0.4);
+    padding: 20px;
+    align-items: center;
+}
+
+.panel__title {
+    font-size: 20px;
+    color: rgb(255, 215, 0);
+    -unity-font-style: bold;
+    margin-bottom: 14px;
+}
+
+.chips-row {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.chips-group {
+    align-items: center;
+}
+
+.chips-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chips-value {
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.min-bet-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 14px;
+}
+
+.actions-row {
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.action-btn {
+    min-width: 110px;
+    height: 40px;
+    margin: 0 4px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    border-radius: 6px;
+    border-width: 2px;
+    color: rgb(255, 255, 255);
+}
+
+.action-btn:hover {
+    scale: 1.04;
+}
+
+.action-btn--safe {
+    background-color: rgb(40, 120, 50);
+    border-color: rgb(60, 160, 70);
+}
+
+.action-btn--risk {
+    background-color: rgb(170, 110, 15);
+    border-color: rgb(210, 150, 30);
+}
+
+.action-btn--danger {
+    background-color: rgb(160, 30, 30);
+    border-color: rgb(200, 50, 50);
+}
+
+.action-btn--neutral {
+    background-color: rgb(60, 60, 80);
+    border-color: rgb(90, 90, 110);
+}
+
+.action-btn--quit {
+    background-color: rgb(80, 30, 30);
+    border-color: rgb(120, 50, 50);
+}

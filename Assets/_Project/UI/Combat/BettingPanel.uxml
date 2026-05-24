@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="BettingPanel.uss" />
+
+    <ui:VisualElement name="betting-panel" class="panel">
+        <ui:Label text="Apuestas" class="panel__title" />
+
+        <ui:VisualElement class="chips-row">
+            <ui:VisualElement class="chips-group">
+                <ui:Label text="Tus fichas" class="chips-label" />
+                <ui:Label name="player-chips" text="1000" class="chips-value" />
+            </ui:VisualElement>
+            <ui:VisualElement class="chips-group">
+                <ui:Label text="NPC fichas" class="chips-label" />
+                <ui:Label name="npc-chips" text="1000" class="chips-value" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label name="min-bet" text="10" class="min-bet-label" />
+
+        <ui:VisualElement class="actions-row">
+            <ui:Button name="btn-equal" text="Igualar" class="action-btn action-btn--safe" />
+            <ui:Button name="btn-double" text="Doblar" class="action-btn action-btn--risk" />
+            <ui:Button name="btn-allin" text="All In" class="action-btn action-btn--danger" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="actions-row">
+            <ui:Button name="btn-fold" text="Retirarse" class="action-btn action-btn--neutral" />
+            <ui:Button name="btn-abandon" text="Abandonar" class="action-btn action-btn--quit" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

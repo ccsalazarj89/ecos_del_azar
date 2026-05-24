@@ -165,15 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c13ea3e5707ae4f4a99b2e26216d426e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice
-  diceSides:
-  - {fileID: 21300000, guid: e00208ffdc785f047b28197dffb27c9a, type: 3}
-  - {fileID: 21300000, guid: ef5d0c3717da47d4288b84344c277bed, type: 3}
-  - {fileID: 21300000, guid: 72b3e6936ded22d4a9ef3195e79ffb70, type: 3}
-  - {fileID: 21300000, guid: 1e2a63934cbad114696481a997b64702, type: 3}
-  - {fileID: 21300000, guid: 53c99e7f051b6454b8001f96ecc59f3f, type: 3}
-  - {fileID: 21300000, guid: 4c2a95c3eb7c4c7448b31a55be647ad7, type: 3}
-  text: {fileID: 1335176313}
-  text_dice: {fileID: 0}
 --- !u!61 &102952552
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -277,7 +268,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 3.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &160050586
 GameObject:
@@ -308,9 +299,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c4cc6c7b895d24b837a49ac1e45d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceRoller
-  diceView: {fileID: 369679312}
-  rollDuration: 1.2
-  frameInterval: 0.05
 --- !u!4 &160050588
 Transform:
   m_ObjectHideFlags: 0
@@ -494,17 +482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c57292df97eb914abf3828592c4026b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice_manager
-  NPC_Dice: {fileID: 892249663}
-  text: {fileID: 1972555777}
-  Player_Dice: {fileID: 1335176313}
-  npc_text: {fileID: 1557851909}
-  nuevoDinero: 0
-  newvalor: 
-  jugadorValor: 0
-  NPCValor: 0
-  nuevaTirada: 1
-  aux: 0
-  player: {fileID: 0}
 --- !u!4 &311109159
 Transform:
   m_ObjectHideFlags: 0
@@ -688,16 +665,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c56ff13ba90ce41b4bdb96981d6894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceView
-  spriteRenderer: {fileID: 369679313}
-  faceSprites:
-  - {fileID: 21300000, guid: e00208ffdc785f047b28197dffb27c9a, type: 3}
-  - {fileID: 21300000, guid: ef5d0c3717da47d4288b84344c277bed, type: 3}
-  - {fileID: 21300000, guid: 72b3e6936ded22d4a9ef3195e79ffb70, type: 3}
-  - {fileID: 21300000, guid: 1e2a63934cbad114696481a997b64702, type: 3}
-  - {fileID: 21300000, guid: 53c99e7f051b6454b8001f96ecc59f3f, type: 3}
-  - {fileID: 21300000, guid: 4c2a95c3eb7c4c7448b31a55be647ad7, type: 3}
-  rotationSpeed: 720
-  maxScaleMultiplier: 1.15
 --- !u!212 &369679313
 SpriteRenderer:
   serializedVersion: 2
@@ -755,7 +722,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 3.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!61 &369679314
 BoxCollider2D:
@@ -1131,13 +1098,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38ae7714e4806764787251fc9a373f59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceRoundController
-  playerOneDiceRoller: {fileID: 1493977544}
-  playerTwoDiceRoller: {fileID: 160050587}
-  rollButton: {fileID: 427682833}
-  playerOneResultText: {fileID: 1335176313}
-  playerTwoResultText: {fileID: 892249663}
-  winnerText: {fileID: 1972555777}
-  valor: 500
 --- !u!4 &595370511
 Transform:
   m_ObjectHideFlags: 0
@@ -1184,15 +1144,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c13ea3e5707ae4f4a99b2e26216d426e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice
-  diceSides:
-  - {fileID: 21300000, guid: e00208ffdc785f047b28197dffb27c9a, type: 3}
-  - {fileID: 21300000, guid: ef5d0c3717da47d4288b84344c277bed, type: 3}
-  - {fileID: 21300000, guid: 72b3e6936ded22d4a9ef3195e79ffb70, type: 3}
-  - {fileID: 21300000, guid: 1e2a63934cbad114696481a997b64702, type: 3}
-  - {fileID: 21300000, guid: 53c99e7f051b6454b8001f96ecc59f3f, type: 3}
-  - {fileID: 21300000, guid: 4c2a95c3eb7c4c7448b31a55be647ad7, type: 3}
-  text: {fileID: 892249663}
-  text_dice: {fileID: 0}
 --- !u!61 &784638640
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1296,7 +1247,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 3.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &784638642
 Transform:
@@ -1712,15 +1663,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c13ea3e5707ae4f4a99b2e26216d426e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice
-  diceSides:
-  - {fileID: 21300000, guid: e00208ffdc785f047b28197dffb27c9a, type: 3}
-  - {fileID: 21300000, guid: ef5d0c3717da47d4288b84344c277bed, type: 3}
-  - {fileID: 21300000, guid: 72b3e6936ded22d4a9ef3195e79ffb70, type: 3}
-  - {fileID: 21300000, guid: 1e2a63934cbad114696481a997b64702, type: 3}
-  - {fileID: 21300000, guid: 53c99e7f051b6454b8001f96ecc59f3f, type: 3}
-  - {fileID: 21300000, guid: 4c2a95c3eb7c4c7448b31a55be647ad7, type: 3}
-  text: {fileID: 1335176313}
-  text_dice: {fileID: 0}
 --- !u!61 &1335923372
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1824,7 +1766,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 3.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1347742201
 GameObject:
@@ -2153,9 +2095,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c4cc6c7b895d24b837a49ac1e45d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceRoller
-  diceView: {fileID: 1830707434}
-  rollDuration: 1.2
-  frameInterval: 0.05
 --- !u!4 &1493977545
 Transform:
   m_ObjectHideFlags: 0
@@ -2565,7 +2504,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 3.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1830707433
 Transform:
@@ -2594,16 +2533,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c56ff13ba90ce41b4bdb96981d6894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DiceView
-  spriteRenderer: {fileID: 1830707432}
-  faceSprites:
-  - {fileID: 21300000, guid: e00208ffdc785f047b28197dffb27c9a, type: 3}
-  - {fileID: 21300000, guid: ef5d0c3717da47d4288b84344c277bed, type: 3}
-  - {fileID: 21300000, guid: 72b3e6936ded22d4a9ef3195e79ffb70, type: 3}
-  - {fileID: 21300000, guid: 1e2a63934cbad114696481a997b64702, type: 3}
-  - {fileID: 21300000, guid: 53c99e7f051b6454b8001f96ecc59f3f, type: 3}
-  - {fileID: 21300000, guid: 4c2a95c3eb7c4c7448b31a55be647ad7, type: 3}
-  rotationSpeed: 720
-  maxScaleMultiplier: 1.15
 --- !u!1 &1972555775
 GameObject:
   m_ObjectHideFlags: 0
