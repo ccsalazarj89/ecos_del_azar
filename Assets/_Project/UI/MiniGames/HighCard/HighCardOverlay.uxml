@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="HighCardOverlay.uss" />
+
+    <ui:VisualElement name="card-board" class="card-board" picking-mode="Ignore">
+        <ui:VisualElement class="card-container">
+            <ui:Label text="TÚ" class="card-label" />
+            <ui:VisualElement name="player-card-img" class="card-img" />
+        </ui:VisualElement>
+
+        <ui:Label text="VS" class="vs-label" />
+
+        <ui:VisualElement class="card-container">
+            <ui:Label text="RIVAL" class="card-label" />
+            <ui:VisualElement name="opponent-card-img" class="card-img" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -4,57 +4,46 @@ using UnityEngine.InputSystem;
 
 namespace EcosDelAzar.Elevator
 {
-    public class Elevator : MonoBehaviour
+    public class Elevator : InteractableBase
     {
         [SerializeField] ElevatorUI elevatorUI;
         [SerializeField] ElevatorFloorData[] floors;
-        [SerializeField] InputActionReference interactAction;
         [SerializeField] InputActionReference exitAction;
 
-        bool playerInside;
-
-        void OnEnable()
+        protected override void OnEnable()
         {
-            if (interactAction?.action == null) return;
-            interactAction.action.performed += OnInteract;
-            interactAction.action.Enable();
+            base.OnEnable();
             if (exitAction?.action == null) return;
             exitAction.action.performed += OnExit;
             exitAction.action.Enable();
         }
 
-        void OnDisable()
+        protected override void OnDisable()
         {
-            if (interactAction?.action == null) return;
-            interactAction.action.performed -= OnInteract;
-            interactAction.action.Disable();
-            if (exitAction?.action == null) return;
-            exitAction.action.performed -= OnExit;
-            exitAction.action.Disable();
+            base.OnDisable();
+            if (exitAction?.action != null)
+                exitAction.action.performed -= OnExit;
+        }
+
+        protected override void OnInteract()
+        {
+            if (elevatorUI == null) return;
+            RaiseInteractionStarted();
+            elevatorUI.Open(floors);
+        }
+
+        protected override void OnPlayerExitRange()
+        {
+            elevatorUI?.Close();
         }
 
         void OnExit(InputAction.CallbackContext ctx)
         {
             if (elevatorUI == null) return;
             elevatorUI.Close();
-        }
 
-        void OnInteract(InputAction.CallbackContext ctx)
-        {
-            if (!playerInside || elevatorUI == null) return;
-            elevatorUI.Open(floors);
-        }
-
-        void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Player")) playerInside = true;
-        }
-
-        void OnTriggerExit(Collider other)
-        {
-            if (!other.CompareTag("Player")) return;
-            playerInside = false;
-            elevatorUI?.Close();
+            // Bring the hint back if the player is still standing inside.
+            NotifyHintVisible();
         }
     }
 }

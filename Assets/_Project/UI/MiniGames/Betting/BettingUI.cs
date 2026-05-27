@@ -51,6 +51,13 @@ namespace EcosDelAzar.UI
 
         int currentBet;
 
+        // The NPC proposal and game-over screens are deferred until the round is
+        // truly ready, instead of showing them the instant the round resolves.
+        bool pendingProposal;
+        int pendingProposalBet;
+        bool pendingGameOver;
+        bool pendingGameOverWon;
+
         void OnEnable()
         {
             var doc = GetComponent<UIDocument>();
@@ -140,13 +147,14 @@ namespace EcosDelAzar.UI
             {
                 session.Game.OnRoundStarted += ShowPlayingPhase;
                 session.Game.OnRoundResolved += ShowResultPhase;
+                session.Game.OnReadyForNextRound += HandleReadyForNextRound;
             }
 
             if (session.Betting != null)
             {
                 session.Betting.OnCoinsUpdated += RefreshCoins;
-                session.Betting.OnNpcProposal += ShowProposalPhase;
-                session.Betting.OnGameOver += ShowGameOver;
+                session.Betting.OnNpcProposal += HandleNpcProposal;
+                session.Betting.OnGameOver += HandleGameOver;
             }
         }
 
@@ -160,13 +168,14 @@ namespace EcosDelAzar.UI
             {
                 session.Game.OnRoundStarted -= ShowPlayingPhase;
                 session.Game.OnRoundResolved -= ShowResultPhase;
+                session.Game.OnReadyForNextRound -= HandleReadyForNextRound;
             }
 
             if (session.Betting != null)
             {
                 session.Betting.OnCoinsUpdated -= RefreshCoins;
-                session.Betting.OnNpcProposal -= ShowProposalPhase;
-                session.Betting.OnGameOver -= ShowGameOver;
+                session.Betting.OnNpcProposal -= HandleNpcProposal;
+                session.Betting.OnGameOver -= HandleGameOver;
             }
         }
 
@@ -203,6 +212,8 @@ namespace EcosDelAzar.UI
 
         void ShowPlayingPhase()
         {
+            pendingProposal = false;
+            pendingGameOver = false;
             RefreshCoins();
             if (currentBetDisplay != null)
                 currentBetDisplay.text = $"Apuesta: {currentBet}";
@@ -237,7 +248,46 @@ namespace EcosDelAzar.UI
             if (resultAmount != null && session?.Betting != null)
             {
                 int winnings = session.Betting.LastWinnings;
+                Debug.Log($"Winnings: {winnings}");
                 resultAmount.text = winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0";
+            }
+        }
+
+        // Resolution-time events only record what to show next; the actual
+        // transition waits for OnReadyForNextRound (result has been on screen
+        // and the game is back in WaitingForBet, so the next click is accepted).
+        void HandleNpcProposal(int npcBet)
+        {
+            pendingProposalBet = npcBet;
+            pendingProposal = true;
+        }
+
+        void HandleGameOver(bool playerWon)
+        {
+            pendingGameOverWon = playerWon;
+            pendingGameOver = true;
+
+            // Mid-round this waits for OnReadyForNextRound; but a game-over fired
+            // outside a round (e.g. broke at session start) has no such follow-up,
+            // so show it immediately.
+            if (session?.Game == null || session.Game.State != MiniGameState.Resolved)
+            {
+                pendingGameOver = false;
+                ShowGameOver(playerWon);
+            }
+        }
+
+        void HandleReadyForNextRound()
+        {
+            if (pendingGameOver)
+            {
+                pendingGameOver = false;
+                ShowGameOver(pendingGameOverWon);
+            }
+            else if (pendingProposal)
+            {
+                pendingProposal = false;
+                ShowProposalPhase(pendingProposalBet);
             }
         }
 

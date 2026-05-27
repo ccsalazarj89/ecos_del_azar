@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Scenes/SampleScene.unity
-    guid: 2f4203548ac4ff64790858412f12bae5
-  - enabled: 1
     path: Assets/_Project/Scenes/SCN_Floor_00_Lobby.unity
     guid: fa6af12251c76104ba5ca6cc41a6d6d8
   - enabled: 1
@@ -21,8 +18,11 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/SCN_Floor_03_FinalBoss.unity
     guid: dbd2fdcd4601b7e46a410a4206b24563
   - enabled: 1
-    path: Assets/_Project/Scenes/SCN_Game_DiceGame.unity
+    path: Assets/_Project/Scenes/SCN_Game_Dice_Level1.unity
     guid: 228680f7254374a4e82bb16b8ea4ea23
+  - enabled: 1
+    path: Assets/_Project/Scenes/SCN_Game_HighCard_Level1.unity
+    guid: 4c52e66956dbf944d8e8e57bc9b06a22
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

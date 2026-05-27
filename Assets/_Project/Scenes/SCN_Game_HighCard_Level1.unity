@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 683616459}
   - component: {fileID: 683616458}
   m_Layer: 0
-  m_Name: DiceBettingPanel
+  m_Name: HighCardBettingPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.UI.BettingUI
   session: {fileID: 1462308655}
+  betStep: 10
 --- !u!114 &683616459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,38 +255,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 693285027}
-  - component: {fileID: 693285026}
+  - component: {fileID: 693285029}
   - component: {fileID: 693285028}
+  - component: {fileID: 693285030}
   m_Layer: 0
-  m_Name: DiceGamePanel
+  m_Name: HighCardGamePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &693285026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 693285025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: a4e96af32e634af46aefcefeb067c2b7, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 4fa93eba6145ba341a8def7bdeba6458, type: 3}
-  m_SortingOrder: 0
-  m_Position: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
-  m_PivotReferenceSize: 0
-  m_Pivot: 0
-  m_WorldSpaceCollider: {fileID: 0}
 --- !u!4 &693285027
 Transform:
   m_ObjectHideFlags: 0
@@ -310,20 +289,105 @@ MonoBehaviour:
   m_GameObject: {fileID: 693285025}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f2cffee3c1056d4db2f92a15c223069, type: 3}
+  m_Script: {fileID: 11500000, guid: 30a006c55299e5649bb2148c36c074b7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Dice.DiceVisuals
-  game: {fileID: 1462308657}
-  uiDocument: {fileID: 693285026}
-  diceFaces:
-  - {fileID: 21300000, guid: 75d8537c794453a4ba27b0b814022822, type: 3}
-  - {fileID: 21300000, guid: 84d104ad0df270a48ba36f42a9f03946, type: 3}
-  - {fileID: 21300000, guid: 864224c9674c3e548b6c945190924fb6, type: 3}
-  - {fileID: 21300000, guid: 819c9154582910e4fa57205adde9a37e, type: 3}
-  - {fileID: 21300000, guid: 7aba2c0a05c8335488e00172b7badfa1, type: 3}
-  - {fileID: 21300000, guid: 53f972e242c8cc54c9a74cb3dd1b8775, type: 3}
-  rotationSpeed: 360
-  scaleBump: 1.2
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.HighCard.HighCardVisuals
+  game: {fileID: 1462308659}
+  uiDocument: {fileID: 693285029}
+  spriteMapper: {fileID: 693285030}
+  cardBackSprite: {fileID: -817806898, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+--- !u!114 &693285029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693285025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: a4e96af32e634af46aefcefeb067c2b7, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: faa4b87093277bd438cf2e9edccac24d, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &693285030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693285025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cffae78885d85488b94b32ec260423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.CardSpriteMapper
+  cardSprites:
+  - {fileID: 1986527552, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1977406950, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1037313115, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1358440626, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1209524533, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1173462551, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1059030252, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 2100354665, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 950449585, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1937120241, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -377184730, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1175286321, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -577258071, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1902102517, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 911397089, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1935276672, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -940128572, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1415422379, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 728736375, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1213836954, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1112424023, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -2103431263, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -245269057, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1388239474, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -2075951150, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1599273284, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1263679790, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1456209882, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 2114862032, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1064482452, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1395672061, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1261518639, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 969971468, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -579979006, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 218212286, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -881814614, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1888679782, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 477966955, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -794180296, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 220178784, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1196099527, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -817806898, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 26629110, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 455848660, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1891353077, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1545449161, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -754001288, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1686095290, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 515471396, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -366070858, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 731680017, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1927623492, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1582901080, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: 1898583711, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -40466815, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
+  - {fileID: -1439703729, guid: 992c3fbaf40775d4cb85b66ef3c5571d, type: 3}
 --- !u!1 &761132603
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,11 +534,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1462308658}
-  - component: {fileID: 1462308657}
   - component: {fileID: 1462308656}
   - component: {fileID: 1462308655}
+  - component: {fileID: 1462308659}
   m_Layer: 0
-  m_Name: DiceGameSessionManager
+  m_Name: HighCardGameSessionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -492,8 +556,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c9746cf8a896ad49b75c24197f63252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.MiniGameSession
-  miniGame: {fileID: 1462308657}
-  config: {fileID: 11400000, guid: 6f76af0ae0924e9499ccbf343b8cc8a9, type: 2}
+  miniGame: {fileID: 1462308659}
+  config: {fileID: 11400000, guid: dd7758ae682ea9c4fb4a121705296f90, type: 2}
   bettingSystem: {fileID: 1462308656}
 --- !u!114 &1462308656
 MonoBehaviour:
@@ -507,24 +571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccdcc98457a88e145bc5ce9780fb21e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Betting.BettingSystem
-  startingPlayerCoins: 1000
   minimumBet: 10
   opponent: {fileID: 1897634373}
---- !u!114 &1462308657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1462308654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a39d48457897916458a0641b9e317b3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Dice.DiceGame
-  faces: 6
-  rollDuration: 1.2
-  frameInterval: 0.05
 --- !u!4 &1462308658
 Transform:
   m_ObjectHideFlags: 0
@@ -540,6 +588,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1462308659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462308654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8bbd657ac832fb42bf8ca7f93d9ba02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.HighCard.HighCardGame
+  revealDelay: 0.8
+  includeJokers: 0
 --- !u!1 &1897634372
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,7 +613,7 @@ GameObject:
   - component: {fileID: 1897634374}
   - component: {fileID: 1897634373}
   m_Layer: 0
-  m_Name: DiceAIOponent
+  m_Name: StandardAIOponent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

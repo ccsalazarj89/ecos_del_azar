@@ -1,53 +1,32 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using EcosDelAzar.UI;
 
 namespace EcosDelAzar.NPC
 {
-    public class DialogueNPC : MonoBehaviour, IInteractable
+    public class DialogueNPC : InteractableBase
     {
-        [SerializeField] InputActionReference interactAction;
         [SerializeField] DialogueLine[] lines;
         [SerializeField] bool oneTimeOnly = true;
 
-        bool playerInRange;
         bool dialogueActive;
         bool completed;
         int currentLine;
 
-        public bool PlayerInRange => playerInRange;
         public bool DialogueActive => dialogueActive;
         public bool Completed => completed;
 
-        public event Action<bool> OnPlayerRangeChanged;
-        public event Action OnInteractionBlocked;
         public event Action OnDialogueStarted;
         public event Action<DialogueLine> OnLineShown;
         public event Action OnDialogueEnded;
 
-        void OnEnable()
+        protected override void OnInteract()
         {
-            if (interactAction?.action == null) return;
-            interactAction.action.performed += OnInteract;
-            interactAction.action.Enable();
-        }
-
-        void OnDisable()
-        {
-            if (interactAction?.action == null) return;
-            interactAction.action.performed -= OnInteract;
-        }
-
-        void OnInteract(InputAction.CallbackContext ctx)
-        {
-            if (!playerInRange) return;
-
             if (!dialogueActive)
             {
                 if (oneTimeOnly && completed)
                 {
-                    OnInteractionBlocked?.Invoke();
+                    RaiseInteractionBlocked();
                     return;
                 }
                 StartDialogue();
@@ -57,10 +36,16 @@ namespace EcosDelAzar.NPC
             AdvanceLine();
         }
 
+        protected override void OnPlayerExitRange()
+        {
+            if (dialogueActive) EndDialogue();
+        }
+
         void StartDialogue()
         {
             dialogueActive = true;
             currentLine = 0;
+            RaiseInteractionStarted();
             OnDialogueStarted?.Invoke();
             ShowCurrentLine();
         }
@@ -87,23 +72,9 @@ namespace EcosDelAzar.NPC
             dialogueActive = false;
             completed = true;
             OnDialogueEnded?.Invoke();
-        }
 
-        void OnTriggerEnter(Collider other)
-        {
-            if (!other.CompareTag("Player")) return;
-            playerInRange = true;
-            OnPlayerRangeChanged?.Invoke(true);
-        }
-
-        void OnTriggerExit(Collider other)
-        {
-            if (!other.CompareTag("Player")) return;
-            playerInRange = false;
-            OnPlayerRangeChanged?.Invoke(false);
-
-            if (dialogueActive)
-                EndDialogue();
+            // Re-show the hint if the NPC can still be interacted with.
+            if (!(oneTimeOnly && completed)) NotifyHintVisible();
         }
     }
 }

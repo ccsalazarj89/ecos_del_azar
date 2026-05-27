@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b8910520d3d9564a995bfd992a563c0, type: 3}
-  m_Name: SO_MiniGameConfig_Dice
+  m_Name: SO_MiniGameConfig_Dice_Level1
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.MiniGameConfig
   gameId: DiceGame
   displayName: Juego de Dados
