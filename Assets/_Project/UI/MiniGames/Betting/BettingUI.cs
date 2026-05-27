@@ -146,13 +146,13 @@ namespace EcosDelAzar.UI
             if (session.Game != null)
             {
                 session.Game.OnRoundStarted += ShowPlayingPhase;
-                session.Game.OnRoundResolved += ShowResultPhase;
                 session.Game.OnReadyForNextRound += HandleReadyForNextRound;
             }
 
             if (session.Betting != null)
             {
                 session.Betting.OnCoinsUpdated += RefreshCoins;
+                session.Betting.OnRoundSettled += ShowResultPhase;
                 session.Betting.OnNpcProposal += HandleNpcProposal;
                 session.Betting.OnGameOver += HandleGameOver;
             }
@@ -167,13 +167,13 @@ namespace EcosDelAzar.UI
             if (session.Game != null)
             {
                 session.Game.OnRoundStarted -= ShowPlayingPhase;
-                session.Game.OnRoundResolved -= ShowResultPhase;
                 session.Game.OnReadyForNextRound -= HandleReadyForNextRound;
             }
 
             if (session.Betting != null)
             {
                 session.Betting.OnCoinsUpdated -= RefreshCoins;
+                session.Betting.OnRoundSettled -= ShowResultPhase;
                 session.Betting.OnNpcProposal -= HandleNpcProposal;
                 session.Betting.OnGameOver -= HandleGameOver;
             }
@@ -220,14 +220,16 @@ namespace EcosDelAzar.UI
             SetPhase(playingPhase);
         }
 
-        void ShowResultPhase(RoundResult result)
+        // Driven by BettingSystem.OnRoundSettled, which fires after coins are
+        // applied — so outcome and winnings are always the current round's.
+        void ShowResultPhase(RoundOutcome outcome, int winnings)
         {
             RefreshCoins();
             SetPhase(resultPhase);
 
             if (resultText != null)
             {
-                resultText.text = result.Outcome switch
+                resultText.text = outcome switch
                 {
                     RoundOutcome.Win => "¡GANASTE!",
                     RoundOutcome.Lose => "PERDISTE",
@@ -237,7 +239,7 @@ namespace EcosDelAzar.UI
                 resultText.RemoveFromClassList("result--win");
                 resultText.RemoveFromClassList("result--lose");
                 resultText.RemoveFromClassList("result--draw");
-                resultText.AddToClassList(result.Outcome switch
+                resultText.AddToClassList(outcome switch
                 {
                     RoundOutcome.Win => "result--win",
                     RoundOutcome.Lose => "result--lose",
@@ -245,12 +247,8 @@ namespace EcosDelAzar.UI
                 });
             }
 
-            if (resultAmount != null && session?.Betting != null)
-            {
-                int winnings = session.Betting.LastWinnings;
-                Debug.Log($"Winnings: {winnings}");
+            if (resultAmount != null)
                 resultAmount.text = winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0";
-            }
         }
 
         // Resolution-time events only record what to show next; the actual
@@ -300,10 +298,10 @@ namespace EcosDelAzar.UI
                 proposalText.text = $"El rival propone: {npcBet} monedas";
 
             if (btnDouble != null)
-                btnDouble.SetEnabled(session.Betting.PlayerCoins >= npcBet * 2);
+                btnDouble.SetEnabled(session.Betting.MaxBet >= npcBet * 2);
 
             if (btnMatch != null)
-                btnMatch.SetEnabled(session.Betting.PlayerCoins >= npcBet);
+                btnMatch.SetEnabled(session.Betting.MaxBet >= npcBet);
         }
 
         void ShowGameOver(bool playerWon)
@@ -339,7 +337,7 @@ namespace EcosDelAzar.UI
 
         void OnBetUp(ClickEvent _)
         {
-            currentBet = Mathf.Min(session.Betting.PlayerCoins, currentBet + betStep);
+            currentBet = Mathf.Min(session.Betting.MaxBet, currentBet + betStep);
             RefreshBetDisplay();
         }
 
@@ -351,20 +349,20 @@ namespace EcosDelAzar.UI
 
         void OnBetHalf(ClickEvent _)
         {
-            currentBet = Mathf.Max(session.Betting.MinimumBet, session.Betting.PlayerCoins / 2);
+            currentBet = Mathf.Max(session.Betting.MinimumBet, session.Betting.MaxBet / 2);
             RefreshBetDisplay();
         }
 
         void OnBetMax(ClickEvent _)
         {
-            currentBet = session.Betting.PlayerCoins;
+            currentBet = session.Betting.MaxBet;
             RefreshBetDisplay();
         }
 
         void ClampBet()
         {
             if (session?.Betting == null) return;
-            currentBet = Mathf.Clamp(currentBet, session.Betting.MinimumBet, session.Betting.PlayerCoins);
+            currentBet = Mathf.Clamp(currentBet, session.Betting.MinimumBet, session.Betting.MaxBet);
         }
 
         void RefreshBetDisplay()
@@ -376,7 +374,7 @@ namespace EcosDelAzar.UI
             if (btnBetDown != null)
                 btnBetDown.SetEnabled(currentBet > session.Betting.MinimumBet);
             if (btnBetUp != null)
-                btnBetUp.SetEnabled(currentBet < session.Betting.PlayerCoins);
+                btnBetUp.SetEnabled(currentBet < session.Betting.MaxBet);
         }
 
         // ─── Actions ───

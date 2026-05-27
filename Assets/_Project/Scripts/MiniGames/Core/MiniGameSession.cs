@@ -101,9 +101,7 @@ namespace EcosDelAzar.MiniGames
         {
             bettingSystem.ResolveResult(result.Outcome);
             RoundsPlayed++;
-
-            if (RoundsPlayed >= config.maxRoundsPerMatch && !bettingSystem.IsPlayerBroke)
-                Leave();
+            // No round cap: the match runs until the player folds or someone goes broke.
         }
 
         void OnGameOver(bool playerWon)

@@ -16,5 +16,4 @@ MonoBehaviour:
   displayName: Juego de Dados
   description: En este juego probaras la suerte que tienes tirando dados
   minimumBet: 10
-  maxRoundsPerMatch: 5
   baseDifficulty: 1

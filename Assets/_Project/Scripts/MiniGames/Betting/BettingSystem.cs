@@ -18,6 +18,7 @@ namespace EcosDelAzar.MiniGames.Betting
         public int PlayerCoins { get; private set; }
         public int OpponentCoins { get; private set; }
         public int MinimumBet => minimumBet;
+        public int MaxBet => opponent != null ? Mathf.Min(PlayerCoins, OpponentCoins) : PlayerCoins;
         public int LastBet { get; private set; }
         public int NpcProposedBet { get; private set; }
         public int LastWinnings { get; private set; }
@@ -27,6 +28,7 @@ namespace EcosDelAzar.MiniGames.Betting
         public event Action OnCoinsUpdated;
         public event Action<int> OnNpcProposal;
         public event Action<bool> OnGameOver; // true = player won, false = player lost
+        public event Action<RoundOutcome, int> OnRoundSettled; // outcome + signed winnings, fired after coins are applied
 
         Wallet wallet;
 
@@ -44,12 +46,23 @@ namespace EcosDelAzar.MiniGames.Betting
         }
 
         /// <summary>
-        /// Player places bet, NPC matches or raises. Called before dice roll.
+        /// Player and opponent ante up the bet before the round plays. The
+        /// combined pot is paid out to the winner on resolution.
         /// </summary>
         public void PlaceBets(int playerBet)
         {
-            playerBet = Mathf.Clamp(playerBet, minimumBet, PlayerCoins);
+            playerBet = Mathf.Clamp(playerBet, minimumBet, MaxBet);
             LastBet = playerBet;
+
+            PlayerCoins -= playerBet;
+            if (opponent != null)
+            {
+                opponent.Coins -= playerBet;
+                OpponentCoins = opponent.Coins;
+            }
+
+            SyncToWallet();
+            OnCoinsUpdated?.Invoke();
         }
 
         /// <summary>
@@ -58,24 +71,25 @@ namespace EcosDelAzar.MiniGames.Betting
         /// </summary>
         public void ResolveResult(RoundOutcome outcome)
         {
-            int amount = LastBet;
+            int bet = LastBet;
+            int pot = bet * 2; // both sides anted in PlaceBets
             LastWinnings = 0;
 
             switch (outcome)
             {
                 case RoundOutcome.Win:
-                    LastWinnings = amount;
-                    PlayerCoins += amount;
-                    if (opponent != null) opponent.Coins -= amount;
+                    PlayerCoins += pot;   // take own ante back + opponent's
+                    LastWinnings = bet;   // net gain over the ante paid
                     break;
 
                 case RoundOutcome.Lose:
-                    LastWinnings = -amount;
-                    PlayerCoins -= amount;
-                    if (opponent != null) opponent.Coins += amount;
+                    if (opponent != null) opponent.Coins += pot;
+                    LastWinnings = -bet;
                     break;
 
                 case RoundOutcome.Draw:
+                    PlayerCoins += bet;   // each side reclaims its ante
+                    if (opponent != null) opponent.Coins += bet;
                     LastWinnings = 0;
                     break;
             }
@@ -85,6 +99,7 @@ namespace EcosDelAzar.MiniGames.Betting
 
             SyncToWallet();
             OnCoinsUpdated?.Invoke();
+            OnRoundSettled?.Invoke(outcome, LastWinnings);
 
             if (IsPlayerBroke || IsOpponentBroke)
             {

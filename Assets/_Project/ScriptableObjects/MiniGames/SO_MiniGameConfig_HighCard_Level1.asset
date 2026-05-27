@@ -16,5 +16,4 @@ MonoBehaviour:
   displayName: 
   description: 
   minimumBet: 10
-  maxRoundsPerMatch: 5
   baseDifficulty: 1

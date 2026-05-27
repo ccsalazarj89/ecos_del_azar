@@ -9,7 +9,6 @@ namespace EcosDelAzar.MiniGames
         public string displayName;
         [TextArea] public string description;
         public int minimumBet = 10;
-        public int maxRoundsPerMatch = 5;
         public float baseDifficulty = 1f;
     }
 }
