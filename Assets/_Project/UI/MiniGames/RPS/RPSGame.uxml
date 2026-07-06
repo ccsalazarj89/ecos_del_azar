@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="RPSGame.uss" />
+
+    <ui:VisualElement name="rps-board" class="rps-board" picking-mode="Ignore">
+        <ui:VisualElement class="rps-hand-container">
+            <ui:Label text="TÚ" class="rps-label" />
+            <ui:VisualElement name="player-hand-bg" class="rps-hand-bg">
+                <ui:VisualElement name="player-hand-img" class="rps-hand-img" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="VS" class="rps-vs" />
+
+        <ui:VisualElement class="rps-hand-container">
+            <ui:Label text="RIVAL" class="rps-label" />
+            <ui:VisualElement name="opponent-hand-bg" class="rps-hand-bg">
+                <ui:VisualElement name="opponent-hand-img" class="rps-hand-img" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <ui:VisualElement name="rps-choice-panel" class="rps-choice-panel" picking-mode="Position">
+        <ui:Label text="Elige tu jugada" class="rps-choice-title" />
+        <ui:VisualElement class="rps-choice-row">
+            <ui:Button name="btn-rock" text="PIEDRA" class="rps-choice-btn" />
+            <ui:Button name="btn-paper" text="PAPEL" class="rps-choice-btn" />
+            <ui:Button name="btn-scissors" text="TIJERA" class="rps-choice-btn" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

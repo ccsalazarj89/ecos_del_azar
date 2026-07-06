@@ -28,6 +28,7 @@
 *.mdb
 *.opendb
 *.VC.db
+.claude/
 
 # Archivos de metadatos de Unity (sólo los de carpetas ignoradas)
 # Los .meta de Assets SÍ deben subirse

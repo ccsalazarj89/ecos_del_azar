@@ -25,9 +25,9 @@ namespace EcosDelAzar.AI
         [Header("Betting Limits")]
         [Tooltip("Maximum multiplier the NPC applies to the opponent's bet when raising.")]
         [Min(1f)]
-        public float maxRaiseMultiplier = 3f;
+        public float maxRaiseMultiplier = 2f;
 
-        [Tooltip("Chip ratio below which the NPC enters 'desperate' mode.")]
+        [Tooltip("Coins ratio below which the NPC enters 'desperate' mode.")]
         [Range(0f, 1f)]
         public float desperateThreshold = 0.2f;
     }

@@ -1,0 +1,102 @@
+.bj-board {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: column;
+    align-items: center;
+    width: 720px;
+}
+
+.bj-side {
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.bj-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.bj-label {
+    font-size: 22px;
+    color: rgb(220, 200, 180);
+    -unity-font-style: bold;
+    letter-spacing: 4px;
+    margin-right: 14px;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.bj-score {
+    font-size: 26px;
+    color: rgb(240, 220, 150);
+    -unity-font-style: bold;
+    background-color: rgba(15, 10, 5, 0.85);
+    border-radius: 8px;
+    border-width: 2px;
+    border-color: rgb(120, 90, 50);
+    padding: 2px 14px;
+    min-width: 60px;
+    -unity-text-align: middle-center;
+}
+
+.bj-hand-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+}
+
+.bj-card {
+    width: 100px;
+    height: 140px;
+    margin: 0 -12px;
+    background-color: rgba(15, 10, 5, 0.8);
+    border-radius: 8px;
+    border-width: 2px;
+    border-color: rgb(80, 60, 40);
+    -unity-background-scale-mode: scale-to-fit;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+
+.bj-action-panel {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    padding: 16px 24px;
+    background-color: rgba(15, 10, 5, 0.85);
+    border-radius: 14px;
+    border-width: 3px;
+    border-color: rgb(120, 90, 50);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.bj-action-btn {
+    width: 160px;
+    height: 60px;
+    margin: 0 8px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    color: rgb(240, 220, 180);
+    background-color: rgb(60, 40, 25);
+    border-width: 2px;
+    border-color: rgb(140, 100, 60);
+    border-radius: 8px;
+    transition-property: scale, background-color;
+    transition-duration: 0.1s;
+}
+
+.bj-action-btn:hover {
+    background-color: rgb(90, 60, 35);
+    scale: 1.05 1.05;
+}
+
+.bj-action-btn:active {
+    background-color: rgb(140, 100, 60);
+    scale: 0.97 0.97;
+}
