@@ -96,3 +96,6 @@ Assets/TextMesh Pro.meta
 # Documentos Markdown (excepto README)
 *.md
 !README.md
+
+# Skills de Claude
+*.skill

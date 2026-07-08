@@ -5,54 +5,39 @@ using UnityEngine.UIElements;
 
 namespace EcosDelAzar.MiniGames.Boss
 {
-    /// <summary>
-    /// Conecta la UI del boss (BossHighCardOverlay.uxml) con
-    /// BossOxygenModifier y SuddenDeathRound.
-    ///
-    /// Colocar en el mismo GameObject que MiniGameSession.
-    /// Asignar UIDocument con BossHighCardOverlay en el Inspector.
-    /// </summary>
     public class BossHighCardVisuals : MonoBehaviour
     {
         [SerializeField] UIDocument uiDocument;
         [SerializeField] BossOxygenModifier oxygenModifier;
         [SerializeField] SuddenDeathRound suddenDeath;
 
-        // ── Barra de info ──
         VisualElement bossInfoBar;
         Label bosssSuitIcon;
         Button btnForceWin;
         Button btnToggleBar;
         Button btnRestoreBar;
 
-        // ── Propuesta muerte súbita ──
         VisualElement proposalPanel;
         Label sdPotLabel;
         Button btnAcceptSd;
         Button btnDeclineSd;
 
-        // ── Tablero de 6 cartas ──
         VisualElement cardsPanel;
         Label sdTurnLabel;
         List<Button> cardButtons = new();
 
-        // ── Resultado ──
         VisualElement resultPanel;
         Label sdResultLabel;
         Label sdResultSub;
 
-        // ── Toast ──
         VisualElement forceWinToast;
         Coroutine toastCoroutine;
-
-        // ─────────────────────────────────── lifecycle
 
         void OnEnable()
         {
             var root = uiDocument?.rootVisualElement;
             if (root == null) return;
 
-            // Barra de info
             bossInfoBar   = root.Q<VisualElement>("boss-info-bar");
             bosssSuitIcon = root.Q<Label>("boss-suit-icon");
             btnForceWin   = root.Q<Button>("btn-force-win");
@@ -62,25 +47,22 @@ namespace EcosDelAzar.MiniGames.Boss
             if (btnToggleBar  != null) btnToggleBar.clicked  += OnToggleBar;
             if (btnRestoreBar != null) btnRestoreBar.clicked += OnRestoreBar;
 
-            // Restaurar estado de visibilidad guardado
             if (PlayerPrefs.GetInt(PrefBarVisible, 1) == 0)
                 SetBarVisible(false, animate: false);
 
             MakeDraggable(bossInfoBar);
 
-            // Propuesta
             proposalPanel = root.Q<VisualElement>("sudden-death-proposal");
             sdPotLabel    = root.Q<Label>("sd-pot-label");
             btnAcceptSd   = root.Q<Button>("btn-accept-sd");
             btnDeclineSd  = root.Q<Button>("btn-decline-sd");
 
-            // Cartas
             cardsPanel  = root.Q<VisualElement>("sudden-death-cards");
             sdTurnLabel = root.Q<Label>("sd-turn-label");
             cardButtons.Clear();
             for (int i = 0; i < 6; i++)
             {
-                int idx = i; // captura para lambda
+                int idx = i;
                 var btn = root.Q<Button>($"card-{i}");
                 if (btn != null)
                 {
@@ -89,20 +71,16 @@ namespace EcosDelAzar.MiniGames.Boss
                 }
             }
 
-            // Toast
             forceWinToast = root.Q<VisualElement>("force-win-toast");
 
-            // Resultado
             resultPanel   = root.Q<VisualElement>("sudden-death-result");
             sdResultLabel = root.Q<Label>("sd-result-label");
             sdResultSub   = root.Q<Label>("sd-result-sub");
 
-            // Botones de acción
             if (btnForceWin  != null) btnForceWin.clicked  += OnForceWinClicked;
             if (btnAcceptSd  != null) btnAcceptSd.clicked  += OnAcceptSuddenDeath;
             if (btnDeclineSd != null) btnDeclineSd.clicked += OnDeclineSuddenDeath;
 
-            // Eventos de juego
             if (oxygenModifier != null)
             {
                 ShowBossSuit(oxygenModifier.AssignedSuit);
@@ -139,8 +117,6 @@ namespace EcosDelAzar.MiniGames.Boss
             }
         }
 
-        // ─────────────────────────────────── boss suit
-
         void ShowBossSuit(Suit suit)
         {
             if (bosssSuitIcon == null) return;
@@ -157,8 +133,6 @@ namespace EcosDelAzar.MiniGames.Boss
             bosssSuitIcon.text = icon;
             bosssSuitIcon.style.color = new StyleColor(HexToColor(colorHex));
         }
-
-        // ─────────────────────────────────── victoria forzada
 
         void OnForceWinClicked()
         {
@@ -193,7 +167,6 @@ namespace EcosDelAzar.MiniGames.Boss
 
             yield return new WaitForSeconds(3f);
 
-            // Fade out
             forceWinToast.AddToClassList("force-win-toast--hidden");
             yield return new WaitForSeconds(0.5f);
 
@@ -201,17 +174,13 @@ namespace EcosDelAzar.MiniGames.Boss
             toastCoroutine = null;
         }
 
-        // ─────────────────────────────────── muerte súbita — propuesta
-
         void ShowProposalPanel()
         {
             HideAllOverlays();
             if (proposalPanel == null) return;
 
-            // Mostrar el pot total
             if (sdPotLabel != null && suddenDeath != null)
             {
-                // El pot es la suma de fichas actuales antes del all-in
                 var betting = GetComponentInParent<EcosDelAzar.MiniGames.Betting.BettingSystem>(true)
                            ?? GetComponent<EcosDelAzar.MiniGames.Betting.BettingSystem>();
                 if (betting != null)
@@ -233,8 +202,6 @@ namespace EcosDelAzar.MiniGames.Boss
             HideAllOverlays();
             suddenDeath?.Decline();
         }
-
-        // ─────────────────────────────────── muerte súbita — cartas
 
         void ShowCardsPanel()
         {
@@ -271,12 +238,11 @@ namespace EcosDelAzar.MiniGames.Boss
             if (isJoker)
             {
                 btn.AddToClassList("sd-card--joker");
-                // Marcar al perdedor visualmente
+
                 if (isPlayerTurn) MarkLoser(cardIndex);
                 else              MarkWinner(cardIndex);
             }
 
-            // Actualizar label de turno para la siguiente jugada
             if (!isJoker)
                 SetTurnLabel(isPlayerTurn: !isPlayerTurn);
         }
@@ -301,11 +267,8 @@ namespace EcosDelAzar.MiniGames.Boss
                 : "TURNO DEL BOSS...";
         }
 
-        // ─────────────────────────────────── muerte súbita — resultado
-
         void ShowResultPanel(bool playerWon)
         {
-            // Mantener las cartas visibles un momento y luego mostrar resultado
             if (resultPanel == null) return;
 
             if (sdResultLabel != null)
@@ -321,12 +284,9 @@ namespace EcosDelAzar.MiniGames.Boss
                     ? "Te llevas todo el pot"
                     : "El boss se lleva todo el pot";
 
-            // Ocultar cartas y mostrar resultado
             if (cardsPanel != null) cardsPanel.style.display = DisplayStyle.None;
             resultPanel.style.display = DisplayStyle.Flex;
         }
-
-        // ─────────────────────────────────── helpers
 
         void HideAllOverlays()
         {
@@ -365,8 +325,6 @@ namespace EcosDelAzar.MiniGames.Boss
             return c;
         }
 
-        // ─────────────────────────────────── visibilidad del banner
-
         const string PrefBarVisible = "boss_bar_visible";
 
         void OnToggleBar()  => SetBarVisible(false);
@@ -377,7 +335,6 @@ namespace EcosDelAzar.MiniGames.Boss
             if (bossInfoBar  != null) bossInfoBar.style.display  = visible ? DisplayStyle.Flex : DisplayStyle.None;
             if (btnRestoreBar != null) btnRestoreBar.style.display = visible ? DisplayStyle.None : DisplayStyle.Flex;
 
-            // El botón restore muestra el palo del boss para que el jugador sepa qué es
             if (btnRestoreBar != null && oxygenModifier != null)
             {
                 string icon = oxygenModifier.AssignedSuit switch
@@ -395,8 +352,6 @@ namespace EcosDelAzar.MiniGames.Boss
             PlayerPrefs.Save();
         }
 
-        // ─────────────────────────────────── banner flotante (arrastrable)
-
         const string PrefBarX = "boss_bar_x";
         const string PrefBarY = "boss_bar_y";
 
@@ -404,7 +359,6 @@ namespace EcosDelAzar.MiniGames.Boss
         {
             if (el == null) return;
 
-            // Aplicar posición guardada (si existe)
             el.RegisterCallback<GeometryChangedEvent>(OnBarReady);
 
             bool dragging = false;
@@ -439,7 +393,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 dragging = false;
                 el.ReleasePointer(evt.pointerId);
 
-                // Guardar posición para próximas sesiones
                 PlayerPrefs.SetFloat(PrefBarX, el.layout.x);
                 PlayerPrefs.SetFloat(PrefBarY, el.layout.y);
                 PlayerPrefs.Save();
@@ -450,7 +403,6 @@ namespace EcosDelAzar.MiniGames.Boss
         {
             if (bossInfoBar == null) return;
 
-            // Solo restaurar si hay posición guardada
             if (!PlayerPrefs.HasKey(PrefBarX)) return;
 
             bossInfoBar.UnregisterCallback<GeometryChangedEvent>(OnBarReady);

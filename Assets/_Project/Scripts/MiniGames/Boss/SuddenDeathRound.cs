@@ -6,21 +6,6 @@ using EcosDelAzar.MiniGames.Betting;
 
 namespace EcosDelAzar.MiniGames.Boss
 {
-    /// <summary>
-    /// Mecánica de Muerte Súbita para el boss.
-    ///
-    /// Se activa cuando el jugador tiene al menos (fichas_boss × 2 + 1) fichas.
-    /// Ambos lados apuestan todas sus fichas. Se colocan 6 cartas boca abajo,
-    /// una de las cuales es un Comodín. Jugador y boss se turnan eligiendo cartas;
-    /// quien saque el Comodín pierde todo el pot.
-    ///
-    /// Integración en Unity:
-    ///   1. Añadir al mismo GameObject que MiniGameSession y BettingSystem.
-    ///   2. Asignar BettingSystem en el Inspector.
-    ///   3. Suscribir la UI a los eventos OnSuddenDeathProposed, OnCardDrawn y
-    ///      OnSuddenDeathComplete para mostrar/ocultar paneles.
-    ///   4. El jugador elige carta llamando PlayerPickCard(índice) desde botones UI.
-    /// </summary>
     public class SuddenDeathRound : MonoBehaviour
     {
         const int TotalCards = 6;
@@ -28,29 +13,17 @@ namespace EcosDelAzar.MiniGames.Boss
         [Header("Configuración")]
         [Tooltip("El jugador debe tener al menos (fichas_boss × triggerMultiplier + 1) para activar la propuesta.")]
         [SerializeField] int triggerMultiplier = 2;
-        [SerializeField] float bossDrawDelay = 1.5f;  // pausa dramática antes de que el boss elija
-        [SerializeField] float revealDelay   = 0.8f;  // pausa tras revelar la carta
+        [SerializeField] float bossDrawDelay = 1.5f;
+        [SerializeField] float revealDelay   = 0.8f;
 
         [Header("Referencias")]
         [SerializeField] BettingSystem bettingSystem;
 
-        // ------------------------------------------------------------------ eventos
-
-        /// <summary>Dispara cuando se cumplen las condiciones — muestra el panel de propuesta.</summary>
         public event Action OnSuddenDeathProposed;
 
-        /// <summary>
-        /// Dispara cada vez que se revela una carta.
-        ///   cardIndex  : índice 0-5 de la carta en el tablero
-        ///   card       : la carta revelada
-        ///   isPlayerTurn : true si la eligió el jugador, false si fue el boss
-        /// </summary>
         public event Action<int, Card, bool> OnCardDrawn;
 
-        /// <summary>Dispara al terminar. true = el jugador gana el pot.</summary>
         public event Action<bool> OnSuddenDeathComplete;
-
-        // ------------------------------------------------------------------ estado interno
 
         bool proposalPending;
         bool suddenDeathActive;
@@ -62,8 +35,6 @@ namespace EcosDelAzar.MiniGames.Boss
         int bossCoins;
         bool playerTurn;
         int playerPickedIndex = -1;
-
-        // ------------------------------------------------------------------ lifecycle
 
         void Start()
         {
@@ -89,8 +60,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 bettingSystem.OnRoundSettled -= OnRoundSettled;
         }
 
-        // ------------------------------------------------------------------ detección del trigger
-
         void OnRoundSettled(RoundOutcome outcome, int winnings)
         {
             Debug.Log($"[SuddenDeathRound] OnRoundSettled: outcome={outcome}, " +
@@ -114,12 +83,6 @@ namespace EcosDelAzar.MiniGames.Boss
             }
         }
 
-        // ------------------------------------------------------------------ API pública (botones UI)
-
-        /// <summary>
-        /// El jugador acepta la muerte súbita.
-        /// Llamar desde el botón "Aceptar" del panel de propuesta.
-        /// </summary>
         public void Accept()
         {
             if (!proposalPending) return;
@@ -127,10 +90,6 @@ namespace EcosDelAzar.MiniGames.Boss
             StartCoroutine(RunSuddenDeath());
         }
 
-        /// <summary>
-        /// El jugador rechaza la muerte súbita. La partida continúa con normalidad.
-        /// Llamar desde el botón "Rechazar" del panel de propuesta.
-        /// </summary>
         public void Decline()
         {
             if (!proposalPending) return;
@@ -138,11 +97,6 @@ namespace EcosDelAzar.MiniGames.Boss
             Debug.Log("[SuddenDeathRound] Muerte súbita rechazada. La partida continúa.");
         }
 
-        /// <summary>
-        /// El jugador elige una carta por su índice (0-5).
-        /// Llamar desde los botones del tablero de 6 cartas durante el turno del jugador.
-        /// Solo tiene efecto cuando suddenDeathActive=true y playerTurn=true.
-        /// </summary>
         public void PlayerPickCard(int cardIndex)
         {
             Debug.Log($"[SuddenDeathRound] PlayerPickCard({cardIndex}) — activa={suddenDeathActive}, playerTurn={playerTurn}");
@@ -154,16 +108,12 @@ namespace EcosDelAzar.MiniGames.Boss
             playerPickedIndex = cardIndex;
         }
 
-        // ------------------------------------------------------------------ lógica de la ronda
-
         IEnumerator RunSuddenDeath()
         {
             suddenDeathActive = true;
 
-            // Construir tablero: 5 cartas normales + 1 Comodín en posición aleatoria
             BuildCardPool();
 
-            // All-in: todas las fichas van al pot
             (pot, bossCoins) = bettingSystem.StartSuddenDeath();
             Debug.Log($"[SuddenDeathRound] ¡Muerte súbita! Pot: {pot} (Boss aportó: {bossCoins}, Premio si ganas: {pot - bossCoins + bossCoins * 2}).");
 
@@ -173,7 +123,6 @@ namespace EcosDelAzar.MiniGames.Boss
             {
                 if (playerTurn)
                 {
-                    // ── Turno del jugador ──
                     playerPickedIndex = -1;
 
                     Debug.Log("[SuddenDeathRound] Turno del jugador — esperando elección...");
@@ -196,7 +145,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 }
                 else
                 {
-                    // ── Turno del boss ──
                     Debug.Log("[SuddenDeathRound] Turno del boss...");
                     yield return new WaitForSeconds(bossDrawDelay);
 
@@ -219,7 +167,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 playerTurn = !playerTurn;
             }
 
-            // Salvaguarda: no debería llegar aquí porque el Joker siempre está en el pool
             Debug.LogError("[SuddenDeathRound] Error: el Comodín no fue encontrado en ninguna carta.");
         }
 
@@ -231,19 +178,15 @@ namespace EcosDelAzar.MiniGames.Boss
             OnSuddenDeathComplete?.Invoke(playerWon);
         }
 
-        // ------------------------------------------------------------------ helpers
-
         void BuildCardPool()
         {
             cardPool  = new List<Card>(TotalCards);
             drawnFlags = new bool[TotalCards];
 
-            // 5 cartas normales (sin Comodín)
             var deck = new Deck(includeJokers: false);
             for (int i = 0; i < TotalCards - 1; i++)
                 cardPool.Add(deck.Draw());
 
-            // Insertar el Comodín en una posición aleatoria
             int jokerPos = UnityEngine.Random.Range(0, TotalCards);
             cardPool.Insert(jokerPos, new Card(Suit.None, Rank.Joker));
 

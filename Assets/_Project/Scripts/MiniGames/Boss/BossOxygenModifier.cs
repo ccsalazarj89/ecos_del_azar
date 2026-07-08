@@ -4,19 +4,6 @@ using EcosDelAzar.MiniGames.HighCard;
 
 namespace EcosDelAzar.MiniGames.Boss
 {
-    /// <summary>
-    /// Añade la mecánica de oxígeno del boss sobre el minijuego de carta alta.
-    /// Solo debe existir en la escena SCN_Game_HighCard_FinalBoss.
-    ///
-    /// Reglas:
-    ///   - Al iniciar la sesión se asigna aleatoriamente un palo al boss.
-    ///   - Ganar con J/Q/K/A del palo del boss → restaura oxígeno (30/50/70/100 %).
-    ///   - Perder con el palo del boss → drena oxígeno extra (penalización).
-    ///   - Comodín → drena oxígeno (independiente del resultado).
-    ///   - Victoria forzada: llama TryActivateForceWin() desde un botón UI.
-    ///     Cuesta forceWinOxygenCost % del máximo y garantiza Win en la siguiente ronda.
-    ///     Requiere que el minijuego sea BossHighCardGame.
-    /// </summary>
     [RequireComponent(typeof(MiniGameSession))]
     public class BossOxygenModifier : MonoBehaviour
     {
@@ -40,12 +27,8 @@ namespace EcosDelAzar.MiniGames.Boss
         [Tooltip("% del oxígeno máximo que cuesta activar la victoria forzada.")]
         [SerializeField, Range(0f, 1f)] float forceWinOxygenCost = 0.30f;
 
-        // ------------------------------------------------------------------ propiedades públicas
-
-        /// <summary>Palo asignado al boss para esta sesión.</summary>
         public Suit AssignedSuit { get; private set; }
 
-        /// <summary>True si el jugador tiene suficiente oxígeno para usar la victoria forzada.</summary>
         public bool CanAffordForceWin
         {
             get
@@ -55,27 +38,20 @@ namespace EcosDelAzar.MiniGames.Boss
             }
         }
 
-        /// <summary>Número de derrotas consecutivas actuales.</summary>
         public int ConsecutiveLosses { get; private set; }
 
-        /// <summary>True si el jugador puede usar la victoria forzada (2 derrotas seguidas + oxígeno).</summary>
         public bool IsForceWinAvailable => ConsecutiveLosses >= 2 && CanAffordForceWin;
 
-        /// <summary>Se dispara cuando cambia la disponibilidad de la victoria forzada.</summary>
         public event System.Action OnForceWinAvailabilityChanged;
-
-        // ------------------------------------------------------------------ referencias internas
 
         MiniGameSession session;
         HighCardGame highCardGame;
-        BossHighCardGame bossGame; // null si no se usa BossHighCardGame en la escena
-
-        // ------------------------------------------------------------------ lifecycle
+        BossHighCardGame bossGame;
 
         void Awake()
         {
             session = GetComponent<MiniGameSession>();
-            // Asignar palo en Awake para que BossHighCardVisuals.OnEnable pueda leerlo
+
             AssignBossSuit();
         }
 
@@ -96,7 +72,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 return;
             }
 
-            // BossHighCardGame es opcional — si no está, la victoria forzada no estará disponible
             bossGame = highCardGame as BossHighCardGame;
             if (bossGame == null)
                 Debug.LogWarning("[BossOxygenModifier] BossHighCardGame no encontrado — TryActivateForceWin() no funcionará.");
@@ -110,13 +85,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 session.Game.OnRoundResolved -= HandleRoundResolved;
         }
 
-        // ------------------------------------------------------------------ victoria forzada (API pública)
-
-        /// <summary>
-        /// Intenta activar la victoria forzada para la siguiente ronda.
-        /// Llama a este método desde el OnClick de un botón UI.
-        /// Devuelve true si se activó con éxito.
-        /// </summary>
         public bool TryActivateForceWin()
         {
             if (bossGame == null)
@@ -149,8 +117,6 @@ namespace EcosDelAzar.MiniGames.Boss
             return true;
         }
 
-        // ------------------------------------------------------------------ debug
-
         [ContextMenu("DEBUG: Simular victoria con K del palo del boss")]
         void DebugSimulateKingWin()
         {
@@ -170,8 +136,6 @@ namespace EcosDelAzar.MiniGames.Boss
             Debug.Log("[DEBUG] Oxígeno vaciado — debería dispararse game over.");
         }
 
-        // ------------------------------------------------------------------ palo del boss
-
         void AssignBossSuit()
         {
             if (forcedBossSuit != Suit.None)
@@ -186,8 +150,6 @@ namespace EcosDelAzar.MiniGames.Boss
             Debug.Log($"[BossOxygenModifier] Palo del boss para esta sesión: {AssignedSuit}");
         }
 
-        // ------------------------------------------------------------------ lógica por ronda
-
         void HandleRoundResolved(RoundResult result)
         {
             OxygenTank tank = GameManager.Instance?.OxygenTank;
@@ -195,7 +157,6 @@ namespace EcosDelAzar.MiniGames.Boss
 
             Card playerCard = highCardGame.PlayerCard;
 
-            // ── Rastrear derrotas consecutivas ──
             bool prevAvailable = IsForceWinAvailable;
             if (result.Outcome == RoundOutcome.Lose)
                 ConsecutiveLosses++;
@@ -211,7 +172,6 @@ namespace EcosDelAzar.MiniGames.Boss
             if (prevAvailable != IsForceWinAvailable)
                 OnForceWinAvailabilityChanged?.Invoke();
 
-            // ── Comodín: drena oxígeno independientemente del resultado ──
             if (playerCard.Rank == Rank.Joker)
             {
                 float jokerAmount = tank.Max * jokerDepletePercent;
@@ -220,7 +180,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 return;
             }
 
-            // ── Perder con el palo del boss → penalización extra ──
             if (result.Outcome == RoundOutcome.Lose && playerCard.Suit == AssignedSuit)
             {
                 float penalty = tank.Max * losePenaltyPercent;
@@ -229,7 +188,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 return;
             }
 
-            // ── Ganar con figura del palo del boss → restaurar oxígeno ──
             if (result.Outcome == RoundOutcome.Win && playerCard.Suit == AssignedSuit)
             {
                 float restorePercent = playerCard.Rank switch
