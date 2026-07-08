@@ -123,6 +123,46 @@ namespace EcosDelAzar.MiniGames.Betting
             OnGameOver?.Invoke(playerWon);
         }
 
+        // ------------------------------------------------------------------ muerte súbita
+
+        /// <summary>
+        /// Pone todas las fichas de ambos lados en el pot para la muerte súbita.
+        /// Devuelve el valor total del pot.
+        /// </summary>
+        public (int pot, int bossCoins) StartSuddenDeath()
+        {
+            int bossCoins = OpponentCoins;
+            int pot       = PlayerCoins + OpponentCoins;
+            PlayerCoins   = 0;
+            if (opponent != null) opponent.Coins = 0;
+            OpponentCoins = 0;
+            SyncToWallet();
+            OnCoinsUpdated?.Invoke();
+            return (pot, bossCoins);
+        }
+
+        /// <summary>
+        /// Distribuye el resultado de la muerte súbita.
+        /// Si el jugador gana, recupera sus fichas + el doble de las del boss.
+        /// Si pierde, el boss se lleva el pot completo.
+        /// </summary>
+        public void ResolveSuddenDeath(bool playerWon, int pot, int bossCoins)
+        {
+            if (playerWon)
+            {
+                int playerOriginal = pot - bossCoins;
+                PlayerCoins = playerOriginal + bossCoins * 2;
+            }
+            else
+            {
+                if (opponent != null) opponent.Coins = pot;
+                OpponentCoins = pot;
+            }
+            SyncToWallet();
+            OnCoinsUpdated?.Invoke();
+            OnGameOver?.Invoke(playerWon);
+        }
+
         void GenerateNpcProposal()
         {
             if (opponent == null)

@@ -1,0 +1,328 @@
+/* ═══════════════════════════════════════════════
+   BOSS HIGH CARD OVERLAY — Casino Post-Apocalyptic
+   ═══════════════════════════════════════════════ */
+
+/* ── Barra de info del boss (siempre visible) ── */
+
+.boss-info-bar {
+    position: absolute;
+    bottom: 310px;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 480px;
+    background-color: rgba(14, 10, 8, 0.92);
+    border-radius: 4px;
+    border-width: 2px;
+    border-color: rgb(160, 40, 40);
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(220, 60, 50);
+    padding: 8px 20px;
+}
+
+.boss-suit-group {
+    align-items: center;
+    flex-direction: row;
+}
+
+.boss-suit-title {
+    font-size: 11px;
+    color: rgba(200, 150, 130, 0.6);
+    letter-spacing: 3px;
+    margin-right: 10px;
+}
+
+.boss-suit-icon {
+    font-size: 32px;
+    -unity-font-style: bold;
+    color: rgb(220, 60, 50);
+    text-shadow: 0 0 12px rgba(220, 60, 50, 0.6);
+}
+
+/* ── Botón colapsar / restaurar barra ── */
+
+.bar-toggle-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgba(200, 180, 150, 0.6);
+    background-color: transparent;
+    border-width: 0;
+    margin-left: 10px;
+    padding: 0;
+    transition-property: color, scale;
+    transition-duration: 0.1s;
+}
+
+.bar-toggle-btn:hover {
+    color: rgb(255, 220, 100);
+    scale: 1.2;
+}
+
+.bar-restore-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: rgb(220, 60, 50);
+    background-color: rgba(14, 10, 8, 0.92);
+    border-width: 2px;
+    border-color: rgb(160, 40, 40);
+    border-radius: 50%;
+    padding: 0;
+    transition-property: scale, background-color;
+    transition-duration: 0.12s;
+}
+
+.bar-restore-btn:hover {
+    scale: 1.15;
+    background-color: rgba(40, 20, 20, 0.95);
+}
+
+/* ── Botón Victoria Forzada ── */
+
+.force-win-btn {
+    height: 42px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(255, 230, 100);
+    background-color: rgba(140, 100, 20, 0.5);
+    border-width: 2px;
+    border-color: rgb(180, 130, 30);
+    border-radius: 3px;
+    padding: 0 16px;
+    transition-property: scale, background-color, border-color;
+    transition-duration: 0.12s;
+}
+
+.force-win-btn:hover {
+    scale: 1.06;
+    background-color: rgba(180, 130, 25, 0.7);
+    border-color: rgb(220, 170, 40);
+}
+
+.force-win-btn:active {
+    scale: 0.95;
+}
+
+.force-win-btn--disabled {
+    color: rgba(180, 160, 120, 0.35);
+    background-color: rgba(60, 50, 30, 0.4);
+    border-color: rgba(100, 80, 40, 0.4);
+}
+
+/* ── Toast: victoria forzada disponible ── */
+
+.force-win-toast {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    translate: -50% 0;
+    background-color: rgba(140, 100, 10, 0.95);
+    border-width: 2px;
+    border-color: rgb(220, 170, 40);
+    border-radius: 4px;
+    padding: 12px 24px;
+    align-items: center;
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 0.5s;
+}
+
+.force-win-toast--hidden {
+    opacity: 0;
+}
+
+.force-win-toast-label {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(255, 230, 80);
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 0 10px rgba(255, 200, 0, 0.6);
+}
+
+.force-win-toast-sub {
+    font-size: 12px;
+    color: rgba(255, 220, 150, 0.8);
+    -unity-text-align: middle-center;
+    margin-top: 4px;
+    letter-spacing: 1px;
+}
+
+/* ── Overlay compartido (propuesta, cartas, resultado) ── */
+
+.sd-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    background-color: rgba(8, 5, 4, 0.97);
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(160, 40, 40);
+    border-top-width: 5px;
+    border-top-color: rgb(220, 50, 40);
+    padding: 32px 40px;
+    align-items: center;
+    min-width: 500px;
+}
+
+/* ── Panel Propuesta ── */
+
+.sd-title {
+    font-size: 34px;
+    -unity-font-style: bold;
+    letter-spacing: 5px;
+    color: rgb(220, 60, 50);
+    text-shadow: 0 0 18px rgba(220, 50, 40, 0.7);
+    margin-bottom: 10px;
+}
+
+.sd-subtitle {
+    font-size: 15px;
+    color: rgb(200, 180, 160);
+    -unity-text-align: middle-center;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.sd-pot {
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: rgb(255, 220, 80);
+    text-shadow: 0 0 8px rgba(255, 200, 0, 0.4);
+    margin-bottom: 24px;
+}
+
+.sd-proposal-buttons {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.sd-btn {
+    height: 52px;
+    font-size: 16px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    border-radius: 3px;
+    border-width: 2px;
+    margin: 0 8px;
+    padding: 0 28px;
+    color: white;
+    transition-property: scale, background-color;
+    transition-duration: 0.12s;
+}
+
+.sd-btn:hover { scale: 1.07; }
+.sd-btn:active { scale: 0.94; }
+
+.sd-btn--accept {
+    background-color: rgb(30, 110, 45);
+    border-color: rgb(50, 170, 65);
+}
+
+.sd-btn--accept:hover {
+    background-color: rgb(40, 140, 55);
+}
+
+.sd-btn--decline {
+    background-color: rgb(90, 35, 35);
+    border-color: rgb(150, 50, 50);
+}
+
+.sd-btn--decline:hover {
+    background-color: rgb(120, 45, 40);
+}
+
+/* ── Panel Cartas ── */
+
+.sd-turn-label {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(220, 200, 160);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    -unity-text-align: middle-center;
+}
+
+.cards-row {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.sd-card {
+    width: 70px;
+    height: 100px;
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: rgb(255, 220, 80);
+    background-color: rgba(30, 20, 15, 0.9);
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-radius: 6px;
+    margin: 0 6px;
+    transition-property: scale, background-color, border-color;
+    transition-duration: 0.14s;
+}
+
+.sd-card:hover {
+    scale: 1.1;
+    background-color: rgba(60, 40, 20, 0.95);
+    border-color: rgb(200, 150, 50);
+}
+
+.sd-card:active {
+    scale: 0.96;
+}
+
+.sd-card--revealed {
+    color: rgb(180, 160, 140);
+    background-color: rgba(15, 10, 8, 0.8);
+    border-color: rgba(100, 70, 40, 0.4);
+}
+
+.sd-card--joker {
+    color: rgb(220, 60, 50);
+    border-color: rgb(200, 50, 40);
+    text-shadow: 0 0 10px rgba(220, 50, 40, 0.7);
+}
+
+.sd-card--winner {
+    border-color: rgb(80, 200, 80);
+    text-shadow: 0 0 10px rgba(80, 200, 80, 0.6);
+}
+
+/* ── Panel Resultado ── */
+
+.sd-result-label {
+    font-size: 40px;
+    -unity-font-style: bold;
+    letter-spacing: 5px;
+    margin-bottom: 12px;
+    -unity-text-align: middle-center;
+}
+
+.sd-result-label--win {
+    color: rgb(80, 220, 80);
+    text-shadow: 0 0 20px rgba(80, 220, 80, 0.6);
+}
+
+.sd-result-label--lose {
+    color: rgb(220, 60, 50);
+    text-shadow: 0 0 20px rgba(220, 50, 40, 0.6);
+}
+
+.sd-result-sub {
+    font-size: 18px;
+    color: rgb(200, 180, 150);
+    -unity-text-align: middle-center;
+    letter-spacing: 2px;
+}

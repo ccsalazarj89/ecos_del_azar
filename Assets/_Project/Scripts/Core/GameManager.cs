@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EcosDelAzar.Core
 {
@@ -43,8 +44,17 @@ namespace EcosDelAzar.Core
 
         void HandlePlayerDeath()
         {
-            Debug.Log("[GameManager] Player oxygen depleted — handling death.");
-            // TODO: Trigger death screen / respawn at lobby
+            Debug.Log("[GameManager] Player oxygen depleted — GAME OVER.");
+
+            // Detener el drenaje activo
+            if (OxygenTank != null)
+                OxygenTank.IsActiveDrain = false;
+
+            // Resetear oxígeno para la próxima sesión
+            OxygenTank?.Reset();
+
+            // Volver al lobby
+            SceneManager.LoadScene("SCN_Floor_00_Lobby");
         }
     }
 }

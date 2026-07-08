@@ -7,7 +7,7 @@ namespace EcosDelAzar.Core
     {
         const string PrefsKey = "player_coins";
 
-        [SerializeField] int initialCoins = 0;
+        [SerializeField] int initialCoins = 1000;
 
         public int Coins { get; private set; }
 
@@ -15,6 +15,8 @@ namespace EcosDelAzar.Core
 
         void Awake()
         {
+            // TODO: quitar el DeleteKey cuando termine el testing
+            PlayerPrefs.DeleteKey(PrefsKey);
             Coins = PlayerPrefs.GetInt(PrefsKey, initialCoins);
         }
 

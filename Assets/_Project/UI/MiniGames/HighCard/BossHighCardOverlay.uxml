@@ -1,0 +1,53 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="BossHighCardOverlay.uss" />
+
+    <!-- Barra del boss: palo + forzar victoria + toggle -->
+    <ui:VisualElement name="boss-info-bar" class="boss-info-bar">
+        <ui:VisualElement class="boss-suit-group">
+            <ui:Label text="PALO DEL BOSS" class="boss-suit-title" />
+            <ui:Label name="boss-suit-icon" text="?" class="boss-suit-icon" />
+        </ui:VisualElement>
+        <ui:Button name="btn-force-win" text="FORZAR VICTORIA" class="force-win-btn" />
+        <ui:Button name="btn-toggle-bar" text="−" class="bar-toggle-btn" />
+    </ui:VisualElement>
+
+    <!-- Tab mínimo cuando la barra está oculta -->
+    <ui:Button name="btn-restore-bar" text="♠" class="bar-restore-btn" style="display: none;" />
+
+    <!-- Notificación: victoria forzada disponible -->
+    <ui:VisualElement name="force-win-toast" class="force-win-toast" style="display: none;">
+        <ui:Label text="⚡ VICTORIA FORZADA DISPONIBLE" class="force-win-toast-label" />
+        <ui:Label text="Has perdido 2 veces seguidas — usa el botón dorado" class="force-win-toast-sub" />
+    </ui:VisualElement>
+
+    <!-- Panel: propuesta de muerte súbita -->
+    <ui:VisualElement name="sudden-death-proposal" class="sd-overlay" style="display: none;">
+        <ui:Label text="¡ MUERTE SÚBITA !" class="sd-title" />
+        <ui:Label text="El boss propone apostarlo todo en una sola ronda" class="sd-subtitle" />
+        <ui:Label name="sd-pot-label" text="" class="sd-pot" />
+        <ui:VisualElement class="sd-proposal-buttons">
+            <ui:Button name="btn-accept-sd" text="ACEPTAR" class="sd-btn sd-btn--accept" />
+            <ui:Button name="btn-decline-sd" text="RECHAZAR" class="sd-btn sd-btn--decline" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <!-- Panel: las 6 cartas boca abajo -->
+    <ui:VisualElement name="sudden-death-cards" class="sd-overlay" style="display: none;">
+        <ui:Label name="sd-turn-label" text="TU TURNO — Elige una carta" class="sd-turn-label" />
+        <ui:VisualElement name="cards-row" class="cards-row">
+            <ui:Button name="card-0" text="?" class="sd-card" />
+            <ui:Button name="card-1" text="?" class="sd-card" />
+            <ui:Button name="card-2" text="?" class="sd-card" />
+            <ui:Button name="card-3" text="?" class="sd-card" />
+            <ui:Button name="card-4" text="?" class="sd-card" />
+            <ui:Button name="card-5" text="?" class="sd-card" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <!-- Panel: resultado de la muerte súbita -->
+    <ui:VisualElement name="sudden-death-result" class="sd-overlay" style="display: none;">
+        <ui:Label name="sd-result-label" text="" class="sd-result-label" />
+        <ui:Label name="sd-result-sub" text="" class="sd-result-sub" />
+    </ui:VisualElement>
+
+</ui:UXML>
