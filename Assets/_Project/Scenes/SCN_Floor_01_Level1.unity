@@ -1594,6 +1594,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6315496919184690103, guid: 7c0e415e2034aeb4899bf8d1497887ad, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.817
+      objectReference: {fileID: 0}
     - target: {fileID: 6696560520119685389, guid: 7c0e415e2034aeb4899bf8d1497887ad, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -1888,10 +1892,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 706468939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b07ec55a7fbf1dd4d9f5134245eb4f66, type: 3}
+  m_Script: {fileID: 11500000, guid: 2907e770a0ab0f14d85488c4ccfd32bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::tankO2Fill
-  alpha: 0
 --- !u!1001 &743110621
 PrefabInstance:
   m_ObjectHideFlags: 0
