@@ -1,0 +1,91 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="VendingMachine.uss" />
+
+    <ui:VisualElement name="vending-root" class="vending-root vending-hidden">
+        <ui:VisualElement name="vending-overlay" class="vending-overlay" />
+
+        <ui:VisualElement name="vending-panel" class="vending-panel">
+
+            <!-- Header -->
+            <ui:VisualElement class="vending-header">
+                <ui:VisualElement class="vending-header__titles">
+                    <ui:Label text="SUMINISTRO O2" class="vending-title" />
+                    <ui:Label text="TERMINAL DE INTERCAMBIO" class="vending-subtitle" />
+                </ui:VisualElement>
+                <ui:VisualElement class="vending-status-pill">
+                    <ui:VisualElement class="vending-status-pill__dot" />
+                    <ui:Label text="EN LÍNEA" class="vending-status-pill__text" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Live player resources -->
+            <ui:VisualElement class="resource-row">
+                <ui:VisualElement class="resource resource--coins">
+                    <ui:VisualElement class="resource__icon resource__icon--coin" />
+                    <ui:VisualElement class="resource__body">
+                        <ui:Label text="MONEDAS" class="resource__label" />
+                        <ui:Label name="coins-value" text="0" class="resource__value resource__value--coins" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="resource resource--oxygen">
+                    <ui:VisualElement class="resource__header">
+                        <ui:VisualElement class="resource__icon resource__icon--oxygen" />
+                        <ui:Label text="O2" class="resource__label" />
+                        <ui:Label name="oxygen-percent" text="100%" class="resource__percent" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="oxy-bar-bg">
+                        <ui:VisualElement name="oxygen-ghost" class="oxy-bar-ghost" />
+                        <ui:VisualElement name="oxygen-fill" class="oxy-bar-fill" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Mode selector -->
+            <ui:VisualElement class="mode-tabs">
+                <ui:Button name="btn-mode-buy" text="COMPRAR O2" class="mode-tab mode-tab--buy" />
+                <ui:Button name="btn-mode-sell" text="VENDER O2" class="mode-tab mode-tab--sell" />
+            </ui:VisualElement>
+
+            <ui:Label name="rate-text" text="" class="rate-text" />
+
+            <!-- Quantity -->
+            <ui:VisualElement class="qty-row">
+                <ui:Button name="btn-qty-down" text="-" class="qty-adjust-btn" />
+                <ui:VisualElement class="qty-display">
+                    <ui:Label name="qty-value" text="+0%" class="qty-value" />
+                    <ui:Label name="qty-caption" text="AL TANQUE" class="qty-caption" />
+                </ui:VisualElement>
+                <ui:Button name="btn-qty-up" text="+" class="qty-adjust-btn" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="qty-shortcuts">
+                <ui:Button name="btn-qty-min" text="MÍN" class="shortcut-btn" />
+                <ui:Button name="btn-qty-half" text="MITAD" class="shortcut-btn" />
+                <ui:Button name="btn-qty-max" text="MÁX" class="shortcut-btn" />
+            </ui:VisualElement>
+
+            <!-- Transaction preview -->
+            <ui:VisualElement class="preview-box">
+                <ui:VisualElement class="preview-row">
+                    <ui:Label name="preview-coins-label" text="COSTE" class="preview-label" />
+                    <ui:Label name="preview-coins" text="0" class="preview-value preview-value--coins" />
+                </ui:VisualElement>
+                <ui:VisualElement class="preview-divider" />
+                <ui:VisualElement class="preview-row">
+                    <ui:Label text="TANQUE" class="preview-label" />
+                    <ui:Label name="preview-oxygen" text="0% → 0%" class="preview-value preview-value--oxygen" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label name="feedback-text" text="" class="feedback-text" />
+
+            <!-- Actions -->
+            <ui:VisualElement class="vending-footer">
+                <ui:Button name="btn-confirm" text="CONFIRMAR" class="action-btn action-btn--confirm" />
+                <ui:Button name="btn-close" text="SALIR" class="action-btn action-btn--close" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

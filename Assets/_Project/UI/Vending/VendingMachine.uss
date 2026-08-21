@@ -1,0 +1,523 @@
+/* ═══════════════════════════════════════════════
+   OXYGEN VENDING MACHINE — Wasteland supply terminal
+   Gold = coins, cyan = oxygen, rust = chassis.
+   ═══════════════════════════════════════════════ */
+
+.vending-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.vending-hidden {
+    display: none;
+}
+
+.vending-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(5, 3, 2, 0.9);
+}
+
+.vending-panel {
+    width: 620px;
+    background-color: rgb(20, 17, 14);
+    border-radius: 2px;
+    border-width: 3px;
+    border-color: rgb(90, 65, 35);
+    border-top-width: 6px;
+    border-top-color: rgb(0, 180, 220);
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: 4px;
+}
+
+/* ── HEADER ── */
+
+.vending-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 26px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom-width: 2px;
+    border-bottom-color: rgb(50, 40, 30);
+}
+
+.vending-header__titles {
+    flex-direction: column;
+}
+
+.vending-title {
+    color: rgb(0, 210, 245);
+    font-size: 32px;
+    -unity-font-style: bold;
+    letter-spacing: 8px;
+    text-shadow: 0 0 14px rgba(0, 200, 240, 0.5), 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.vending-subtitle {
+    color: rgb(110, 100, 80);
+    font-size: 11px;
+    letter-spacing: 5px;
+    margin-top: 4px;
+}
+
+.vending-status-pill {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    border-width: 1px;
+    border-color: rgba(60, 200, 90, 0.35);
+}
+
+.vending-status-pill__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgb(70, 220, 100);
+    margin-right: 8px;
+}
+
+.vending-status-pill__text {
+    color: rgb(90, 190, 110);
+    font-size: 10px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+}
+
+/* ── RESOURCE ROW ── */
+
+.resource-row {
+    flex-direction: row;
+    align-items: stretch;
+    margin: 18px 26px 4px 26px;
+}
+
+.resource {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.06);
+    padding: 10px 14px;
+    justify-content: center;
+}
+
+.resource--coins {
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    border-left-width: 3px;
+    border-left-color: rgb(255, 185, 0);
+    margin-right: 10px;
+}
+
+.resource--oxygen {
+    flex-grow: 1;
+    flex-direction: column;
+    border-left-width: 3px;
+    border-left-color: rgb(0, 180, 220);
+}
+
+.resource__header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.resource__body {
+    flex-direction: column;
+}
+
+.resource__icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.resource__icon--coin {
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    background-color: rgb(255, 200, 0);
+    border-width: 2px;
+    border-color: rgb(200, 140, 0);
+}
+
+.resource__icon--oxygen {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: rgb(0, 180, 220);
+    margin-right: 8px;
+}
+
+.resource__label {
+    color: rgba(200, 180, 150, 0.5);
+    font-size: 10px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+}
+
+.resource__percent {
+    color: rgb(0, 200, 240);
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-left: auto;
+    text-shadow: 0 0 4px rgba(0, 200, 240, 0.3);
+}
+
+.resource__value {
+    font-size: 24px;
+    -unity-font-style: bold;
+}
+
+.resource__value--coins {
+    color: rgb(255, 220, 100);
+    text-shadow: 0 0 6px rgba(255, 200, 0, 0.35);
+}
+
+/* ── OXYGEN BAR (solid = kept, ghost = gained/lost) ── */
+
+.oxy-bar-bg {
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 2px;
+    border-width: 1px;
+    border-color: rgba(0, 180, 220, 0.25);
+    overflow: hidden;
+}
+
+.oxy-bar-ghost {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background-color: rgba(0, 220, 255, 0.35);
+    transition-property: width, background-color;
+    transition-duration: 0.15s;
+}
+
+.oxy-bar-ghost.ghost--loss {
+    background-color: rgba(230, 60, 45, 0.65);
+}
+
+.oxy-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(0, 160, 200);
+    transition-property: width, background-color;
+    transition-duration: 0.15s;
+}
+
+.oxy-bar-fill.oxygen-low {
+    background-color: rgb(230, 120, 30);
+}
+
+.oxy-bar-fill.oxygen-critical {
+    background-color: rgb(255, 40, 40);
+}
+
+/* ── MODE TABS ── */
+
+.mode-tabs {
+    flex-direction: row;
+    margin: 18px 26px 0 26px;
+}
+
+.mode-tab {
+    flex-grow: 1;
+    height: 42px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    color: rgb(120, 110, 95);
+    background-color: rgba(0, 0, 0, 0.35);
+    border-width: 2px;
+    border-color: rgb(48, 40, 32);
+    border-radius: 2px;
+    margin: 0 4px;
+    transition-property: color, border-color, background-color;
+    transition-duration: 0.15s;
+}
+
+.mode-tab:hover {
+    color: rgb(200, 190, 170);
+    border-color: rgb(80, 65, 50);
+}
+
+.mode-tab--buy.mode-tab--active {
+    color: rgb(0, 220, 250);
+    border-color: rgb(0, 170, 210);
+    background-color: rgba(0, 150, 190, 0.14);
+    text-shadow: 0 0 8px rgba(0, 200, 240, 0.5);
+}
+
+.mode-tab--sell.mode-tab--active {
+    color: rgb(255, 210, 90);
+    border-color: rgb(200, 150, 40);
+    background-color: rgba(200, 150, 40, 0.14);
+    text-shadow: 0 0 8px rgba(255, 190, 40, 0.5);
+}
+
+/* ── RATE ── */
+
+.rate-text {
+    -unity-text-align: middle-center;
+    color: rgb(140, 125, 100);
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-top: 14px;
+}
+
+/* ── QUANTITY ── */
+
+.qty-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.qty-adjust-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: rgb(255, 220, 100);
+    background-color: rgba(255, 200, 50, 0.1);
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-radius: 4px;
+    transition-property: scale, background-color;
+    transition-duration: 0.1s;
+}
+
+.qty-adjust-btn:hover {
+    scale: 1.1;
+    background-color: rgba(255, 200, 50, 0.2);
+}
+
+.qty-adjust-btn:active {
+    scale: 0.9;
+}
+
+.qty-adjust-btn:disabled {
+    opacity: 0.35;
+}
+
+.qty-display {
+    align-items: center;
+    min-width: 160px;
+    margin: 0 14px;
+}
+
+.qty-value {
+    font-size: 40px;
+    -unity-font-style: bold;
+    color: rgb(240, 230, 210);
+    -unity-text-align: middle-center;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.qty-caption {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(200, 180, 150, 0.45);
+    -unity-text-align: middle-center;
+    margin-top: 2px;
+}
+
+.qty-shortcuts {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.shortcut-btn {
+    width: 70px;
+    height: 30px;
+    font-size: 11px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(180, 160, 130);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-width: 1px;
+    border-color: rgba(180, 160, 130, 0.3);
+    border-radius: 3px;
+    margin: 0 4px;
+    transition-property: scale, color, border-color;
+    transition-duration: 0.1s;
+}
+
+.shortcut-btn:hover {
+    scale: 1.05;
+    color: rgb(255, 220, 100);
+    border-color: rgb(200, 150, 50);
+}
+
+/* ── PREVIEW ── */
+
+.preview-box {
+    margin: 16px 26px 0 26px;
+    padding: 12px 18px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.preview-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 26px;
+}
+
+.preview-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.06);
+    margin: 4px 0;
+}
+
+.preview-label {
+    color: rgba(200, 180, 150, 0.5);
+    font-size: 11px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+}
+
+.preview-value {
+    font-size: 17px;
+    -unity-font-style: bold;
+}
+
+.preview-value--coins {
+    color: rgb(255, 220, 100);
+}
+
+.preview-value--coins.value--gain {
+    color: rgb(90, 225, 110);
+}
+
+.preview-value--coins.value--cost {
+    color: rgb(235, 120, 70);
+}
+
+.preview-value--oxygen {
+    color: rgb(0, 210, 245);
+}
+
+.preview-value--oxygen.value--cost {
+    color: rgb(235, 90, 70);
+}
+
+.preview-value--muted {
+    color: rgba(160, 145, 125, 0.5);
+}
+
+/* ── FEEDBACK ── */
+
+.feedback-text {
+    -unity-text-align: middle-center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    height: 20px;
+    margin-top: 12px;
+    color: rgba(0, 0, 0, 0);
+}
+
+.feedback--ok {
+    color: rgb(90, 225, 110);
+    text-shadow: 0 0 8px rgba(70, 200, 90, 0.4);
+}
+
+.feedback--error {
+    color: rgb(225, 80, 65);
+    text-shadow: 0 0 8px rgba(220, 60, 50, 0.4);
+}
+
+/* ── FOOTER ── */
+
+.vending-footer {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 26px 18px 26px;
+}
+
+.action-btn {
+    height: 50px;
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    color: white;
+    border-width: 2px;
+    border-radius: 3px;
+    margin: 0 5px;
+    transition-property: scale, background-color, border-color;
+    transition-duration: 0.12s;
+}
+
+.action-btn:hover {
+    scale: 1.05;
+}
+
+.action-btn:active {
+    scale: 0.96;
+}
+
+.action-btn--confirm {
+    width: 300px;
+    background-color: rgb(20, 105, 130);
+    border-color: rgb(0, 170, 210);
+}
+
+.action-btn--confirm:hover {
+    background-color: rgb(25, 130, 160);
+    border-color: rgb(40, 210, 245);
+}
+
+.action-btn--confirm:disabled {
+    opacity: 0.4;
+    scale: 1;
+}
+
+/* Selling pays out — reuse the coin gold for the confirm button. */
+.action-btn--confirm.confirm--sell {
+    background-color: rgb(150, 105, 20);
+    border-color: rgb(200, 145, 30);
+}
+
+.action-btn--confirm.confirm--sell:hover {
+    background-color: rgb(180, 128, 25);
+    border-color: rgb(240, 180, 40);
+}
+
+.action-btn--close {
+    width: 160px;
+    background-color: rgb(35, 18, 18);
+    color: rgb(200, 80, 70);
+    border-color: rgb(140, 45, 40);
+}
+
+.action-btn--close:hover {
+    background-color: rgb(160, 40, 40);
+    color: rgb(255, 220, 210);
+    border-color: rgb(200, 60, 50);
+}
