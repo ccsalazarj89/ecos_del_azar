@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: a4e96af32e634af46aefcefeb067c2b7, type: 2}
   m_ParentUI: {fileID: 0}
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2a0b8d3d220caa4bbedd5e0a5b914b4, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.UI.GameHUD
 --- !u!1 &3044952834084647710
 GameObject:
@@ -81,6 +81,7 @@ GameObject:
   - component: {fileID: 5232142927966073101}
   - component: {fileID: 6344746793930421894}
   - component: {fileID: 8125027976615303145}
+  - component: {fileID: 4200000000000001}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -114,7 +115,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae3900046e7a3414194bd8c7e6146a14, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Wallet
   initialCoins: 5
 --- !u!114 &5232142927966073101
@@ -127,7 +128,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 330b5271df4257444b6eb84fc2178562, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.OxygenTank
   maxOxygen: 100
   startingOxygen: 100
@@ -145,7 +146,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6031659a9162d2e43b119f45f6869440, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.FloorProgress
 --- !u!114 &8125027976615303145
 MonoBehaviour:
@@ -157,5 +158,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceecf9f29ec565243a6dc00b5aded248, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.GameManager
+--- !u!114 &4200000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3044952834084647710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416a7eea8d864366906d27b1396be94f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Audio.MusicPlayer
+  defaultTrack: {fileID: 8300000, guid: 6d58807de1c643a6a0e8857f728676ab, type: 3}
+  tracks:
+  - sceneName: SCN_Game_HighCard_FinalBoss
+    clip: {fileID: 8300000, guid: 27971c4dd6d64466bfd02cf4ce270ad7, type: 3}
+  volume: 0.6
+  crossfadeDuration: 1.5
