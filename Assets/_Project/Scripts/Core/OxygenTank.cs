@@ -26,6 +26,11 @@ namespace EcosDelAzar.Core
         public bool IsFull => Current >= maxOxygen;
         public bool IsActiveDrain { get; set; }
 
+        /// <summary>
+        /// Cuando es true, el tanque no drena nada (p. ej. mientras GameManager.State == MainMenu o Paused).
+        /// </summary>
+        public bool IsPaused { get; set; }
+
         public event Action<float> OnOxygenChanged;
         public event Action OnDepleted;
 
@@ -36,7 +41,7 @@ namespace EcosDelAzar.Core
 
         void Update()
         {
-            if (IsEmpty) return;
+            if (IsPaused || IsEmpty) return;
 
             float drainRate = IsActiveDrain ? activeDrainRate : passiveDrainRate;
             Deplete(drainRate * Time.deltaTime);
