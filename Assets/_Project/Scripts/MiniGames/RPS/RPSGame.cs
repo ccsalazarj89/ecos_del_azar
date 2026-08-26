@@ -10,6 +10,8 @@ namespace EcosDelAzar.MiniGames.RPS
     /// </summary>
     public class RPSGame : MiniGameBase
     {
+        public override string PlayingStatusText => "Elige tu jugada";
+
         [Header("Reveal Timings")]
         [SerializeField] float suspenseDelay = 0.35f;
         [SerializeField] float revealDelay = 0.6f;

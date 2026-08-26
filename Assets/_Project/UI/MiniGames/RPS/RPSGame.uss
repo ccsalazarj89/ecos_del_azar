@@ -1,13 +1,15 @@
+/* Board lives in the top zone (4%-42%); the choice panel in the middle zone
+   (44%-62%); the betting panel owns the bottom. See BettingPanel.uss. */
+
 .rps-board {
     position: absolute;
-    top: 22%;
+    top: 5%;
     left: 50%;
-    translate: -50% -50%;
+    translate: -50% 0;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 640px;
-    height: 300px;
 }
 
 .rps-hand-container {
@@ -17,17 +19,17 @@
 }
 
 .rps-label {
-    font-size: 24px;
+    font-size: 22px;
     color: rgb(220, 200, 180);
     -unity-font-style: bold;
     letter-spacing: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     text-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
 }
 
 .rps-hand-bg {
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     background-color: rgba(15, 10, 5, 0.8);
     border-radius: 12px;
     border-width: 4px;
@@ -38,31 +40,41 @@
 }
 
 .rps-hand-img {
-    width: 120px;
-    height: 120px;
+    position: absolute;
+    width: 110px;
+    height: 110px;
     -unity-background-scale-mode: scale-to-fit;
     transition-property: scale;
     transition-duration: 0.15s;
     transition-timing-function: ease-out;
 }
 
+/* Text fallback shown while no hand sprites are assigned. */
+.rps-hand-text {
+    font-size: 22px;
+    color: rgb(240, 220, 180);
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+}
+
 .rps-vs {
     font-size: 28px;
     color: rgba(220, 200, 180, 0.5);
     -unity-font-style: bold;
-    margin-top: 40px;
+    margin-top: 34px;
     margin-right: 6px;
     margin-left: 6px;
 }
 
 .rps-choice-panel {
     position: absolute;
-    bottom: 18%;
+    top: 45%;
     left: 50%;
     translate: -50% 0;
     flex-direction: column;
     align-items: center;
-    padding: 20px 30px;
+    padding: 14px 24px;
     background-color: rgba(15, 10, 5, 0.85);
     border-radius: 14px;
     border-width: 3px;
@@ -71,11 +83,11 @@
 }
 
 .rps-choice-title {
-    font-size: 20px;
+    font-size: 18px;
     color: rgb(220, 200, 180);
     -unity-font-style: bold;
     letter-spacing: 3px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }
 
 .rps-choice-row {
@@ -84,10 +96,10 @@
 }
 
 .rps-choice-btn {
-    width: 140px;
-    height: 60px;
+    width: 130px;
+    height: 52px;
     margin: 0 8px;
-    font-size: 18px;
+    font-size: 17px;
     -unity-font-style: bold;
     letter-spacing: 3px;
     color: rgb(240, 220, 180);

@@ -16,6 +16,8 @@ namespace EcosDelAzar.MiniGames.RPS
 
         VisualElement playerHandImg;
         VisualElement opponentHandImg;
+        Label playerHandText;
+        Label opponentHandText;
         VisualElement choicePanel;
         Button btnRock;
         Button btnPaper;
@@ -28,6 +30,8 @@ namespace EcosDelAzar.MiniGames.RPS
                 var root = uiDocument.rootVisualElement;
                 playerHandImg = root.Q<VisualElement>("player-hand-img");
                 opponentHandImg = root.Q<VisualElement>("opponent-hand-img");
+                playerHandText = root.Q<Label>("player-hand-text");
+                opponentHandText = root.Q<Label>("opponent-hand-text");
                 choicePanel = root.Q<VisualElement>("rps-choice-panel");
                 btnRock = root.Q<Button>("btn-rock");
                 btnPaper = root.Q<Button>("btn-paper");
@@ -78,20 +82,20 @@ namespace EcosDelAzar.MiniGames.RPS
         void HandlePlayerChoiceLocked(RPSChoice choice)
         {
             SetChoicePanelVisible(false);
-            SetHand(playerHandImg, SpriteFor(choice));
-            SetHand(opponentHandImg, hiddenSprite);
+            SetHand(playerHandImg, playerHandText, choice);
+            SetHand(opponentHandImg, opponentHandText, RPSChoice.None);
         }
 
         void HandleChoicesRevealed(RPSChoice player, RPSChoice opponent)
         {
-            SetHand(playerHandImg, SpriteFor(player));
-            SetHand(opponentHandImg, SpriteFor(opponent));
+            SetHand(playerHandImg, playerHandText, player);
+            SetHand(opponentHandImg, opponentHandText, opponent);
         }
 
         void ResetHands()
         {
-            SetHand(playerHandImg, hiddenSprite);
-            SetHand(opponentHandImg, hiddenSprite);
+            SetHand(playerHandImg, playerHandText, RPSChoice.None);
+            SetHand(opponentHandImg, opponentHandText, RPSChoice.None);
         }
 
         void SetChoicePanelVisible(bool visible)
@@ -100,11 +104,28 @@ namespace EcosDelAzar.MiniGames.RPS
                 choicePanel.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        void SetHand(VisualElement el, Sprite sprite)
+        // Sprites are optional: without them the hand is shown as text.
+        void SetHand(VisualElement img, Label text, RPSChoice choice)
         {
-            if (el == null || sprite == null) return;
-            el.style.backgroundImage = new StyleBackground(sprite);
+            Sprite sprite = SpriteFor(choice);
+
+            if (img != null)
+                img.style.backgroundImage = sprite != null ? new StyleBackground(sprite) : new StyleBackground();
+
+            if (text != null)
+            {
+                text.text = TextFor(choice);
+                text.style.display = sprite != null ? DisplayStyle.None : DisplayStyle.Flex;
+            }
         }
+
+        static string TextFor(RPSChoice c) => c switch
+        {
+            RPSChoice.Rock => "PIEDRA",
+            RPSChoice.Paper => "PAPEL",
+            RPSChoice.Scissors => "TIJERA",
+            _ => "?"
+        };
 
         Sprite SpriteFor(RPSChoice c) => c switch
         {

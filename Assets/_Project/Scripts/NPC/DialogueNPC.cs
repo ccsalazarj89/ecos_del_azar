@@ -8,6 +8,8 @@ namespace EcosDelAzar.NPC
     {
         [SerializeField] DialogueLine[] lines;
         [SerializeField] bool oneTimeOnly = true;
+        [Tooltip("When set, the completed state survives scene reloads (PlayerPrefs). Keys are prefixed with \"run.\" so a run reset can clear them all.")]
+        [SerializeField] string persistenceId;
 
         bool dialogueActive;
         bool completed;
@@ -15,6 +17,15 @@ namespace EcosDelAzar.NPC
 
         public bool DialogueActive => dialogueActive;
         public bool Completed => completed;
+        public string PersistenceId => persistenceId;
+
+        const string PrefsPrefix = "run.dialogue.";
+
+        void Awake()
+        {
+            if (oneTimeOnly && !string.IsNullOrEmpty(persistenceId))
+                completed = PlayerPrefs.GetInt(PrefsPrefix + persistenceId, 0) == 1;
+        }
 
         public event Action OnDialogueStarted;
         public event Action<DialogueLine> OnLineShown;
@@ -71,6 +82,11 @@ namespace EcosDelAzar.NPC
         {
             dialogueActive = false;
             completed = true;
+            if (oneTimeOnly && !string.IsNullOrEmpty(persistenceId))
+            {
+                PlayerPrefs.SetInt(PrefsPrefix + persistenceId, 1);
+                PlayerPrefs.Save();
+            }
             OnDialogueEnded?.Invoke();
 
             // Re-show the hint if the NPC can still be interacted with.

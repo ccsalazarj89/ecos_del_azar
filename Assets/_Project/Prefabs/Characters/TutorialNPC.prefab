@@ -165,6 +165,7 @@ MonoBehaviour:
   - text: "Toma, esto te ayudar\xE1 a empezar."
     isReward: 0
   oneTimeOnly: 1
+  persistenceId: concierge_lobby
 --- !u!114 &298688756490950744
 MonoBehaviour:
   m_ObjectHideFlags: 0

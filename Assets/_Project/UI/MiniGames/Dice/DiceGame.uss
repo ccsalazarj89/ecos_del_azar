@@ -1,13 +1,12 @@
 .dice-board {
     position: absolute;
-    top: 22%;
+    top: 8%;
     left: 50%;
-    translate: -50% -50%;
+    translate: -50% 0;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 600px;
-    height: 300px;
 }
 
 .dice-container {

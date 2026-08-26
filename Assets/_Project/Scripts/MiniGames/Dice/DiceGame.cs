@@ -6,6 +6,8 @@ namespace EcosDelAzar.MiniGames.Dice
 {
     public class DiceGame : MiniGameBase
     {
+        public override string PlayingStatusText => "Lanzando dados...";
+
         [SerializeField] int faces = 6;
         [SerializeField] float rollDuration = 1.2f;
         [SerializeField] float frameInterval = 0.05f;

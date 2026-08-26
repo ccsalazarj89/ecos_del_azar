@@ -6,6 +6,7 @@
             <ui:Label text="TÚ" class="rps-label" />
             <ui:VisualElement name="player-hand-bg" class="rps-hand-bg">
                 <ui:VisualElement name="player-hand-img" class="rps-hand-img" />
+                <ui:Label name="player-hand-text" text="?" class="rps-hand-text" />
             </ui:VisualElement>
         </ui:VisualElement>
 
@@ -15,6 +16,7 @@
             <ui:Label text="RIVAL" class="rps-label" />
             <ui:VisualElement name="opponent-hand-bg" class="rps-hand-bg">
                 <ui:VisualElement name="opponent-hand-img" class="rps-hand-img" />
+                <ui:Label name="opponent-hand-text" text="?" class="rps-hand-text" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

@@ -6,6 +6,8 @@ namespace EcosDelAzar.MiniGames.HighCard
 {
     public class HighCardGame : MiniGameBase
     {
+        public override string PlayingStatusText => "Repartiendo cartas...";
+
         [SerializeField] float revealDelay = 0.8f;
         [SerializeField] bool includeJokers;
 
