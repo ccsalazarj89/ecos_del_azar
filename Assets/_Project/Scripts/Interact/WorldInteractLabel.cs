@@ -113,7 +113,8 @@ namespace EcosDelAzar.UI
         {
             if (label == null) return;
 
-            label.text = showingBlocked ? blockedText : hintText;
+            string hint = interactable?.HintOverride ?? hintText;
+            label.text = showingBlocked ? blockedText : hint;
             label.color = showingBlocked ? blockedColor : hintColor;
         }
 

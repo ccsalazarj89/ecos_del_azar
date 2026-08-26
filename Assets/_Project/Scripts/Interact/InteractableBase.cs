@@ -15,6 +15,9 @@ namespace EcosDelAzar.UI
 
         public bool PlayerInRange { get; private set; }
 
+        /// <summary>Subclasses return a hint that replaces the label default (e.g. "Mesa vacía").</summary>
+        public virtual string HintOverride => null;
+
         public event Action<bool> OnPlayerRangeChanged;
         public event Action OnInteractionStarted;
         public event Action OnInteractionBlocked;

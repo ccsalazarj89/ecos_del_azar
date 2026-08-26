@@ -1,33 +1,42 @@
+using System.Collections.Generic;
 using UnityEngine;
 using EcosDelAzar.Core;
-using EcosDelAzar.MiniGames.HighCard;
 
 namespace EcosDelAzar.MiniGames.Boss
 {
+    /// <summary>
+    /// The boss's house rules: a suit is assigned to the boss for the session and
+    /// the player's cards of that suit move the oxygen tank on each round. Also
+    /// owns the "forced win" the player can buy with oxygen after two straight
+    /// losses. Works with any minigame that implements IBossGame.
+    /// </summary>
     [RequireComponent(typeof(MiniGameSession))]
     public class BossOxygenModifier : MonoBehaviour
     {
-        [Header("Palo del Boss")]
-        [Tooltip("None = aleatorio al inicio de cada sesión.")]
+        [Header("Boss suit")]
+        [Tooltip("None = random at the start of each session.")]
         [SerializeField] Suit forcedBossSuit = Suit.None;
 
-        [Header("Restaurar oxígeno al ganar con palo del boss (% del máximo)")]
+        [Header("Restore on a win holding the boss suit (% of max, best card counts)")]
         [SerializeField, Range(0f, 1f)] float jackRestorePercent  = 0.30f;
         [SerializeField, Range(0f, 1f)] float queenRestorePercent = 0.50f;
         [SerializeField, Range(0f, 1f)] float kingRestorePercent  = 0.70f;
         [SerializeField, Range(0f, 1f)] float aceRestorePercent   = 1.00f;
 
-        [Header("Penalización al perder con palo del boss (% del máximo)")]
+        [Header("Penalties (% of max)")]
+        [Tooltip("Losing while holding a card of the boss suit.")]
         [SerializeField, Range(0f, 1f)] float losePenaltyPercent = 0.20f;
-
-        [Header("Comodín (% del máximo que se drena)")]
+        [Tooltip("Drawing a joker (High Card only).")]
         [SerializeField, Range(0f, 1f)] float jokerDepletePercent = 0.50f;
+        [Tooltip("Busting in Blackjack: the player's own call, so it costs air.")]
+        [SerializeField, Range(0f, 1f)] float bustPenaltyPercent = 0.25f;
 
-        [Header("Victoria Forzada")]
-        [Tooltip("% del oxígeno máximo que cuesta activar la victoria forzada.")]
+        [Header("Forced win")]
+        [Tooltip("% of max oxygen it costs to activate the forced win.")]
         [SerializeField, Range(0f, 1f)] float forceWinOxygenCost = 0.30f;
 
         public Suit AssignedSuit { get; private set; }
+        public int ConsecutiveLosses { get; private set; }
 
         public bool CanAffordForceWin
         {
@@ -38,43 +47,28 @@ namespace EcosDelAzar.MiniGames.Boss
             }
         }
 
-        public int ConsecutiveLosses { get; private set; }
-
         public bool IsForceWinAvailable => ConsecutiveLosses >= 2 && CanAffordForceWin;
 
         public event System.Action OnForceWinAvailabilityChanged;
 
         MiniGameSession session;
-        HighCardGame highCardGame;
-        BossHighCardGame bossGame;
+        IBossGame bossGame;
 
         void Awake()
         {
             session = GetComponent<MiniGameSession>();
-
             AssignBossSuit();
         }
 
         void Start()
         {
-            if (session == null || session.Game == null)
-            {
-                Debug.LogError("[BossOxygenModifier] MiniGameSession o Game no encontrado. Se desactiva.");
-                enabled = false;
-                return;
-            }
-
-            highCardGame = session.Game as HighCardGame;
-            if (highCardGame == null)
-            {
-                Debug.LogError("[BossOxygenModifier] El minijuego no es HighCardGame. Se desactiva.");
-                enabled = false;
-                return;
-            }
-
-            bossGame = highCardGame as BossHighCardGame;
+            bossGame = session?.Game as IBossGame;
             if (bossGame == null)
-                Debug.LogWarning("[BossOxygenModifier] BossHighCardGame no encontrado — TryActivateForceWin() no funcionará.");
+            {
+                Debug.LogError("[BossOxygenModifier] The session's game must implement IBossGame (BossBlackjackGame / BossHighCardGame). Disabled.");
+                enabled = false;
+                return;
+            }
 
             session.Game.OnRoundResolved += HandleRoundResolved;
         }
@@ -87,53 +81,19 @@ namespace EcosDelAzar.MiniGames.Boss
 
         public bool TryActivateForceWin()
         {
-            if (bossGame == null)
-            {
-                Debug.LogWarning("[BossOxygenModifier] Se necesita BossHighCardGame para usar la victoria forzada.");
-                return false;
-            }
+            if (bossGame == null || bossGame.IsForceWinQueued) return false;
 
-            if (bossGame.IsForceWinQueued)
-            {
-                Debug.Log("[BossOxygenModifier] Ya hay una victoria forzada en cola.");
-                return false;
-            }
-
-            OxygenTank tank = GameManager.Instance?.OxygenTank;
+            var tank = GameManager.Instance?.OxygenTank;
             if (tank == null) return false;
 
             float cost = tank.Max * forceWinOxygenCost;
-            if (tank.Current < cost)
-            {
-                Debug.Log($"[BossOxygenModifier] Oxígeno insuficiente. Necesitas {cost:F1}, tienes {tank.Current:F1}.");
-                return false;
-            }
+            if (tank.Current < cost) return false;
 
             tank.Deplete(cost);
             bossGame.QueueForceWin();
             ConsecutiveLosses = 0;
             OnForceWinAvailabilityChanged?.Invoke();
-            Debug.Log($"[BossOxygenModifier] Victoria forzada activada. Coste: {cost:F1} oxígeno ({forceWinOxygenCost * 100f:F0}%).");
             return true;
-        }
-
-        [ContextMenu("DEBUG: Simular victoria con K del palo del boss")]
-        void DebugSimulateKingWin()
-        {
-            var tank = GameManager.Instance?.OxygenTank;
-            if (tank == null) { Debug.LogWarning("[DEBUG] OxygenTank no encontrado."); return; }
-            float amount = tank.Max * kingRestorePercent;
-            tank.Restore(amount);
-            Debug.Log($"[DEBUG] Simulado K de {AssignedSuit} — +{amount:F1} oxígeno.");
-        }
-
-        [ContextMenu("DEBUG: Vaciar oxígeno (game over)")]
-        void DebugDepleteAllOxygen()
-        {
-            var tank = GameManager.Instance?.OxygenTank;
-            if (tank == null) { Debug.LogWarning("[DEBUG] OxygenTank no encontrado."); return; }
-            tank.Deplete(tank.Max);
-            Debug.Log("[DEBUG] Oxígeno vaciado — debería dispararse game over.");
         }
 
         void AssignBossSuit()
@@ -141,56 +101,68 @@ namespace EcosDelAzar.MiniGames.Boss
             if (forcedBossSuit != Suit.None)
             {
                 AssignedSuit = forcedBossSuit;
+                return;
             }
-            else
-            {
-                Suit[] validSuits = { Suit.Hearts, Suit.Diamonds, Suit.Spades, Suit.Clubs };
-                AssignedSuit = validSuits[Random.Range(0, validSuits.Length)];
-            }
-            Debug.Log($"[BossOxygenModifier] Palo del boss para esta sesión: {AssignedSuit}");
+
+            Suit[] validSuits = { Suit.Hearts, Suit.Diamonds, Suit.Spades, Suit.Clubs };
+            AssignedSuit = validSuits[Random.Range(0, validSuits.Length)];
         }
 
         void HandleRoundResolved(RoundResult result)
         {
-            OxygenTank tank = GameManager.Instance?.OxygenTank;
+            var tank = GameManager.Instance?.OxygenTank;
             if (tank == null) return;
 
-            Card playerCard = highCardGame.PlayerCard;
-
             bool prevAvailable = IsForceWinAvailable;
-            if (result.Outcome == RoundOutcome.Lose)
-                ConsecutiveLosses++;
-            else
-                ConsecutiveLosses = 0;
-
-            var debugTank = GameManager.Instance?.OxygenTank;
-            Debug.Log($"[BossOxygenModifier] Ronda resuelta: {result.Outcome} | " +
-                      $"Derrotas consecutivas: {ConsecutiveLosses} | " +
-                      $"OxygenTank: {(debugTank != null ? $"{debugTank.Current:F0}/{debugTank.Max:F0}" : "NULL")} | " +
-                      $"ForceWin disponible: {IsForceWinAvailable}");
-
+            ConsecutiveLosses = result.Outcome == RoundOutcome.Lose ? ConsecutiveLosses + 1 : 0;
             if (prevAvailable != IsForceWinAvailable)
                 OnForceWinAvailabilityChanged?.Invoke();
 
-            if (playerCard.Rank == Rank.Joker)
+            var cards = bossGame.PlayerRoundCards;
+
+            if (HasJoker(cards))
             {
-                float jokerAmount = tank.Max * jokerDepletePercent;
-                tank.Deplete(jokerAmount);
-                Debug.Log($"[BossOxygenModifier] ¡Comodín! -{jokerAmount:F1} oxígeno.");
+                tank.Deplete(tank.Max * jokerDepletePercent);
                 return;
             }
 
-            if (result.Outcome == RoundOutcome.Lose && playerCard.Suit == AssignedSuit)
+            if (result.Outcome == RoundOutcome.Lose)
             {
-                float penalty = tank.Max * losePenaltyPercent;
-                tank.Deplete(penalty);
-                Debug.Log($"[BossOxygenModifier] Derrota con {AssignedSuit} (palo del boss). -{penalty:F1} oxígeno extra.");
+                if (bossGame.PlayerBusted)
+                    tank.Deplete(tank.Max * bustPenaltyPercent);
+                else if (HoldsBossSuit(cards))
+                    tank.Deplete(tank.Max * losePenaltyPercent);
                 return;
             }
 
-            if (result.Outcome == RoundOutcome.Win && playerCard.Suit == AssignedSuit)
+            if (result.Outcome == RoundOutcome.Win)
             {
-                float restorePercent = playerCard.Rank switch
+                float restore = BestRestorePercent(cards);
+                if (restore > 0f) tank.Restore(tank.Max * restore);
+            }
+        }
+
+        static bool HasJoker(IReadOnlyList<Card> cards)
+        {
+            foreach (var c in cards)
+                if (c != null && c.Rank == Rank.Joker) return true;
+            return false;
+        }
+
+        bool HoldsBossSuit(IReadOnlyList<Card> cards)
+        {
+            foreach (var c in cards)
+                if (c != null && c.Suit == AssignedSuit) return true;
+            return false;
+        }
+
+        float BestRestorePercent(IReadOnlyList<Card> cards)
+        {
+            float best = 0f;
+            foreach (var c in cards)
+            {
+                if (c == null || c.Suit != AssignedSuit) continue;
+                float p = c.Rank switch
                 {
                     Rank.Jack  => jackRestorePercent,
                     Rank.Queen => queenRestorePercent,
@@ -198,14 +170,9 @@ namespace EcosDelAzar.MiniGames.Boss
                     Rank.Ace   => aceRestorePercent,
                     _          => 0f
                 };
-
-                if (restorePercent > 0f)
-                {
-                    float restoreAmount = tank.Max * restorePercent;
-                    tank.Restore(restoreAmount);
-                    Debug.Log($"[BossOxygenModifier] {playerCard.Rank} de {AssignedSuit} — +{restoreAmount:F1} oxígeno ({restorePercent * 100f:F0}%).");
-                }
+                if (p > best) best = p;
             }
+            return best;
         }
     }
 }

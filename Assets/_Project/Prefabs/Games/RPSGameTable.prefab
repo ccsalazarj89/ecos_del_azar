@@ -518,6 +518,10 @@ PrefabInstance:
       propertyPath: minigameSceneName
       value: SCN_Game_RPS
       objectReference: {fileID: 0}
+    - target: {fileID: 7851814361567837909, guid: 9e11092f3541ff745beb11a1c8672934, type: 3}
+      propertyPath: floorNumber
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8793806960261936838, guid: 9e11092f3541ff745beb11a1c8672934, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

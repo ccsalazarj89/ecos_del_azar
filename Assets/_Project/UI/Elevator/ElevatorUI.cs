@@ -20,7 +20,7 @@ namespace EcosDelAzar.UI
 
         public enum CurrentFloorDisplayMode { ShowDisabled, Hide }
 
-        enum FloorState { Current, Travel, Purchase, CannotAfford, Locked }
+        enum FloorState { Current, Travel, Purchase, CannotAfford, NeedChips, Locked }
 
         void Awake()
         {
@@ -126,6 +126,7 @@ namespace EcosDelAzar.UI
         {
             if (ElevatorSceneLoader.IsCurrentScene(floor)) return FloorState.Current;
             if (floorProgress != null && floorProgress.IsUnlocked(floor)) return FloorState.Travel;
+            if (floor.RequiresChips) return FloorState.NeedChips;
             if (!floor.CanBePurchased) return FloorState.Locked;
             if (wallet == null || !wallet.CanAfford(floor.AccessCost)) return FloorState.CannotAfford;
             return FloorState.Purchase;
@@ -137,6 +138,7 @@ namespace EcosDelAzar.UI
             FloorState.Travel => "floor-button--travel",
             FloorState.Purchase => "floor-button--purchase",
             FloorState.CannotAfford => "floor-button--cannot-afford",
+            FloorState.NeedChips => "floor-button--cannot-afford",
             _ => "floor-button--locked"
         };
 
@@ -169,6 +171,7 @@ namespace EcosDelAzar.UI
             FloorState.Travel => "IR",
             FloorState.Purchase => $"COMPRAR {floor.AccessCost}",
             FloorState.CannotAfford => $"FALTAN {floor.AccessCost - (wallet?.Coins ?? 0)}",
+            FloorState.NeedChips => $"FICHAS {HouseChips.Count}/{floor.RequiredChips}",
             _ => "BLOQUEADO"
         };
     }

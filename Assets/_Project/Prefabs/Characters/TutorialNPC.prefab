@@ -163,6 +163,10 @@ MonoBehaviour:
     isReward: 0
   - text: "G\xE1nalas en las mesas de juego de cada piso."
     isReward: 0
+  - text: "Y un consejo: el director solo recibe a quien deja sin banca a tres crupieres. Cada mesa que vacíes te da una ficha de la casa."
+    isReward: 0
+  - text: "Con tres fichas, una de ellas de las plantas altas, el ascensor te abrirá la planta preferencial."
+    isReward: 0
   - text: "Toma, esto te ayudar\xE1 a empezar."
     isReward: 0
   oneTimeOnly: 1

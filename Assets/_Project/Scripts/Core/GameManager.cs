@@ -25,6 +25,9 @@ namespace EcosDelAzar.Core
 
         public event Action<GameState> OnStateChanged;
 
+        RunEndUI runEndUI;
+        bool runEnding;
+
         void Awake()
         {
             if (Instance != null && Instance != this)
@@ -40,6 +43,7 @@ namespace EcosDelAzar.Core
             OxygenTank = GetComponent<OxygenTank>();
             FloorProgress = GetComponent<FloorProgress>();
             Music = GetComponent<MusicPlayer>();
+            runEndUI = GetComponentInChildren<RunEndUI>(true);
 
             // Born outside the menu (testing a scene from the Editor): behave as if
             // a run were in progress so HUD and drain work normally.
@@ -79,6 +83,36 @@ namespace EcosDelAzar.Core
             Wallet?.ResetToInitial();
             OxygenTank?.Reset();
             if (OxygenTank != null) OxygenTank.IsActiveDrain = false;
+            runEnding = false;
+        }
+
+        /// <summary>
+        /// Ends the run with a full-screen message. The run data is wiped when the
+        /// player dismisses it, so the main menu comes back without "Continuar".
+        /// </summary>
+        public void EndRun(string title, string subtitle)
+        {
+            if (runEnding) return;
+            runEnding = true;
+
+            if (OxygenTank != null) OxygenTank.IsActiveDrain = false;
+            SetState(GameState.Paused);
+
+            if (runEndUI == null)
+            {
+                FinishRun();
+                return;
+            }
+
+            runEndUI.Show(title, subtitle, "VOLVER AL MENÚ", FinishRun);
+        }
+
+        void FinishRun()
+        {
+            RunState.Clear();
+            runEnding = false;
+            SetState(GameState.MainMenu);
+            SceneManager.LoadScene(MainMenuSceneName);
         }
 
         void ApplyStateSideEffects(GameState state)
@@ -98,14 +132,7 @@ namespace EcosDelAzar.Core
         void HandlePlayerDeath()
         {
             Debug.Log("[GameManager] Player oxygen depleted — run over.");
-
-            if (OxygenTank != null)
-                OxygenTank.IsActiveDrain = false;
-
-            // Permadeath: the run is gone and "Continuar" disappears from the menu.
-            RunState.Clear();
-            SetState(GameState.MainMenu);
-            SceneManager.LoadScene(MainMenuSceneName);
+            EndRun("TE HAS QUEDADO SIN AIRE", "El casino se queda con todo lo que ganaste. La próxima vez, respira antes de apostar.");
         }
     }
 }

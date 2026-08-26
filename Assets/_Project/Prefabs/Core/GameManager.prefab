@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7462344657556040424}
   - component: {fileID: 3919239128698938477}
   - component: {fileID: 1550723216790380503}
+  - component: {fileID: 4200000000000003}
   m_Layer: 0
   m_Name: GameHUD
   m_TagString: Untagged
@@ -48,7 +49,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: a4e96af32e634af46aefcefeb067c2b7, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: ab2185f2bf8d75841ad6eddd6f09d376, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
@@ -173,7 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Audio.MusicPlayer
   defaultTrack: {fileID: 8300000, guid: 6d58807de1c643a6a0e8857f728676ab, type: 3}
   tracks:
-  - sceneName: SCN_Game_HighCard_FinalBoss
+  - sceneName: SCN_Game_Blackjack_FinalBoss
     clip: {fileID: 8300000, guid: 27971c4dd6d64466bfd02cf4ce270ad7, type: 3}
   volume: 0.6
   crossfadeDuration: 1.5
@@ -194,3 +195,15 @@ MonoBehaviour:
   oxygenStepPercent: 25
   coinsToSet: 500
   oxygenPercentToSet: 100
+--- !u!114 &4200000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415565307893241000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e5f4a3b2c1d4e5f8a9b0c1d2e3f4a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.RunEndUI

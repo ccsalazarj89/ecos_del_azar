@@ -18,6 +18,28 @@
                 <ui:VisualElement class="coin-icon"/>
                 <ui:Label name="coins-value" text="0" class="coins-value"/>
             </ui:VisualElement>
+            <ui:VisualElement name="ChipsModule" class="hud-module chips-module">
+                <ui:Label text="FICHAS" class="chips-label"/>
+                <ui:VisualElement class="chips-row">
+                    <ui:VisualElement name="chip-0" class="chip-slot"/>
+                    <ui:VisualElement name="chip-1" class="chip-slot"/>
+                    <ui:VisualElement name="chip-2" class="chip-slot"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="Announcement" class="announcement announcement--hidden">
+        <ui:VisualElement class="announcement__panel">
+            <ui:Label text="MEGAFONÍA" class="announcement__tag"/>
+            <ui:Label name="announcement-text" text="" class="announcement__text"/>
+            <ui:Label text="clic para continuar" class="announcement__hint"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="RunEndOverlay" class="run-end run-end--hidden">
+        <ui:VisualElement class="run-end__panel">
+            <ui:Label name="run-end-title" text="" class="run-end__title"/>
+            <ui:Label name="run-end-subtitle" text="" class="run-end__subtitle"/>
+            <ui:Button name="run-end-button" text="VOLVER AL MENÚ" class="run-end__button"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

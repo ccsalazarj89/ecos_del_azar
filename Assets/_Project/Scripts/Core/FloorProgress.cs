@@ -4,7 +4,8 @@ using EcosDelAzar.Elevator;
 namespace EcosDelAzar.Core
 {
     /// <summary>
-    /// Which elevator floors are unlocked in the current run.
+    /// Which elevator floors are open in the current run: unlocked by default,
+    /// bought with coins, or earned with house chips.
     /// </summary>
     public class FloorProgress : MonoBehaviour
     {
@@ -14,6 +15,8 @@ namespace EcosDelAzar.Core
         {
             if (floor == null) return false;
             if (floor.UnlockedByDefault) return true;
+            if (floor.RequiresChips)
+                return HouseChips.Satisfies(floor.RequiredChips, floor.RequiredUpperFloorChips);
             return RunPrefs.GetInt(FloorUnlockPrefix + floor.FloorId, 0) == 1;
         }
 
@@ -31,7 +34,7 @@ namespace EcosDelAzar.Core
         {
             if (floor == null || wallet == null) return false;
             if (IsUnlocked(floor)) return true;
-            if (!floor.CanBePurchased) return false;
+            if (!floor.CanBePurchased || floor.RequiresChips) return false;
             if (!wallet.TrySpend(floor.AccessCost)) return false;
             Unlock(floor);
             return true;

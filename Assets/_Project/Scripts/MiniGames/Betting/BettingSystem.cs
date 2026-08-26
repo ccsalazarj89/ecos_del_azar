@@ -17,12 +17,12 @@ namespace EcosDelAzar.MiniGames.Betting
 
         public int PlayerCoins { get; private set; }
         public int OpponentCoins { get; private set; }
-        public int MinimumBet => minimumBet;
+        public int MinimumBet => Mathf.Max(minimumBet, tableMinimumBet);
         public int MaxBet => opponent != null ? Mathf.Min(PlayerCoins, OpponentCoins) : PlayerCoins;
         public int LastBet { get; private set; }
         public int NpcProposedBet { get; private set; }
         public int LastWinnings { get; private set; }
-        public bool IsPlayerBroke => PlayerCoins < minimumBet;
+        public bool IsPlayerBroke => PlayerCoins < MinimumBet;
         public bool IsOpponentBroke => OpponentCoins <= 0;
 
         public event Action OnCoinsUpdated;
@@ -31,16 +31,24 @@ namespace EcosDelAzar.MiniGames.Betting
         public event Action<RoundOutcome, int> OnRoundSettled; // outcome + signed winnings, fired after coins are applied
 
         Wallet wallet;
+        int tableMinimumBet;
 
-        public void Initialize()
+        /// <summary>
+        /// Starts a seating. Pass the table's remembered state so a re-entered table
+        /// keeps its opponent stack and escalated minimum (-1 / 0 = table defaults).
+        /// </summary>
+        public void Initialize(int opponentCoinsOverride = -1, int minimumBetOverride = 0)
         {
             wallet = GameManager.Instance?.Wallet;
             SyncFromWallet();
-            LastBet = minimumBet;
+            tableMinimumBet = minimumBetOverride;
+            LastBet = MinimumBet;
+            NpcProposedBet = MinimumBet;
 
             if (opponent != null)
             {
                 opponent.ResetSession();
+                if (opponentCoinsOverride >= 0) opponent.Coins = opponentCoinsOverride;
                 OpponentCoins = opponent.Coins;
             }
         }
@@ -51,7 +59,7 @@ namespace EcosDelAzar.MiniGames.Betting
         /// </summary>
         public void PlaceBets(int playerBet)
         {
-            playerBet = Mathf.Clamp(playerBet, minimumBet, MaxBet);
+            playerBet = Mathf.Clamp(playerBet, MinimumBet, MaxBet);
             LastBet = playerBet;
 
             PlayerCoins -= playerBet;
@@ -172,14 +180,14 @@ namespace EcosDelAzar.MiniGames.Betting
                 return;
             }
 
-            var context = new BetContext(LastBet, minimumBet, opponent.Coins);
+            var context = new BetContext(LastBet, MinimumBet, opponent.Coins);
             opponent.RequestBet(context, OnNpcBetDecided);
         }
 
         void OnNpcBetDecided(int proposedBet)
         {
             int maxAllowed = Mathf.Min(PlayerCoins, OpponentCoins);
-            NpcProposedBet = Mathf.Clamp(proposedBet, minimumBet, maxAllowed);
+            NpcProposedBet = Mathf.Clamp(proposedBet, MinimumBet, maxAllowed);
             OnNpcProposal?.Invoke(NpcProposedBet);
         }
 

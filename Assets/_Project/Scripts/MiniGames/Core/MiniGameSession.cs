@@ -6,6 +6,12 @@ using EcosDelAzar.Elevator;
 
 namespace EcosDelAzar.MiniGames
 {
+    /// <summary>
+    /// Orchestrates one seating at a table: betting + minigame rounds until the
+    /// player folds or someone goes broke. Restores and persists the table's
+    /// per-run state (opponent bankroll, escalated minimum) and awards a house
+    /// chip when the opponent is bankrupted.
+    /// </summary>
     public class MiniGameSession : MonoBehaviour
     {
         [SerializeField] MiniGameBase miniGame;
@@ -19,6 +25,9 @@ namespace EcosDelAzar.MiniGames
 
         public event Action OnSessionStarted;
         public event Action OnSessionEnded;
+
+        string TableId => ElevatorSceneLoader.CurrentTableId;
+        bool HasTable => !string.IsNullOrEmpty(TableId);
 
         void Start()
         {
@@ -73,6 +82,7 @@ namespace EcosDelAzar.MiniGames
             if (GameManager.Instance?.OxygenTank != null)
                 GameManager.Instance.OxygenTank.IsActiveDrain = false;
 
+            PersistTableState();
             miniGame.End();
             OnSessionEnded?.Invoke();
             ElevatorSceneLoader.ReturnToHub();
@@ -81,7 +91,10 @@ namespace EcosDelAzar.MiniGames
         void BeginSession()
         {
             RoundsPlayed = 0;
-            bettingSystem.Initialize();
+
+            int opponentCoins = HasTable ? TableState.GetOpponentCoins(TableId) : -1;
+            int minimumBet = HasTable ? TableState.GetMinimumBet(TableId) : 0;
+            bettingSystem.Initialize(opponentCoins, minimumBet);
 
             if (bettingSystem.IsPlayerBroke)
             {
@@ -106,7 +119,22 @@ namespace EcosDelAzar.MiniGames
 
         void OnGameOver(bool playerWon)
         {
-            // UI handles showing game over screen — don't auto-leave
+            PersistTableState();
+
+            if (playerWon && HasTable && !TableState.IsBeaten(TableId))
+            {
+                TableState.MarkBeaten(TableId);
+                HouseChips.Award(ElevatorSceneLoader.CurrentTableFloor);
+            }
+            // The betting UI shows the game-over panel; leaving is the player's click.
+        }
+
+        // The table remembers the opponent's stack and its last proposal, so folding
+        // and re-entering cannot reset the stakes (see docs: "Design note: folding").
+        void PersistTableState()
+        {
+            if (!HasTable) return;
+            TableState.Save(TableId, bettingSystem.OpponentCoins, bettingSystem.NpcProposedBet);
         }
     }
 }
