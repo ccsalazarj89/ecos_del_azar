@@ -169,6 +169,8 @@ MonoBehaviour:
     isReward: 0
   - text: "Toma, esto te ayudar\xE1 a empezar."
     isReward: 0
+  - text: "Y si te quedas sin monedas, la máquina de la esquina te compra aire: un 10% del tanque son 15 monedas. Pruébala antes de subir."
+    isReward: 0
   oneTimeOnly: 1
   persistenceId: concierge_lobby
   repeatLines:

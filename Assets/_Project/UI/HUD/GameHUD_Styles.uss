@@ -365,3 +365,73 @@
 .run-end__button:hover {
     background-color: rgb(180, 50, 50);
 }
+
+/* ── OBJECTIVE — tutorial banner, top centre between the HUD corners ── */
+
+.objective {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 18px 8px 10px;
+    background-color: rgba(14, 10, 8, 0.9);
+    border-width: 1px;
+    border-color: rgba(255, 200, 50, 0.4);
+    border-left-width: 5px;
+    border-left-color: rgb(255, 185, 0);
+    transition-property: opacity, translate;
+    transition-duration: 0.4s;
+    opacity: 1;
+}
+
+.objective--hidden {
+    opacity: 0;
+    translate: -50% -12px;
+    display: none;
+}
+
+.objective__badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: rgba(255, 200, 50, 0.12);
+    border-width: 2px;
+    border-color: rgb(255, 185, 0);
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.objective__step {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: rgb(255, 220, 120);
+}
+
+.objective__icon {
+    font-size: 22px;
+    color: rgb(255, 200, 50);
+    margin-right: 12px;
+    -unity-text-align: middle-center;
+    min-width: 30px;
+    text-shadow: 0 0 10px rgba(255, 200, 0, 0.5);
+}
+
+.objective__body {
+    flex-direction: column;
+}
+
+.objective__tag {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: rgba(255, 200, 50, 0.7);
+    margin-bottom: 2px;
+}
+
+.objective__text {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgb(240, 225, 190);
+}

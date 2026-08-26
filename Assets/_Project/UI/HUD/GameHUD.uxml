@@ -27,6 +27,16 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="Objective" class="objective objective--hidden" picking-mode="Ignore">
+            <ui:VisualElement class="objective__badge">
+                <ui:Label name="objective-step" text="1/4" class="objective__step"/>
+            </ui:VisualElement>
+            <ui:Label name="objective-icon" text="" class="objective__icon"/>
+            <ui:VisualElement class="objective__body">
+                <ui:Label text="OBJETIVO" class="objective__tag"/>
+                <ui:Label name="objective-text" text="" class="objective__text"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="Announcement" class="announcement announcement--hidden">
         <ui:VisualElement class="announcement__panel">

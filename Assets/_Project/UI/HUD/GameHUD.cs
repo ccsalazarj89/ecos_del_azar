@@ -29,6 +29,10 @@ namespace EcosDelAzar.UI
         VisualElement[] chipSlots = new VisualElement[ChipSlots];
         VisualElement announcement;
         Label announcementText;
+        VisualElement objective;
+        Label objectiveStep;
+        Label objectiveIcon;
+        Label objectiveText;
 
         GameManager gameManager;
         Wallet wallet;
@@ -48,11 +52,17 @@ namespace EcosDelAzar.UI
             oxygenModule = root.Q("OxygenModule");
             announcement = root.Q("Announcement");
             announcementText = root.Q<Label>("announcement-text");
+            objective = root.Q("Objective");
+            objectiveStep = root.Q<Label>("objective-step");
+            objectiveIcon = root.Q<Label>("objective-icon");
+            objectiveText = root.Q<Label>("objective-text");
             for (int i = 0; i < ChipSlots; i++)
                 chipSlots[i] = root.Q($"chip-{i}");
 
             HouseChips.OnChipsChanged += OnChipsChanged;
             announcement?.RegisterCallback<ClickEvent>(OnAnnouncementClicked);
+            TutorialProgress.OnObjectiveChanged += ShowObjective;
+            ShowObjective(TutorialProgress.CurrentObjectiveOrNull);
         }
 
         void Start()
@@ -93,6 +103,7 @@ namespace EcosDelAzar.UI
 
             HouseChips.OnChipsChanged -= OnChipsChanged;
             announcement?.UnregisterCallback<ClickEvent>(OnAnnouncementClicked);
+            TutorialProgress.OnObjectiveChanged -= ShowObjective;
         }
 
         void UpdateVisibility(GameState state)
@@ -166,6 +177,19 @@ namespace EcosDelAzar.UI
         }
 
         void OnAnnouncementClicked(ClickEvent _) => HideAnnouncement();
+
+        void ShowObjective(TutorialProgress.Objective? current)
+        {
+            if (objective == null) return;
+            bool has = current.HasValue;
+            objective.EnableInClassList("objective--hidden", !has);
+            if (!has) return;
+
+            var o = current.Value;
+            if (objectiveStep != null) objectiveStep.text = $"{o.Step}/{o.Total}";
+            if (objectiveIcon != null) objectiveIcon.text = o.Icon;
+            if (objectiveText != null) objectiveText.text = o.Text;
+        }
 
         void HideAnnouncement()
         {

@@ -1,3 +1,4 @@
+using EcosDelAzar.Core;
 using EcosDelAzar.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +10,8 @@ namespace EcosDelAzar.Elevator
         [SerializeField] ElevatorUI elevatorUI;
         [SerializeField] ElevatorFloorData[] floors;
         [SerializeField] InputActionReference exitAction;
+
+        public override string HintOverride => TutorialProgress.ElevatorLocked ? TutorialProgress.ElevatorLockedHint : null;
 
         protected override void OnEnable()
         {
@@ -28,6 +31,11 @@ namespace EcosDelAzar.Elevator
         protected override void OnInteract()
         {
             if (elevatorUI == null) return;
+            if (TutorialProgress.ElevatorLocked)
+            {
+                RaiseInteractionBlocked();
+                return;
+            }
             RaiseInteractionStarted();
             elevatorUI.Open(floors);
         }

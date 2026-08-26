@@ -15,8 +15,8 @@ MonoBehaviour:
   floorId: 01
   floorNumber: 1
   displayName: Nivel 1
-  description: Tus primeras apuestas estan aqui
+  description: Tus primeras apuestas. Mesas de 10 monedas
   sceneName: SCN_Floor_01_Level1
-  unlockedByDefault: 0
-  canBePurchased: 1
+  unlockedByDefault: 1
+  canBePurchased: 0
   accessCost: 50
