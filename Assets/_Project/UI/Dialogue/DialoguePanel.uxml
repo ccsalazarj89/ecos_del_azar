@@ -12,6 +12,7 @@
                 </ui:VisualElement>
                 <ui:Label name="dialogue-prompt-label" text="[E] Continuar" class="dialogue-prompt__label"/>
             </ui:VisualElement>
+            <ui:Label name="dialogue-close-hint" text="[ESC] Cerrar" class="dialogue-close-hint"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

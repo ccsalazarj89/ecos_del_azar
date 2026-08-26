@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.NPC.DialogueNPC
   interactAction: {fileID: 8038336070660516234, guid: d2b0bd47aafe82049b853d85d945ac0d, type: 3}
+  exitAction: {fileID: 2144928836936293257, guid: d2b0bd47aafe82049b853d85d945ac0d, type: 3}
   lines:
   - text: Bienvenido al refugio, forastero...
     isReward: 0
@@ -166,6 +167,9 @@ MonoBehaviour:
     isReward: 0
   oneTimeOnly: 1
   persistenceId: concierge_lobby
+  repeatLines:
+  - text: "Ummm... ¿vuelves por aquí? No tengo más dinero para ti."
+    isReward: 0
 --- !u!114 &298688756490950744
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,15 +5,11 @@ namespace EcosDelAzar.Core
 {
     public class OxygenTank : MonoBehaviour
     {
-        const string PrefsKey = "player_oxygen";
+        const string PrefsKey = "oxygen";
 
         [Header("Oxygen Settings")]
         [SerializeField] float maxOxygen = 100f;
         [SerializeField] float startingOxygen = 100f;
-
-        [Header("Refill Settings")]
-        [SerializeField] float oxygenPerCoin = 5f;
-        [SerializeField] int coinCostPerRefill = 10;
 
         [Header("Drain Rates")]
         [SerializeField] float passiveDrainRate = 1f;
@@ -36,7 +32,7 @@ namespace EcosDelAzar.Core
 
         void Awake()
         {
-            Current = PlayerPrefs.GetFloat(PrefsKey, startingOxygen);
+            Current = RunPrefs.GetFloat(PrefsKey, startingOxygen);
         }
 
         void Update()
@@ -66,16 +62,6 @@ namespace EcosDelAzar.Core
             NotifyAndSave();
         }
 
-        public bool TryBuyOxygen(Wallet wallet)
-        {
-            if (wallet == null) return false;
-            if (IsFull) return false;
-            if (!wallet.TrySpend(coinCostPerRefill)) return false;
-
-            Restore(oxygenPerCoin);
-            return true;
-        }
-
         public void Reset()
         {
             Current = startingOxygen;
@@ -85,8 +71,8 @@ namespace EcosDelAzar.Core
         void NotifyAndSave()
         {
             OnOxygenChanged?.Invoke(Current);
-            PlayerPrefs.SetFloat(PrefsKey, Current);
-            PlayerPrefs.Save();
+            RunPrefs.SetFloat(PrefsKey, Current);
+            RunPrefs.Save();
         }
     }
 }

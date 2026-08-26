@@ -167,3 +167,13 @@
     -unity-font-style: bold;
     text-shadow: 0 0 6px rgba(0, 200, 240, 0.4);
 }
+
+/* ── Close hint ── */
+
+.dialogue-close-hint {
+    margin-top: 6px;
+    -unity-text-align: middle-right;
+    color: rgba(200, 180, 150, 0.45);
+    font-size: 11px;
+    letter-spacing: 2px;
+}

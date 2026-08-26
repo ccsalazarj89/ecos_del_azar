@@ -6,7 +6,8 @@
             <ui:Label text="ECOS DEL AZAR" class="menu-title"/>
             <ui:Label text="Sube. Apuesta. Sobrevive." class="menu-subtitle"/>
             <ui:VisualElement name="menu-options" class="menu-options">
-                <ui:Button name="PlayButton" text="JUGAR" class="menu-button menu-button--primary"/>
+                <ui:Button name="ContinueButton" text="CONTINUAR" class="menu-button menu-button--primary"/>
+                <ui:Button name="NewGameButton" text="NUEVO JUEGO" class="menu-button"/>
                 <ui:Button name="QuitButton" text="SALIR" class="menu-button"/>
             </ui:VisualElement>
         </ui:VisualElement>

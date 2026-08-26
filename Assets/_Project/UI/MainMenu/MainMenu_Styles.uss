@@ -81,3 +81,12 @@
 .menu-button--primary:hover {
     background-color: rgba(40, 30, 10, 0.9);
 }
+
+.menu-button--danger {
+    border-left-color: rgb(220, 60, 50);
+    color: rgb(255, 120, 100);
+}
+
+.menu-button--danger:hover {
+    background-color: rgba(60, 15, 10, 0.9);
+}

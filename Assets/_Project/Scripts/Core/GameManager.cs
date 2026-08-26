@@ -12,6 +12,7 @@ namespace EcosDelAzar.Core
     public class GameManager : MonoBehaviour
     {
         const string MainMenuSceneName = "SCN_MainMenu";
+        const string HubScenePrefix = "SCN_Floor_";
 
         public static GameManager Instance { get; private set; }
 
@@ -40,12 +41,11 @@ namespace EcosDelAzar.Core
             FloorProgress = GetComponent<FloorProgress>();
             Music = GetComponent<MusicPlayer>();
 
-            // Si el GameManager nace en una escena que no es el menú (p. ej. porque estás
-            // probando una escena directamente desde el Editor), arrancamos ya en Playing
-            // para que el HUD y el resto de sistemas de juego se comporten con normalidad.
-            State = SceneManager.GetActiveScene().name == MainMenuSceneName
-                ? GameState.MainMenu
-                : GameState.Playing;
+            // Born outside the menu (testing a scene from the Editor): behave as if
+            // a run were in progress so HUD and drain work normally.
+            bool inMenu = SceneManager.GetActiveScene().name == MainMenuSceneName;
+            State = inMenu ? GameState.MainMenu : GameState.Playing;
+            if (!inMenu && !RunState.Exists) RunState.StartNew();
 
             ApplyStateSideEffects(State);
         }
@@ -54,12 +54,14 @@ namespace EcosDelAzar.Core
         {
             if (OxygenTank != null)
                 OxygenTank.OnDepleted += HandlePlayerDeath;
+            SceneManager.sceneLoaded += HandleSceneLoaded;
         }
 
         void OnDisable()
         {
             if (OxygenTank != null)
                 OxygenTank.OnDepleted -= HandlePlayerDeath;
+            SceneManager.sceneLoaded -= HandleSceneLoaded;
         }
 
         public void SetState(GameState newState)
@@ -71,26 +73,39 @@ namespace EcosDelAzar.Core
             OnStateChanged?.Invoke(State);
         }
 
+        /// <summary>Starting values of a fresh run. Called by RunState.StartNew after the prefs are wiped.</summary>
+        public void ResetRunValues()
+        {
+            Wallet?.ResetToInitial();
+            OxygenTank?.Reset();
+            if (OxygenTank != null) OxygenTank.IsActiveDrain = false;
+        }
+
         void ApplyStateSideEffects(GameState state)
         {
-            // Nadie consume oxígeno mientras el jugador está en el menú o en pausa.
+            // Nobody breathes oxygen while in the menu or paused.
             if (OxygenTank != null)
                 OxygenTank.IsPaused = state == GameState.MainMenu || state == GameState.Paused;
         }
 
+        void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            // Hub floors are the resume points of a run; minigame scenes are not.
+            if (scene.name.StartsWith(HubScenePrefix))
+                RunState.MarkScene(scene.name);
+        }
+
         void HandlePlayerDeath()
         {
-            Debug.Log("[GameManager] Player oxygen depleted — GAME OVER.");
+            Debug.Log("[GameManager] Player oxygen depleted — run over.");
 
-            // Detener el drenaje activo
             if (OxygenTank != null)
                 OxygenTank.IsActiveDrain = false;
 
-            // Resetear oxígeno para la próxima sesión
-            OxygenTank?.Reset();
-
-            // Volver al lobby
-            SceneManager.LoadScene("SCN_Floor_00_Lobby");
+            // Permadeath: the run is gone and "Continuar" disappears from the menu.
+            RunState.Clear();
+            SetState(GameState.MainMenu);
+            SceneManager.LoadScene(MainMenuSceneName);
         }
     }
 }

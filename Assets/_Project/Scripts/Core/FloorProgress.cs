@@ -4,24 +4,24 @@ using EcosDelAzar.Elevator;
 namespace EcosDelAzar.Core
 {
     /// <summary>
-    /// Which elevator floors are unlocked.
+    /// Which elevator floors are unlocked in the current run.
     /// </summary>
     public class FloorProgress : MonoBehaviour
     {
-        const string FloorUnlockPrefix = "floor_unlocked_";
+        const string FloorUnlockPrefix = "floor.";
 
         public bool IsUnlocked(ElevatorFloorData floor)
         {
             if (floor == null) return false;
             if (floor.UnlockedByDefault) return true;
-            return PlayerPrefs.GetInt(FloorUnlockPrefix + floor.FloorId, 0) == 1;
+            return RunPrefs.GetInt(FloorUnlockPrefix + floor.FloorId, 0) == 1;
         }
 
         public void Unlock(ElevatorFloorData floor)
         {
             if (floor == null) return;
-            PlayerPrefs.SetInt(FloorUnlockPrefix + floor.FloorId, 1);
-            PlayerPrefs.Save();
+            RunPrefs.SetInt(FloorUnlockPrefix + floor.FloorId, 1);
+            RunPrefs.Save();
         }
 
         /// <summary>
@@ -35,12 +35,6 @@ namespace EcosDelAzar.Core
             if (!wallet.TrySpend(floor.AccessCost)) return false;
             Unlock(floor);
             return true;
-        }
-
-        public void ResetAll()
-        {
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
         }
     }
 }

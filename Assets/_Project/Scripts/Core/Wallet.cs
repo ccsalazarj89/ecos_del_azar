@@ -5,9 +5,9 @@ namespace EcosDelAzar.Core
 {
     public class Wallet : MonoBehaviour
     {
-        const string PrefsKey = "player_coins";
+        const string PrefsKey = "coins";
 
-        [SerializeField] int initialCoins = 1000;
+        [SerializeField] int initialCoins = 0;
 
         public int Coins { get; private set; }
 
@@ -15,9 +15,7 @@ namespace EcosDelAzar.Core
 
         void Awake()
         {
-            // TODO: quitar el DeleteKey cuando termine el testing
-            PlayerPrefs.DeleteKey(PrefsKey);
-            Coins = PlayerPrefs.GetInt(PrefsKey, initialCoins);
+            Coins = RunPrefs.GetInt(PrefsKey, initialCoins);
         }
 
         public bool CanAfford(int amount) => amount >= 0 && Coins >= amount;
@@ -44,6 +42,7 @@ namespace EcosDelAzar.Core
             Save();
         }
 
+        /// <summary>Starting coins of a new run. Only RunState should call this.</summary>
         public void ResetToInitial()
         {
             Coins = initialCoins;
@@ -52,8 +51,8 @@ namespace EcosDelAzar.Core
 
         void Save()
         {
-            PlayerPrefs.SetInt(PrefsKey, Coins);
-            PlayerPrefs.Save();
+            RunPrefs.SetInt(PrefsKey, Coins);
+            RunPrefs.Save();
             OnCoinsChanged?.Invoke(Coins);
         }
     }

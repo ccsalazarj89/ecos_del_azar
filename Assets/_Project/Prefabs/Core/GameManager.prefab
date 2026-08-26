@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae3900046e7a3414194bd8c7e6146a14, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Wallet
-  initialCoins: 5
+  initialCoins: 0
 --- !u!114 &5232142927966073101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,10 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.OxygenTank
   maxOxygen: 100
   startingOxygen: 100
-  oxygenPerCoin: 5
-  coinCostPerRefill: 10
-  passiveDrainRate: 0.05
-  activeDrainRate: 0.1
+  passiveDrainRate: 0.15
+  activeDrainRate: 0.4
 --- !u!114 &6344746793930421894
 MonoBehaviour:
   m_ObjectHideFlags: 0
