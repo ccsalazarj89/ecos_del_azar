@@ -43,6 +43,7 @@ namespace EcosDelAzar.Player
         void OnEnable()
         {
             if (inputActions == null) inputActions = new IA_PlayerControls();
+            moveInput = Vector2.zero;
             inputActions.Player.Enable();
             inputActions.Player.Move.performed += OnMove;
             inputActions.Player.Move.canceled += OnMove;

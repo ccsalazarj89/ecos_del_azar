@@ -117,6 +117,13 @@ namespace EcosDelAzar.UI
 
             // A fresh run may have been started from the menu.
             if (state == GameState.Playing) RefreshChips(HouseChips.Count);
+
+            // Overlays live outside HUDContainer (they must cover minigame UI); the menu must never inherit them.
+            if (state == GameState.MainMenu)
+            {
+                HideAnnouncement();
+                ShowObjective(null);
+            }
         }
 
         void UpdateCoins(int amount)

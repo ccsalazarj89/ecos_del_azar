@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using EcosDelAzar.Core;
 using EcosDelAzar.Elevator;
+using EcosDelAzar.Player;
 using EcosDelAzar.UI;
 
 namespace EcosDelAzar.MiniGames
@@ -23,12 +24,20 @@ namespace EcosDelAzar.MiniGames
         [SerializeField] string tableId;
         [Tooltip("Floor number used for house-chip requirements (boss needs chips from floor 2+).")]
         [SerializeField] int floorNumber = 1;
+        [Tooltip("Bankrupting this table's dealer earns a house chip. Off for the boss table.")]
+        [SerializeField] bool awardsHouseChip = true;
+        [Tooltip("Where the player sits. The player walks here and sits before the game loads, and stands up from here on return.")]
+        [SerializeField] Transform seatAnchor;
+        [Tooltip("Optional. Where the player ends up after standing (e.g. beside the chair). Empty = stays at the seat.")]
+        [SerializeField] Transform standAnchor;
 
         public string TableId => string.IsNullOrEmpty(tableId)
             ? $"{SceneManager.GetActiveScene().name}/{name}"
             : tableId;
 
         public bool IsBeaten => TableState.IsBeaten(TableId);
+        public Transform SeatAnchor => seatAnchor;
+        public Transform StandAnchor => standAnchor;
 
         /// <summary>The table's live minimum: its default, or the opponent's last proposal if higher.</summary>
         public int CurrentMinimumBet => Mathf.Max(minimumBetRequired, TableState.GetMinimumBet(TableId));
@@ -46,8 +55,36 @@ namespace EcosDelAzar.MiniGames
                 return;
             }
 
+            var seating = FindFirstObjectByType<PlayerSeating>();
+            if (seating != null && seating.IsBusy) return;
+
             RaiseInteractionStarted();
-            ElevatorSceneLoader.LoadMinigame(minigameSceneName, TableId, floorNumber);
+            if (seating != null && seatAnchor != null)
+                seating.SitAt(seatAnchor, LoadGame);
+            else
+                LoadGame();
+        }
+
+        void LoadGame()
+        {
+            ElevatorSceneLoader.LoadMinigame(minigameSceneName, TableId, floorNumber, awardsHouseChip);
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            if (seatAnchor != null)
+            {
+                Gizmos.color = new Color(0.2f, 0.7f, 1f);
+                Gizmos.DrawWireSphere(seatAnchor.position, 0.25f);
+                Gizmos.DrawLine(seatAnchor.position, seatAnchor.position + seatAnchor.forward * 0.6f);
+            }
+
+            if (standAnchor != null)
+            {
+                Gizmos.color = new Color(0.3f, 1f, 0.4f);
+                Gizmos.DrawWireSphere(standAnchor.position, 0.25f);
+                if (seatAnchor != null) Gizmos.DrawLine(seatAnchor.position, standAnchor.position);
+            }
         }
     }
 }

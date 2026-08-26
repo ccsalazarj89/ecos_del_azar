@@ -124,7 +124,8 @@ namespace EcosDelAzar.MiniGames
             if (playerWon && HasTable && !TableState.IsBeaten(TableId))
             {
                 TableState.MarkBeaten(TableId);
-                HouseChips.Award(ElevatorSceneLoader.CurrentTableFloor);
+                if (ElevatorSceneLoader.CurrentTableAwardsChip)
+                    HouseChips.Award(ElevatorSceneLoader.CurrentTableFloor);
             }
             // The betting UI shows the game-over panel; leaving is the player's click.
         }
@@ -134,7 +135,8 @@ namespace EcosDelAzar.MiniGames
         void PersistTableState()
         {
             if (!HasTable) return;
-            TableState.Save(TableId, bettingSystem.OpponentCoins, bettingSystem.NpcProposedBet);
+            int minimum = Mathf.Min(bettingSystem.NpcProposedBet, bettingSystem.OpponentCoins);
+            TableState.Save(TableId, bettingSystem.OpponentCoins, minimum);
         }
     }
 }

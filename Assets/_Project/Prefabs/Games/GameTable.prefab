@@ -232,6 +232,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 6666000000000002}
+  - {fileID: 6666000000000004}
   - {fileID: 4483264823471366424}
   - {fileID: 3076967850788455272}
   - {fileID: 5482738194024942708}
@@ -257,6 +259,10 @@ MonoBehaviour:
   interactAction: {fileID: 8038336070660516234, guid: d2b0bd47aafe82049b853d85d945ac0d, type: 3}
   minigameSceneName: 
   minimumBetRequired: 10
+  tableId: 
+  floorNumber: 1
+  seatAnchor: {fileID: 6666000000000002}
+  standAnchor: {fileID: 6666000000000004}
 --- !u!65 &4400823613470146099
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -762,3 +768,65 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5661782023438305008, guid: f1beac9ef60ff4a4c80fcbdd5612e33f, type: 3}
   m_PrefabInstance: {fileID: 9031102883750514727}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6666000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6666000000000002}
+  m_Layer: 0
+  m_Name: SeatAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6666000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8793806960261936838}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6666000000000003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6666000000000004}
+  m_Layer: 0
+  m_Name: StandAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6666000000000004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666000000000003}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.9, y: 0, z: -1.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8793806960261936838}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

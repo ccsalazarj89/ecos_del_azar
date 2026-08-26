@@ -33,7 +33,6 @@ namespace EcosDelAzar.MiniGames.Blackjack
         public event Action OnOpponentHoleCardRevealed;
 
         Deck deck;
-        bool playerStood;
 
         protected override void OnBegin()
         {
@@ -55,7 +54,6 @@ namespace EcosDelAzar.MiniGames.Blackjack
         public void Stand()
         {
             if (!AwaitingPlayerInput) return;
-            playerStood = true;
             AwaitingPlayerInput = false;
             OnPlayerStood?.Invoke();
         }
@@ -64,7 +62,6 @@ namespace EcosDelAzar.MiniGames.Blackjack
         {
             PlayerHand.Clear();
             OpponentHand.Clear();
-            playerStood = false;
 
             if (deck.Count < 15) deck.Shuffle();
 
@@ -142,7 +139,6 @@ namespace EcosDelAzar.MiniGames.Blackjack
         protected override void OnEnd()
         {
             AwaitingPlayerInput = false;
-            playerStood = false;
         }
     }
 }

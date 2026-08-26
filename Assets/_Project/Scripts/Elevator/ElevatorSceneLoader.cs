@@ -10,6 +10,17 @@ namespace EcosDelAzar.Elevator
         /// <summary>Table the player is currently seated at (set when entering a minigame).</summary>
         public static string CurrentTableId { get; private set; }
         public static int CurrentTableFloor { get; private set; }
+        public static bool CurrentTableAwardsChip { get; private set; }
+
+        static string returnedTableId;
+
+        /// <summary>Table the player just left, read once by PlayerSeating to spawn on its chair.</summary>
+        public static string ConsumeReturnedTableId()
+        {
+            string id = returnedTableId;
+            returnedTableId = null;
+            return id;
+        }
 
         public static bool IsCurrentScene(ElevatorFloorData floor)
         {
@@ -24,21 +35,21 @@ namespace EcosDelAzar.Elevator
             SceneManager.LoadScene(floor.SceneName);
         }
 
-        public static void LoadMinigame(string sceneName, string tableId, int tableFloor)
+        public static void LoadMinigame(string sceneName, string tableId, int tableFloor, bool awardsChip = true)
         {
             if (string.IsNullOrWhiteSpace(sceneName)) return;
             LastHubScene = SceneManager.GetActiveScene().name;
             CurrentTableId = tableId;
             CurrentTableFloor = tableFloor;
+            CurrentTableAwardsChip = awardsChip;
             SceneManager.LoadScene(sceneName);
         }
 
         public static void ReturnToHub()
         {
-            if (!string.IsNullOrWhiteSpace(LastHubScene))
-            {
-                SceneManager.LoadScene(LastHubScene);
-            }
+            if (string.IsNullOrWhiteSpace(LastHubScene)) return;
+            returnedTableId = CurrentTableId;
+            SceneManager.LoadScene(LastHubScene);
         }
     }
 }

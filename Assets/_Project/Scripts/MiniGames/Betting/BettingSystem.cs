@@ -22,8 +22,10 @@ namespace EcosDelAzar.MiniGames.Betting
         public int LastBet { get; private set; }
         public int NpcProposedBet { get; private set; }
         public int LastWinnings { get; private set; }
+        // Broke = unable to cover the table minimum, on either side. With table memory the
+        // minimum can climb, so a dealer who cannot match it loses the table.
         public bool IsPlayerBroke => PlayerCoins < MinimumBet;
-        public bool IsOpponentBroke => OpponentCoins <= 0;
+        public bool IsOpponentBroke => opponent != null && OpponentCoins < MinimumBet;
 
         public event Action OnCoinsUpdated;
         public event Action<int> OnNpcProposal;
@@ -186,8 +188,9 @@ namespace EcosDelAzar.MiniGames.Betting
 
         void OnNpcBetDecided(int proposedBet)
         {
-            int maxAllowed = Mathf.Min(PlayerCoins, OpponentCoins);
-            NpcProposedBet = Mathf.Clamp(proposedBet, MinimumBet, maxAllowed);
+            // Never propose more than either side can put on the table. MaxBet >= MinimumBet
+            // is guaranteed here because broke sides end the match before a proposal.
+            NpcProposedBet = Mathf.Clamp(proposedBet, MinimumBet, Mathf.Max(MinimumBet, MaxBet));
             OnNpcProposal?.Invoke(NpcProposedBet);
         }
 

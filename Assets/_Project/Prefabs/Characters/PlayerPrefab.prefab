@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5140449622067105381}
   - component: {fileID: 6186797458889817494}
   - component: {fileID: 8183811772660793283}
+  - component: {fileID: 8183811772660793284}
   - component: {fileID: 4666547236270740753}
   - component: {fileID: 9001000000000001}
   m_Layer: 0
@@ -633,3 +634,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.5, y: 2, z: 2.5}
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!114 &8183811772660793284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3781260082288641240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9c0d1e2f3a4b5c9d6e7f8a9b0c1d2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Player.PlayerSeating
+  walkToSeatSpeed: 2.5
+  turnSpeed: 10
+  sitSettleTime: 0.9
+  standUpTime: 0.7
+  walkAnimValue: 0.3
