@@ -36,6 +36,8 @@ namespace EcosDelAzar.NPC
             rb = GetComponent<Rigidbody>();
             rb.freezeRotation = true;
             if (animator == null) animator = GetComponentInChildren<Animator>();
+            // Movement is script-driven; root motion from the walk clip (unbaked Y) would make the NPC drift upward.
+            if (animator != null) animator.applyRootMotion = false;
         }
 
         void FixedUpdate()

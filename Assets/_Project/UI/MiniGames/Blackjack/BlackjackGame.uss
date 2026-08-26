@@ -63,7 +63,7 @@
 
 .bj-action-panel {
     position: absolute;
-    top: 49%;
+    top: 60%;
     left: 50%;
     translate: -50% 0;
     flex-direction: row;
