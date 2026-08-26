@@ -33,6 +33,7 @@ namespace EcosDelAzar.UI
 
         // Playing phase
         Label currentBetDisplay;
+        Label playingStatus;
 
         // Result phase
         Label resultText;
@@ -83,6 +84,7 @@ namespace EcosDelAzar.UI
             btnPlay = root.Q<Button>("btn-play");
 
             currentBetDisplay = root.Q<Label>("current-bet-display");
+            playingStatus = root.Q<Label>("playing-status");
 
             resultText = root.Q<Label>("result-text");
             resultAmount = root.Q<Label>("result-amount");
@@ -217,6 +219,8 @@ namespace EcosDelAzar.UI
             RefreshCoins();
             if (currentBetDisplay != null)
                 currentBetDisplay.text = $"Apuesta: {currentBet}";
+            if (playingStatus != null && session?.Game != null)
+                playingStatus.text = session.Game.PlayingStatusText;
             SetPhase(playingPhase);
         }
 

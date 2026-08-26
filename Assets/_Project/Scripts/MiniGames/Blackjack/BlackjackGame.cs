@@ -10,6 +10,8 @@ namespace EcosDelAzar.MiniGames.Blackjack
     /// </summary>
     public class BlackjackGame : MiniGameBase
     {
+        public override string PlayingStatusText => "Tu turno: pide o plántate";
+
         [Header("Rules")]
         [Tooltip("Score at or above which the dealer stops taking cards. Standard = 17.")]
         [SerializeField, Range(15, 21)] int dealerStandsAt = 17;

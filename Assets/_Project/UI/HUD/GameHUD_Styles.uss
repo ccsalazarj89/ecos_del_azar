@@ -161,7 +161,7 @@
     transition-timing-function: ease-out;
 }
 
-// Oxygen states
+/* Oxygen states */
 .oxygen-bar-fill.oxygen-low {
     background-color: rgb(230, 120, 30);
 }

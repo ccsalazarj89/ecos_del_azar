@@ -12,6 +12,9 @@ namespace EcosDelAzar.MiniGames
         public RoundResult LastResult { get; private set; }
         public bool InProgress => State != MiniGameState.Idle;
 
+        /// <summary>Shown by the betting panel while the round is being played.</summary>
+        public virtual string PlayingStatusText => "Jugando...";
+
         public event Action OnRoundStarted;
         public event Action<RoundResult> OnRoundResolved;
         public event Action OnReadyForNextRound;
