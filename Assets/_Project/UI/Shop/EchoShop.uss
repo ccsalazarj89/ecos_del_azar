@@ -23,8 +23,9 @@
 }
 
 .shop-panel {
-    width: 1040px;
-    padding: 24px 30px;
+    width: 880px;
+    margin-top: 110px;
+    padding: 16px 22px;
     background-color: rgba(14, 10, 18, 0.97);
     border-width: 2px;
     border-color: rgb(120, 80, 180);
@@ -36,11 +37,11 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 18px;
+    margin-bottom: 10px;
 }
 
 .shop-title {
-    font-size: 30px;
+    font-size: 24px;
     -unity-font-style: bold;
     letter-spacing: 6px;
     color: rgb(220, 190, 255);
@@ -68,7 +69,7 @@
 }
 
 .shop-resource__value {
-    font-size: 22px;
+    font-size: 18px;
     -unity-font-style: bold;
 }
 
@@ -85,10 +86,10 @@
 }
 
 .shop-card {
-    width: 300px;
-    min-height: 210px;
-    margin: 8px;
-    padding: 16px 14px 12px 14px;
+    width: 262px;
+    min-height: 150px;
+    margin: 5px;
+    padding: 10px 12px 8px 12px;
     flex-direction: column;
     align-items: center;
     background-color: rgba(30, 20, 45, 0.95);
@@ -115,25 +116,25 @@
 }
 
 .shop-card__glyph {
-    font-size: 30px;
+    font-size: 22px;
     -unity-font-style: bold;
     color: rgb(220, 190, 255);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     text-shadow: 0 0 14px rgba(180, 120, 255, 0.6);
 }
 
 .shop-card__title {
-    font-size: 15px;
+    font-size: 13px;
     -unity-font-style: bold;
     letter-spacing: 2px;
     color: rgb(245, 235, 255);
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     -unity-text-align: middle-center;
     white-space: normal;
 }
 
 .shop-card__desc {
-    font-size: 12px;
+    font-size: 11px;
     color: rgb(190, 175, 210);
     white-space: normal;
     -unity-text-align: middle-center;
@@ -142,7 +143,7 @@
 }
 
 .shop-card__price {
-    font-size: 12px;
+    font-size: 11px;
     -unity-font-style: bold;
     letter-spacing: 2px;
     padding: 5px 12px;
@@ -171,8 +172,8 @@
 /* ── Feedback + footer ── */
 
 .shop-feedback {
-    height: 22px;
-    margin-top: 10px;
+    height: 20px;
+    margin-top: 6px;
     font-size: 13px;
     letter-spacing: 2px;
     -unity-font-style: bold;
@@ -190,8 +191,8 @@
 }
 
 .shop-close {
-    width: 160px;
-    height: 42px;
+    width: 140px;
+    height: 36px;
     font-size: 14px;
     letter-spacing: 3px;
     -unity-font-style: bold;
@@ -212,3 +213,38 @@
     letter-spacing: 2px;
     color: rgba(200, 180, 220, 0.45);
 }
+
+/* ═══ Compact layout — docked bottom-centre, clear of the HUD row ═══ */
+
+.shop-root {
+    justify-content: flex-end;
+}
+
+.shop-panel {
+    width: 760px;
+    margin-top: 0;
+    margin-bottom: 18px;
+    padding: 12px 16px;
+}
+
+.shop-header { margin-bottom: 4px; }
+.shop-title { font-size: 18px; letter-spacing: 4px; }
+.shop-subtitle { display: none; }
+.shop-resource { margin-left: 16px; }
+.shop-resource__value { font-size: 16px; }
+
+.shop-card {
+    width: 236px;
+    min-height: 112px;
+    margin: 3px 4px;
+    padding: 6px 10px 5px 10px;
+}
+
+.shop-card__glyph { font-size: 20px; margin-bottom: 2px; }
+.shop-card__title { font-size: 12px; margin-bottom: 4px; }
+.shop-card__desc { font-size: 10px; margin-bottom: 4px; }
+.shop-card__price { font-size: 10px; padding: 4px 10px; }
+
+.shop-feedback { height: 16px; margin-top: 2px; font-size: 11px; }
+.shop-footer { margin-top: 2px; }
+.shop-close { width: 120px; height: 28px; font-size: 12px; }

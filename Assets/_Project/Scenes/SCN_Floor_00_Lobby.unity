@@ -425,6 +425,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1369627885818836912, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
+      propertyPath: m_Radius
+      value: 1.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3123972946447844184, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
       propertyPath: m_Name
       value: TutorialNPC
@@ -439,7 +443,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5388520836614980423, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.26
+      value: 4.49
       objectReference: {fileID: 0}
     - target: {fileID: 5388520836614980423, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1126,6 +1130,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 324455063959812405, guid: 18ce4bd201ac9bb46834aaa247b58f60, type: 3}
+      propertyPath: m_Name
+      value: FloorLobby
+      objectReference: {fileID: 0}
     - target: {fileID: 6332254974489192529, guid: 18ce4bd201ac9bb46834aaa247b58f60, type: 3}
       propertyPath: m_LocalScale.x
       value: 4
@@ -1173,10 +1181,6 @@ PrefabInstance:
     - target: {fileID: 6332254974489192529, guid: 18ce4bd201ac9bb46834aaa247b58f60, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 324455063959812405, guid: 18ce4bd201ac9bb46834aaa247b58f60, type: 3}
-      propertyPath: m_Name
-      value: FloorLobby
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1355,42 +1359,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3bd0fb02a80e3244a0cd05b6717f683, type: 3}
---- !u!114 &918934326562349619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740467859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f2c9a1e4b3d4c5e8a9f0b1c2d3e4f5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Environment.WallOcclusionFader
-  player: {fileID: 0}
-  viewCamera: {fileID: 0}
-  hiddenAlpha: 0.25
-  fadeSpeed: 6
-  boundsPadding: 0.5
-  playerHeight: 1.8
-  ensureColliders: 1
---- !u!1660057539 &9223372036854775807
-SceneRoots:
-  m_ObjectHideFlags: 0
-  m_Roots:
-  - {fileID: 2029953240}
-  - {fileID: 109586473}
-  - {fileID: 605436215}
-  - {fileID: 2010051218}
-  - {fileID: 1508876333}
-  - {fileID: 1542618215}
-  - {fileID: 639179104}
-  - {fileID: 972352018}
-  - {fileID: 1247639842}
-  - {fileID: 740467860}
-  - {fileID: 1789221971}
-  - {fileID: 820973509}
-  - {fileID: 987654321002}
 --- !u!1 &987654321001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,3 +1404,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.NPC.TutorialSequence
   moveDistance: 2
+--- !u!114 &918934326562349619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740467859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f2c9a1e4b3d4c5e8a9f0b1c2d3e4f5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Environment.WallOcclusionFader
+  player: {fileID: 0}
+  viewCamera: {fileID: 0}
+  hiddenAlpha: 0.25
+  fadeSpeed: 6
+  boundsPadding: 0.5
+  playerHeight: 1.8
+  ensureColliders: 1
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 2029953240}
+  - {fileID: 109586473}
+  - {fileID: 605436215}
+  - {fileID: 2010051218}
+  - {fileID: 1508876333}
+  - {fileID: 1542618215}
+  - {fileID: 639179104}
+  - {fileID: 972352018}
+  - {fileID: 1247639842}
+  - {fileID: 740467860}
+  - {fileID: 1789221971}
+  - {fileID: 820973509}
+  - {fileID: 987654321002}

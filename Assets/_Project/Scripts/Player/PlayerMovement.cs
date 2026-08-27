@@ -63,6 +63,14 @@ namespace EcosDelAzar.Player
 
         void FixedUpdate()
         {
+            var gm = Core.GameManager.Instance;
+            if (gm != null && gm.State != Core.GameState.Playing)
+            {
+                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+                animator?.SetFloat(SpeedHash, 0f);
+                return;
+            }
+
             // Actualizar animación con la magnitud del input (0 = idle, ~1 = moviéndose)
             animator?.SetFloat(SpeedHash, moveInput.magnitude);
 

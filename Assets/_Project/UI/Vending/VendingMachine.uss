@@ -521,3 +521,46 @@
     color: rgb(255, 220, 210);
     border-color: rgb(200, 60, 50);
 }
+
+/* ═══ Compact layout — docked bottom-centre, clear of the HUD row ═══ */
+
+.vending-root {
+    justify-content: flex-end;
+}
+
+.vending-panel {
+    width: 540px;
+    margin-bottom: 90px;
+    border-width: 2px;
+    border-top-width: 4px;
+}
+
+.vending-header { padding: 10px 18px; }
+.vending-title { font-size: 20px; }
+.vending-subtitle { font-size: 10px; margin-top: 2px; }
+.vending-status-pill { padding: 4px 10px; }
+
+.resource-row { margin: 10px 18px 2px 18px; }
+.resource { padding: 6px 10px; }
+.resource--coins { width: 170px; }
+
+.mode-tabs { margin: 10px 18px 0 18px; }
+.mode-tab { height: 34px; font-size: 12px; }
+
+.rate-text { font-size: 11px; margin-top: 8px; }
+
+.qty-row { margin-top: 6px; }
+.qty-adjust-btn { width: 34px; height: 34px; font-size: 20px; }
+.qty-display { min-width: 130px; margin: 0 10px; }
+.qty-value { font-size: 28px; }
+.qty-caption { font-size: 9px; }
+
+.qty-shortcuts { margin-top: 6px; }
+.qty-shortcuts .shortcut-btn { width: 64px; height: 26px; font-size: 10px; }
+
+.preview-box { margin: 10px 18px 0 18px; padding: 8px 12px; }
+
+.feedback-text { margin-top: 6px; font-size: 11px; }
+
+.vending-footer { padding: 8px 18px 12px 18px; }
+.vending-footer .action-btn { height: 36px; font-size: 13px; }

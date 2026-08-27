@@ -650,3 +650,25 @@
 .credits__button:hover {
     background-color: rgb(40, 150, 60);
 }
+
+/* ── OXYGEN WARNING — line under the bar ── */
+
+.oxygen-warning {
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+    white-space: normal;
+    color: rgb(230, 120, 30);
+    transition-property: opacity;
+    transition-duration: 0.3s;
+}
+
+.oxygen-warning--hidden {
+    display: none;
+}
+
+.oxygen-warning--critical {
+    color: rgb(255, 60, 60);
+    text-shadow: 0 0 8px rgba(255, 40, 40, 0.7);
+}

@@ -107,6 +107,7 @@ namespace EcosDelAzar.Core
 
             if (OxygenTank != null) OxygenTank.IsActiveDrain = false;
             SetState(GameState.Paused);
+            Time.timeScale = 0f;
 
             if (runEndUI == null)
             {

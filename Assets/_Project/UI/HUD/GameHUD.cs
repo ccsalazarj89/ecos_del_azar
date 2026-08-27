@@ -27,6 +27,7 @@ namespace EcosDelAzar.UI
         Label oxygenPercent;
         VisualElement oxygenBarFill;
         VisualElement oxygenModule;
+        Label oxygenWarning;
         VisualElement[] chipSlots = new VisualElement[ChipSlots];
         VisualElement announcement;
         Label announcementText;
@@ -42,6 +43,7 @@ namespace EcosDelAzar.UI
         Wallet wallet;
         OxygenTank oxygenTank;
         Coroutine announcementRoutine;
+        int knownChips;
 
         void OnEnable()
         {
@@ -54,6 +56,7 @@ namespace EcosDelAzar.UI
             oxygenPercent = root.Q<Label>("oxygen-percent");
             oxygenBarFill = root.Q("oxygen-fill");
             oxygenModule = root.Q("OxygenModule");
+            oxygenWarning = root.Q<Label>("oxygen-warning");
             announcement = root.Q("Announcement");
             announcementText = root.Q<Label>("announcement-text");
             echoesModule = root.Q("EchoesModule");
@@ -69,6 +72,7 @@ namespace EcosDelAzar.UI
             announcement?.RegisterCallback<ClickEvent>(OnAnnouncementClicked);
             TutorialProgress.OnObjectiveChanged += ShowObjective;
             ShowObjective(TutorialProgress.CurrentObjectiveOrNull);
+            ModalTracker.OnAnyOpenChanged += OnModalChanged;
         }
 
         void Start()
@@ -118,6 +122,7 @@ namespace EcosDelAzar.UI
             HouseChips.OnChipsChanged -= OnChipsChanged;
             announcement?.UnregisterCallback<ClickEvent>(OnAnnouncementClicked);
             TutorialProgress.OnObjectiveChanged -= ShowObjective;
+            ModalTracker.OnAnyOpenChanged -= OnModalChanged;
 
             if (modifiers != null)
             {
@@ -171,19 +176,33 @@ namespace EcosDelAzar.UI
 
             if (oxygenModule != null)
                 oxygenModule.EnableInClassList("oxygen-critical-state", ratio <= CriticalOxygenThreshold);
+
+            if (oxygenWarning != null)
+            {
+                bool critical = ratio <= CriticalOxygenThreshold;
+                bool low = ratio <= LowOxygenThreshold;
+                oxygenWarning.text = critical ? "AIRE CRÍTICO. Vende, gana o compra O2 ya."
+                    : low ? "Te falta aire. Busca una máquina de O2." : string.Empty;
+                oxygenWarning.EnableInClassList("oxygen-warning--hidden", !low);
+                oxygenWarning.EnableInClassList("oxygen-warning--critical", critical);
+            }
         }
 
         void OnChipsChanged(int count)
         {
+            bool earned = count > knownChips;
+            knownChips = count;
             RefreshChips(count);
 
+            // The PA only reacts to chips won at a table, never to chips spent at the minibar.
+            if (!earned || chipAnnouncements.Length == 0) return;
             int index = Mathf.Clamp(count - 1, 0, chipAnnouncements.Length - 1);
-            if (count >= 1 && chipAnnouncements.Length > 0)
-                Announce(chipAnnouncements[index]);
+            Announce(chipAnnouncements[index]);
         }
 
         void RefreshChips(int count)
         {
+            knownChips = count;
             for (int i = 0; i < ChipSlots; i++)
                 chipSlots[i]?.EnableInClassList("chip-slot--earned", i < count);
         }
@@ -221,10 +240,13 @@ namespace EcosDelAzar.UI
         void OnReviveUsed(float ratio) =>
             Announce($"Bombona de reserva activada: el tanque vuelve al {Mathf.RoundToInt(ratio * 100f)}%. No habrá otra.");
 
+        // World panels (O2 machine, minibar, elevator, dialogue) sit where the banner is: hide it while one is open.
+        void OnModalChanged(bool anyOpen) => ShowObjective(TutorialProgress.CurrentObjectiveOrNull);
+
         void ShowObjective(TutorialProgress.Objective? current)
         {
             if (objective == null) return;
-            bool has = current.HasValue;
+            bool has = current.HasValue && !ModalTracker.IsAnyOpen;
             objective.EnableInClassList("objective--hidden", !has);
             if (!has) return;
 

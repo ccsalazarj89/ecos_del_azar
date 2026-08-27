@@ -37,6 +37,9 @@ namespace EcosDelAzar.UI
 
         void HandleInteractInput(InputAction.CallbackContext ctx)
         {
+            // Dead, paused or in the menu: the world stops listening.
+            var gm = Core.GameManager.Instance;
+            if (gm != null && gm.State != Core.GameState.Playing) return;
             if (PlayerInRange) OnInteract();
         }
 
