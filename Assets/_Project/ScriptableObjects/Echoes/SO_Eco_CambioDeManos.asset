@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Echoes.EcoDefinition
   id: cambio_manos
   displayName: Cambio de manos
-  description: Conoces a quien lleva la maquina. El oxigeno te cuesta un 30% menos.
+  description: Tus proximas 2 compras de oxigeno, a mitad de precio.
   glyph: %
   effect: 5
-  value: 0.7
+  value: 0.5
+  usage: 0
+  charges: 2
+  durationSeconds: 0
   priceKind: 0
   price: 100

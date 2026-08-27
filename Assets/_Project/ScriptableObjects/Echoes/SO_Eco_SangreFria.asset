@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Echoes.EcoDefinition
   id: sangre_fria
   displayName: Sangre fria
-  description: En la mesa respiras como si nada. El drenaje mientras juegas baja a la mitad.
+  description: Durante 3 minutos el aire se gasta a la mitad mientras juegas.
   glyph: S
   effect: 1
   value: 0.5
+  usage: 1
+  charges: 1
+  durationSeconds: 180
   priceKind: 1
   price: 25

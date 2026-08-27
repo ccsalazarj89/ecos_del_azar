@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using EcosDelAzar.Core;
+using EcosDelAzar.Core.Echoes;
 using EcosDelAzar.UI;
 
 namespace EcosDelAzar.Vending
@@ -77,6 +78,10 @@ namespace EcosDelAzar.Vending
         public TradeQuote Trade(TradeMode mode, int steps)
         {
             var result = exchange.Execute(mode, steps, Wallet, Tank);
+
+            // "Cambio de manos": a discounted purchase spends one charge.
+            if (result.IsValid && mode == TradeMode.Buy)
+                GameManager.Instance?.Modifiers?.TryConsume(EcoEffect.OxygenBuyDiscount, out _);
 
             if (result.IsValid) OnTradeCompleted?.Invoke(result);
             else OnTradeRejected?.Invoke(result);

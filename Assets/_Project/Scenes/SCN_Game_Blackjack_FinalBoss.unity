@@ -709,8 +709,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb292dd7c3b5186409d64d4cb9ad19cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Opponent.AIOpponent
-  startingCoins: 1000
-  brain: {fileID: 11400000, guid: fe37ee38d689fa947acad7ea030b80eb, type: 2}
+  startingCoins: 3000
+  brain: {fileID: 11400000, guid: b0550000000000000000000000000002, type: 2}
 --- !u!4 &1897634374
 Transform:
   m_ObjectHideFlags: 0

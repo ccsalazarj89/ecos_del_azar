@@ -155,13 +155,13 @@ namespace EcosDelAzar.Core
             // Hub floors are the resume points of a run; minigame scenes are not.
             if (scene.name.StartsWith(HubScenePrefix))
                 RunState.MarkScene(scene.name);
+            Modifiers?.SaveTimers();
         }
 
         void HandlePlayerDeath()
         {
             // "Bombona de reserva": one Echo buys a second chance, once per run.
-            float revive = Modifiers?.TryConsumeRevive() ?? 0f;
-            if (revive > 0f && OxygenTank != null)
+            if (Modifiers != null && OxygenTank != null && Modifiers.TryConsume(EcoEffect.ReviveOnce, out float revive))
             {
                 OxygenTank.Restore(OxygenTank.Max * revive);
                 return;

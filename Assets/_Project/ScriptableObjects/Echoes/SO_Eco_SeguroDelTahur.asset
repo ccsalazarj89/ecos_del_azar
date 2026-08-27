@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Echoes.EcoDefinition
   id: seguro_tahur
   displayName: Seguro del tahur
-  description: La primera ronda que pierdas en cada mesa te devuelve la apuesta.
+  description: La proxima ronda que pierdas, en cualquier mesa, te devuelve la apuesta.
   glyph: $
   effect: 3
   value: 1
+  usage: 0
+  charges: 1
+  durationSeconds: 0
   priceKind: 0
   price: 120

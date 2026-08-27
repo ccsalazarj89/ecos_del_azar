@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Echoes.EcoDefinition
   id: codicia
   displayName: Codicia
-  description: Cuando doblas y ganas, la casa paga un 50% extra.
+  description: Las proximas 2 veces que dobles y ganes, la casa paga un 50% extra.
   glyph: x2
   effect: 2
   value: 1.5
+  usage: 0
+  charges: 2
+  durationSeconds: 0
   priceKind: 0
   price: 150

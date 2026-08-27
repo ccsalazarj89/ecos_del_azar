@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using EcosDelAzar.Core;
 using EcosDelAzar.Opponent;
+using EcosDelAzar.Core.Echoes;
 
 namespace EcosDelAzar.MiniGames.Betting
 {
@@ -35,7 +36,6 @@ namespace EcosDelAzar.MiniGames.Betting
         Wallet wallet;
         int tableMinimumBet;
         bool lastBetWasDouble;
-        bool insuranceAvailable;
 
         /// <summary>True when the last lost round was refunded by the insurance Echo.</summary>
         public bool LastLossInsured { get; private set; }
@@ -52,7 +52,6 @@ namespace EcosDelAzar.MiniGames.Betting
             wallet = GameManager.Instance?.Wallet;
             SyncFromWallet();
             tableMinimumBet = minimumBetOverride;
-            insuranceAvailable = GameManager.Instance?.Modifiers?.HasFirstLossInsurance ?? false;
             lastBetWasDouble = false;
             LastLossInsured = false;
             LastBet = MinimumBet;
@@ -105,10 +104,10 @@ namespace EcosDelAzar.MiniGames.Betting
                     PlayerCoins += pot;   // take own ante back + opponent's
                     LastWinnings = bet;   // net gain over the ante paid
 
-                    // "Codicia": doubling pays extra, out of the house pocket.
-                    if (lastBetWasDouble && mods != null && mods.DoubleWinMultiplier > 1f)
+                    // "Codicia": a doubled win spends one charge and the house pays the extra.
+                    if (lastBetWasDouble && mods != null && mods.TryConsume(EcoEffect.DoubleWinBonus, out float mult) && mult > 1f)
                     {
-                        int bonus = Mathf.RoundToInt(bet * (mods.DoubleWinMultiplier - 1f));
+                        int bonus = Mathf.RoundToInt(bet * (mult - 1f));
                         PlayerCoins += bonus;
                         LastWinnings += bonus;
                     }
@@ -118,10 +117,9 @@ namespace EcosDelAzar.MiniGames.Betting
                     if (opponent != null) opponent.Coins += pot;
                     LastWinnings = -bet;
 
-                    // "Seguro del tahur": the house refunds the first loss of the seating.
-                    if (insuranceAvailable)
+                    // "Seguro del tahur": one charge refunds this loss.
+                    if (mods != null && mods.TryConsume(EcoEffect.FirstLossInsurance, out _))
                     {
-                        insuranceAvailable = false;
                         LastLossInsured = true;
                         PlayerCoins += bet;
                         LastWinnings = 0;

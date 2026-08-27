@@ -228,13 +228,24 @@ namespace EcosDelAzar.UI
         {
             if (echoBadges == null || modifiers == null) return;
             echoBadges.Clear();
-            foreach (var eco in modifiers.Owned)
+            foreach (var s in modifiers.Active)
             {
-                var badge = new Label(eco.Glyph) { name = $"echo-badge-{eco.Id}", tooltip = eco.DisplayName };
+                var badge = new Label($"{s.Definition.Glyph} {s.RemainingLabel}") { name = $"echo-badge-{s.Definition.Id}", tooltip = s.Definition.DisplayName };
                 badge.AddToClassList("echo-badge");
                 echoBadges.Add(badge);
             }
-            echoesModule?.EnableInClassList("echoes-module--hidden", modifiers.Owned.Count == 0);
+            echoesModule?.EnableInClassList("echoes-module--hidden", modifiers.Active.Count == 0);
+        }
+
+        // Timed Echoes count down on the badge; a once-per-second refresh is enough.
+        float echoRefreshTimer;
+        void Update()
+        {
+            if (modifiers == null || modifiers.Active.Count == 0) return;
+            echoRefreshTimer -= Time.unscaledDeltaTime;
+            if (echoRefreshTimer > 0f) return;
+            echoRefreshTimer = 1f;
+            RefreshEchoes();
         }
 
         void OnReviveUsed(float ratio) =>

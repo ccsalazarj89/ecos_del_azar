@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Echoes.EcoDefinition
   id: bombona_reserva
   displayName: Bombona de reserva
-  description: Una vez por partida, si te quedas sin aire, el tanque vuelve al 25% en vez de morir.
+  description: Si te quedas sin aire, el tanque vuelve al 25% en vez de morir. Una vez.
   glyph: +
   effect: 4
   value: 0.25
+  usage: 0
+  charges: 1
+  durationSeconds: 0
   priceKind: 2
   price: 1

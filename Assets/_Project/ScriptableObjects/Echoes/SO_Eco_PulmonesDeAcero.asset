@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.Echoes.EcoDefinition
   id: pulmones_acero
   displayName: Pulmones de acero
-  description: Tu aire dura mas. El oxigeno se gasta un 40% mas despacio mientras caminas.
+  description: Durante 4 minutos el aire se gasta a la mitad mientras caminas.
   glyph: O2
   effect: 0
-  value: 0.6
+  value: 0.5
+  usage: 1
+  charges: 1
+  durationSeconds: 240
   priceKind: 1
   price: 30
