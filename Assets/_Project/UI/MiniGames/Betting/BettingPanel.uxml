@@ -20,6 +20,7 @@
 
         <!-- Phase 1: Place initial bet -->
         <ui:VisualElement name="bet-phase" class="phase">
+            <ui:Label name="table-min-note" text="" class="table-min-note" />
             <ui:Label text="Tu apuesta:" class="phase-label" />
             <ui:VisualElement class="bet-input-row">
                 <ui:Button name="btn-bet-down" text="-" class="bet-adjust-btn" />
@@ -32,6 +33,7 @@
                 <ui:Button name="btn-bet-max" text="MAX" class="shortcut-btn" />
             </ui:VisualElement>
             <ui:Button name="btn-play" text="JUGAR" class="action-btn action-btn--play" />
+            <ui:Button name="btn-stand-up" text="LEVANTARSE" class="action-btn action-btn--standup" />
         </ui:VisualElement>
 
         <!-- Phase 2: Playing (dice rolling) - just a status label -->

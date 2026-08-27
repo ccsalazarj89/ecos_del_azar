@@ -51,7 +51,7 @@ namespace EcosDelAzar.MiniGames.Boss
             yield return new WaitForSeconds(endDelay);
 
             if (playerWon)
-                GameManager.Instance?.EndRun(victoryTitle, victorySubtitle);
+                GameManager.Instance?.EndRun(victoryTitle, victorySubtitle, showCredits: true);
             else
                 GameManager.Instance?.EndRun(defeatTitle, defeatSubtitle);
         }

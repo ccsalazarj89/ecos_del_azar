@@ -21,6 +21,7 @@ namespace EcosDelAzar.UI
         Button newGameButton;
         Button continueButton;
         Button quitButton;
+        Button creditsButton;
 
         bool awaitingConfirm;
         Coroutine confirmTimer;
@@ -34,10 +35,16 @@ namespace EcosDelAzar.UI
             newGameButton = root.Q<Button>("NewGameButton");
             continueButton = root.Q<Button>("ContinueButton");
             quitButton = root.Q<Button>("QuitButton");
+            creditsButton = root.Q<Button>("CreditsButton");
 
             if (newGameButton != null) newGameButton.clicked += OnNewGameClicked;
             if (continueButton != null) continueButton.clicked += Continue;
             if (quitButton != null) quitButton.clicked += Quit;
+            if (creditsButton != null) creditsButton.clicked += ShowCredits;
+#if UNITY_WEBGL
+            // Browsers own the tab; there is nothing to quit.
+            if (quitButton != null) quitButton.style.display = DisplayStyle.None;
+#endif
 
             Refresh();
         }
@@ -47,6 +54,7 @@ namespace EcosDelAzar.UI
             if (newGameButton != null) newGameButton.clicked -= OnNewGameClicked;
             if (continueButton != null) continueButton.clicked -= Continue;
             if (quitButton != null) quitButton.clicked -= Quit;
+            if (creditsButton != null) creditsButton.clicked -= ShowCredits;
         }
 
         void Update()
@@ -111,6 +119,8 @@ namespace EcosDelAzar.UI
             yield return new WaitForSecondsRealtime(ConfirmWindow);
             Refresh();
         }
+
+        void ShowCredits() => GameManager.Instance?.ShowCredits();
 
         void Quit()
         {

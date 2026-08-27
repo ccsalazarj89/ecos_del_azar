@@ -40,6 +40,9 @@ namespace EcosDelAzar.MiniGames.Betting
         /// <summary>True when the last lost round was refunded by the insurance Echo.</summary>
         public bool LastLossInsured { get; private set; }
 
+        /// <summary>True when the table minimum comes from a previous seating (dealer remembers his raise).</summary>
+        public bool TableMinimumActive => tableMinimumBet > minimumBet;
+
         /// <summary>
         /// Starts a seating. Pass the table's remembered state so a re-entered table
         /// keeps its opponent stack and escalated minimum (-1 / 0 = table defaults).

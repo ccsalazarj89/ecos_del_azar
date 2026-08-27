@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/UI/HUD/GameHUD_Styles.uss?fileID=7433441132597879392&amp;guid=c88c52e1c20358a4fa9ff5d241c32add&amp;type=3#GameHUD_Styles"/>
-    <ui:VisualElement name="HUDContainer" class="hud-container" picking-mode="Ignore">
-        <ui:VisualElement name="TopLeft" class="hud-top-left" picking-mode="Ignore">
+    <ui:VisualElement name="HUDContainer" picking-mode="Ignore" class="hud-container">
+        <ui:VisualElement name="TopLeft" picking-mode="Ignore" class="hud-top-left">
             <ui:VisualElement name="OxygenModule" class="hud-module oxygen-module">
                 <ui:VisualElement class="oxygen-header">
                     <ui:VisualElement class="oxygen-icon"/>
@@ -13,7 +13,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="TopRight" class="hud-top-right" picking-mode="Ignore">
+        <ui:VisualElement name="TopRight" picking-mode="Ignore" class="hud-top-right">
             <ui:VisualElement name="CoinsModule" class="hud-module coins-module">
                 <ui:VisualElement class="coin-icon"/>
                 <ui:Label name="coins-value" text="0" class="coins-value"/>
@@ -31,7 +31,7 @@
                 <ui:VisualElement name="echo-badges" class="echo-badges"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="Objective" class="objective objective--hidden" picking-mode="Ignore">
+        <ui:VisualElement name="Objective" picking-mode="Ignore" class="objective objective--hidden">
             <ui:VisualElement class="objective__badge">
                 <ui:Label name="objective-step" text="1/4" class="objective__step"/>
             </ui:VisualElement>
@@ -57,6 +57,31 @@
             <ui:Button name="btn-pause-menu" text="MENÚ PRINCIPAL" class="pause__button"/>
             <ui:Button name="btn-pause-quit" text="SALIR DEL JUEGO" class="pause__button pause__button--danger"/>
             <ui:Label text="[ESC] Continuar" class="pause__hint"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="CreditsOverlay" class="credits credits--hidden">
+        <ui:VisualElement class="credits__panel">
+            <ui:Label text="ECOS DEL AZAR" class="credits__title"/>
+            <ui:Label text="Vertical slice · Máster en Diseño y Desarrollo de Videojuegos · UNIR · 2026" class="credits__subtitle"/>
+            <ui:VisualElement class="credits__columns">
+                <ui:VisualElement class="credits__column">
+                    <ui:Label text="EQUIPO" class="credits__heading"/>
+                    <ui:Label text="Carlos Canut" class="credits__name"/>
+                    <ui:Label text="Christian Salazar" class="credits__name"/>
+                    <ui:Label text="Manuel Alejandro Gómez Ortega" class="credits__name"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="credits__column">
+                    <ui:Label text="ARTE Y RECURSOS" class="credits__heading"/>
+                    <ui:Label text="Synty Studios" class="credits__name"/>
+                    <ui:Label text="POLYGON Casino · POLYGON Generic" class="credits__role"/>
+                    <ui:Label text="Mixamo" class="credits__name"/>
+                    <ui:Label text="Animaciones del personaje" class="credits__role"/>
+                    <ui:Label text="HERRAMIENTAS" class="credits__heading"/>
+                    <ui:Label text="Unity 6 · URP · UI Toolkit · Input System" class="credits__role"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label text="Gracias por respirar con nosotros. Nos vemos en el siguiente capítulo." class="credits__outro"/>
+            <ui:Button name="btn-credits-close" text="VOLVER" class="credits__button"/>
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="RunEndOverlay" class="run-end run-end--hidden">

@@ -30,7 +30,9 @@ namespace EcosDelAzar.Core
         public event Action<GameState> OnStateChanged;
 
         RunEndUI runEndUI;
+        CreditsUI creditsUI;
         bool runEnding;
+        bool creditsAfterRun;
 
         void Awake()
         {
@@ -49,6 +51,7 @@ namespace EcosDelAzar.Core
             Music = GetComponent<MusicPlayer>();
             Modifiers = new RunModifiers(ecoCatalog);
             runEndUI = GetComponentInChildren<RunEndUI>(true);
+            creditsUI = GetComponentInChildren<CreditsUI>(true);
 
             // Born outside the menu (testing a scene from the Editor): behave as if
             // a run were in progress so HUD and drain work normally.
@@ -96,10 +99,11 @@ namespace EcosDelAzar.Core
         /// Ends the run with a full-screen message. The run data is wiped when the
         /// player dismisses it, so the main menu comes back without "Continuar".
         /// </summary>
-        public void EndRun(string title, string subtitle)
+        public void EndRun(string title, string subtitle, bool showCredits = false)
         {
             if (runEnding) return;
             runEnding = true;
+            creditsAfterRun = showCredits;
 
             if (OxygenTank != null) OxygenTank.IsActiveDrain = false;
             SetState(GameState.Paused);
@@ -118,9 +122,25 @@ namespace EcosDelAzar.Core
             Time.timeScale = 1f;
             RunState.Clear();
             runEnding = false;
+
+            if (creditsAfterRun && creditsUI != null)
+            {
+                creditsAfterRun = false;
+                creditsUI.Show(GoToMainMenu);
+                return;
+            }
+
+            GoToMainMenu();
+        }
+
+        void GoToMainMenu()
+        {
             SetState(GameState.MainMenu);
             SceneManager.LoadScene(MainMenuSceneName);
         }
+
+        /// <summary>Credits from the title screen; the menu stays underneath.</summary>
+        public void ShowCredits(Action onDone = null) => creditsUI?.Show(onDone);
 
         void ApplyStateSideEffects(GameState state)
         {

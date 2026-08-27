@@ -547,3 +547,106 @@
     letter-spacing: 2px;
     color: rgba(200, 180, 150, 0.45);
 }
+
+/* ── CREDITS ── */
+
+.credits {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.92);
+    justify-content: center;
+    align-items: center;
+}
+
+.credits--hidden {
+    display: none;
+}
+
+.credits__panel {
+    width: 820px;
+    padding: 34px 40px;
+    align-items: center;
+    background-color: rgba(14, 10, 8, 0.97);
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-top-width: 4px;
+    border-top-color: rgb(255, 185, 0);
+}
+
+.credits__title {
+    font-size: 36px;
+    -unity-font-style: bold;
+    letter-spacing: 8px;
+    color: rgb(255, 230, 150);
+    text-shadow: 0 0 16px rgba(255, 200, 0, 0.35);
+}
+
+.credits__subtitle {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: rgba(200, 180, 150, 0.6);
+    margin-top: 4px;
+    margin-bottom: 26px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.credits__columns {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.credits__column {
+    width: 48%;
+}
+
+.credits__heading {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgb(255, 185, 0);
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.credits__name {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(240, 225, 190);
+    margin-top: 6px;
+}
+
+.credits__role {
+    font-size: 12px;
+    color: rgba(200, 180, 150, 0.7);
+    white-space: normal;
+}
+
+.credits__outro {
+    margin-top: 26px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: rgb(0, 200, 240);
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+.credits__button {
+    width: 220px;
+    height: 46px;
+    font-size: 15px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+    color: white;
+    background-color: rgb(30, 120, 50);
+    border-width: 2px;
+    border-color: rgb(50, 180, 70);
+    border-radius: 3px;
+}
+
+.credits__button:hover {
+    background-color: rgb(40, 150, 60);
+}

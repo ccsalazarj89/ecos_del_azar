@@ -30,6 +30,8 @@ namespace EcosDelAzar.UI
         Button btnBetHalf;
         Button btnBetMax;
         Button btnPlay;
+        Button btnStandUp;
+        Label tableMinNote;
 
         // Playing phase
         Label currentBetDisplay;
@@ -82,6 +84,8 @@ namespace EcosDelAzar.UI
             btnBetHalf = root.Q<Button>("btn-bet-half");
             btnBetMax = root.Q<Button>("btn-bet-max");
             btnPlay = root.Q<Button>("btn-play");
+            btnStandUp = root.Q<Button>("btn-stand-up");
+            tableMinNote = root.Q<Label>("table-min-note");
 
             currentBetDisplay = root.Q<Label>("current-bet-display");
             playingStatus = root.Q<Label>("playing-status");
@@ -119,6 +123,7 @@ namespace EcosDelAzar.UI
             btnBetHalf?.RegisterCallback<ClickEvent>(OnBetHalf);
             btnBetMax?.RegisterCallback<ClickEvent>(OnBetMax);
             btnPlay?.RegisterCallback<ClickEvent>(OnPlay);
+            btnStandUp?.RegisterCallback<ClickEvent>(OnStandUp);
             btnMatch?.RegisterCallback<ClickEvent>(OnMatch);
             btnDouble?.RegisterCallback<ClickEvent>(OnDouble);
             btnFold?.RegisterCallback<ClickEvent>(OnFoldClicked);
@@ -133,6 +138,7 @@ namespace EcosDelAzar.UI
             btnBetHalf?.UnregisterCallback<ClickEvent>(OnBetHalf);
             btnBetMax?.UnregisterCallback<ClickEvent>(OnBetMax);
             btnPlay?.UnregisterCallback<ClickEvent>(OnPlay);
+            btnStandUp?.UnregisterCallback<ClickEvent>(OnStandUp);
             btnMatch?.UnregisterCallback<ClickEvent>(OnMatch);
             btnDouble?.UnregisterCallback<ClickEvent>(OnDouble);
             btnFold?.UnregisterCallback<ClickEvent>(OnFoldClicked);
@@ -210,6 +216,14 @@ namespace EcosDelAzar.UI
             ClampBet();
             RefreshBetDisplay();
             SetPhase(betPhase);
+
+            // A dealer who raised before remembers it: the table minimum is his last proposal.
+            if (tableMinNote != null)
+            {
+                bool remembered = session.Betting.TableMinimumActive;
+                tableMinNote.text = remembered ? $"El crupier no baja de {session.Betting.MinimumBet}" : string.Empty;
+                tableMinNote.style.display = remembered ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         void ShowPlayingPhase()
@@ -405,6 +419,13 @@ namespace EcosDelAzar.UI
             if (session == null) return;
             currentBet = session.Betting.NpcProposedBet * 2;
             session.RespondToProposal(BetResponse.Double);
+        }
+
+        // Leaving before a round costs nothing: no bet is on the table yet.
+        void OnStandUp(ClickEvent _)
+        {
+            if (session == null) return;
+            session.Leave();
         }
 
         void OnFoldClicked(ClickEvent _)

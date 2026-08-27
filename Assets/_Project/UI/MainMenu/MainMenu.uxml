@@ -8,6 +8,7 @@
             <ui:VisualElement name="menu-options" class="menu-options">
                 <ui:Button name="ContinueButton" text="CONTINUAR" class="menu-button menu-button--primary"/>
                 <ui:Button name="NewGameButton" text="NUEVO JUEGO" class="menu-button"/>
+                <ui:Button name="CreditsButton" text="CRÉDITOS" class="menu-button"/>
                 <ui:Button name="QuitButton" text="SALIR" class="menu-button"/>
             </ui:VisualElement>
         </ui:VisualElement>

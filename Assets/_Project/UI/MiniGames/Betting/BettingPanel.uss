@@ -330,3 +330,31 @@
     background-color: rgb(180, 50, 50);
     border-color: rgb(240, 80, 60);
 }
+
+/* ── Table memory ── */
+
+.table-min-note {
+    font-size: 12px;
+    color: rgb(220, 100, 80);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    -unity-text-align: middle-center;
+}
+
+/* ── Leave the table before betting ── */
+
+.action-btn--standup {
+    width: 190px;
+    height: 34px;
+    margin-top: 8px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgb(180, 160, 130);
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(180, 160, 130, 0.35);
+}
+
+.action-btn--standup:hover {
+    color: rgb(240, 200, 120);
+    border-color: rgb(200, 150, 50);
+}
