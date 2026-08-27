@@ -1,13 +1,19 @@
 name: Build & publish to itch.io
 
-# On every push to main: WebGL build with Unity, pushed to itch.io with butler.
+# WebGL build with Unity, pushed to itch.io with butler. Runs on demand (Actions →
+# Run workflow) or when a version tag (v*) is pushed — not on every commit.
 # Secrets needed: UNITY_LICENSE (whole content of C:/ProgramData/Unity/Unity_lic.ulf),
 # UNITY_EMAIL, UNITY_PASSWORD, BUTLER_API_KEY.
 # Edit ITCH_USER / ITCH_GAME below to match the itch.io project.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+# A newer run cancels an older one still building.
+concurrency:
+  group: publish
+  cancel-in-progress: true
 
 env:
   UNITY_VERSION: 6000.3.16f1
