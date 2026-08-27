@@ -40,16 +40,16 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Albedo_Map:
-        m_Texture: {fileID: 2800000, guid: 8497999e0c80df443b7750c2147da3d4, type: 3}
-        m_Scale: {x: 10, y: 20}
+        m_Texture: {fileID: 2800000, guid: 0fdc1afeef3542141858043edaac63b5, type: 3}
+        m_Scale: {x: 20, y: 20}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Alpha_Clip_Threshold: 0
     - _Enable_Emission: 0
     m_Colors:
-    - _BaseColor: {r: 0.26415092, g: 0.010757278, b: 0, a: 1}
-    - _Emission_Color: {r: 1, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Emission_Color: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6616081055308538276
