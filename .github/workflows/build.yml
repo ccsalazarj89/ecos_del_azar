@@ -1,7 +1,8 @@
 name: Build & publish to itch.io
 
 # On every push to main: WebGL build with Unity, pushed to itch.io with butler.
-# Secrets needed: UNITY_EMAIL, UNITY_PASSWORD, BUTLER_API_KEY.
+# Secrets needed: UNITY_LICENSE (whole content of C:/ProgramData/Unity/Unity_lic.ulf),
+# UNITY_EMAIL, UNITY_PASSWORD, BUTLER_API_KEY.
 # Edit ITCH_USER / ITCH_GAME below to match the itch.io project.
 on:
   push:
@@ -27,6 +28,7 @@ jobs:
 
       - uses: game-ci/unity-builder@v4
         env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
