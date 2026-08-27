@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using EcosDelAzar.MiniGames;
 
 namespace EcosDelAzar.Opponent
 {
@@ -26,7 +25,6 @@ namespace EcosDelAzar.Opponent
         }
 
         public abstract void RequestBet(BetContext context, Action<int> onDecided);
-        public abstract void RequestAction(ActionContext context, Action<CombatAction> onDecided);
 
         public virtual void ResetSession()
         {

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using EcosDelAzar.Audio;
+using EcosDelAzar.Core.Echoes;
 
 namespace EcosDelAzar.Core
 {
@@ -14,12 +15,15 @@ namespace EcosDelAzar.Core
         const string MainMenuSceneName = "SCN_MainMenu";
         const string HubScenePrefix = "SCN_Floor_";
 
+        [SerializeField] EcoCatalog ecoCatalog;
+
         public static GameManager Instance { get; private set; }
 
         public Wallet Wallet { get; private set; }
         public OxygenTank OxygenTank { get; private set; }
         public FloorProgress FloorProgress { get; private set; }
         public MusicPlayer Music { get; private set; }
+        public RunModifiers Modifiers { get; private set; }
 
         public GameState State { get; private set; } = GameState.MainMenu;
 
@@ -43,6 +47,7 @@ namespace EcosDelAzar.Core
             OxygenTank = GetComponent<OxygenTank>();
             FloorProgress = GetComponent<FloorProgress>();
             Music = GetComponent<MusicPlayer>();
+            Modifiers = new RunModifiers(ecoCatalog);
             runEndUI = GetComponentInChildren<RunEndUI>(true);
 
             // Born outside the menu (testing a scene from the Editor): behave as if
@@ -80,6 +85,7 @@ namespace EcosDelAzar.Core
         /// <summary>Starting values of a fresh run. Called by RunState.StartNew after the prefs are wiped.</summary>
         public void ResetRunValues()
         {
+            Modifiers?.Reload();
             Wallet?.ResetToInitial();
             OxygenTank?.Reset();
             if (OxygenTank != null) OxygenTank.IsActiveDrain = false;
@@ -131,6 +137,14 @@ namespace EcosDelAzar.Core
 
         void HandlePlayerDeath()
         {
+            // "Bombona de reserva": one Echo buys a second chance, once per run.
+            float revive = Modifiers?.TryConsumeRevive() ?? 0f;
+            if (revive > 0f && OxygenTank != null)
+            {
+                OxygenTank.Restore(OxygenTank.Max * revive);
+                return;
+            }
+
             Debug.Log("[GameManager] Player oxygen depleted — run over.");
             EndRun("TE HAS QUEDADO SIN AIRE", "El casino se queda con todo lo que ganaste. La próxima vez, respira antes de apostar.");
         }

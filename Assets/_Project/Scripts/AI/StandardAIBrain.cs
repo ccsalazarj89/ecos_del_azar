@@ -36,30 +36,5 @@ namespace EcosDelAzar.AI
             // Default: match the previous bet
             return Mathf.Clamp(opponentBet, minimumBet, ownCoins);
         }
-
-        public CombatAction DecideAction(float winProbability, int ownCoins, int currentBet)
-        {
-            float roll = Random.value;
-
-            // Very likely to lose → consider folding
-            if (winProbability < config.foldThreshold)
-            {
-                return roll < 0.6f ? CombatAction.Fold : CombatAction.Shield;
-            }
-
-            // Good chance to win → aggressive plays
-            if (winProbability > 0.7f)
-            {
-                if (roll < config.aggressiveness) return CombatAction.RaiseBet;
-                if (roll < config.aggressiveness + 0.2f) return CombatAction.PushLuck;
-                return CombatAction.Stand;
-            }
-
-            // Medium chance → mixed strategy
-            if (roll < config.bluffFrequency) return CombatAction.RaiseBet;
-            if (roll < 0.3f) return CombatAction.Shield;
-            if (roll < 0.5f) return CombatAction.PushLuck;
-            return CombatAction.Stand;
-        }
     }
 }

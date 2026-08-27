@@ -69,11 +69,10 @@ namespace EcosDelAzar.MiniGames
                 return;
             }
 
-            int nextBet = response == BetResponse.Double
-                ? bettingSystem.LastBet * 2
-                : bettingSystem.NpcProposedBet;
+            bool doubled = response == BetResponse.Double;
+            int nextBet = doubled ? bettingSystem.LastBet * 2 : bettingSystem.NpcProposedBet;
 
-            bettingSystem.PlaceBets(nextBet);
+            bettingSystem.PlaceBets(nextBet, doubled);
             miniGame.PlayRound();
         }
 

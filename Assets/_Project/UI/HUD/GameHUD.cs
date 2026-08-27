@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 using EcosDelAzar.Core;
+using EcosDelAzar.Core.Echoes;
 
 namespace EcosDelAzar.UI
 {
@@ -29,6 +30,9 @@ namespace EcosDelAzar.UI
         VisualElement[] chipSlots = new VisualElement[ChipSlots];
         VisualElement announcement;
         Label announcementText;
+        VisualElement echoesModule;
+        VisualElement echoBadges;
+        RunModifiers modifiers;
         VisualElement objective;
         Label objectiveStep;
         Label objectiveIcon;
@@ -52,6 +56,8 @@ namespace EcosDelAzar.UI
             oxygenModule = root.Q("OxygenModule");
             announcement = root.Q("Announcement");
             announcementText = root.Q<Label>("announcement-text");
+            echoesModule = root.Q("EchoesModule");
+            echoBadges = root.Q("echo-badges");
             objective = root.Q("Objective");
             objectiveStep = root.Q<Label>("objective-step");
             objectiveIcon = root.Q<Label>("objective-icon");
@@ -88,6 +94,14 @@ namespace EcosDelAzar.UI
             gameManager.OnStateChanged += UpdateVisibility;
             UpdateVisibility(gameManager.State);
             RefreshChips(HouseChips.Count);
+
+            modifiers = gameManager.Modifiers;
+            if (modifiers != null)
+            {
+                modifiers.OnChanged += RefreshEchoes;
+                modifiers.OnReviveUsed += OnReviveUsed;
+                RefreshEchoes();
+            }
         }
 
         void OnDisable()
@@ -104,6 +118,12 @@ namespace EcosDelAzar.UI
             HouseChips.OnChipsChanged -= OnChipsChanged;
             announcement?.UnregisterCallback<ClickEvent>(OnAnnouncementClicked);
             TutorialProgress.OnObjectiveChanged -= ShowObjective;
+
+            if (modifiers != null)
+            {
+                modifiers.OnChanged -= RefreshEchoes;
+                modifiers.OnReviveUsed -= OnReviveUsed;
+            }
         }
 
         void UpdateVisibility(GameState state)
@@ -184,6 +204,22 @@ namespace EcosDelAzar.UI
         }
 
         void OnAnnouncementClicked(ClickEvent _) => HideAnnouncement();
+
+        void RefreshEchoes()
+        {
+            if (echoBadges == null || modifiers == null) return;
+            echoBadges.Clear();
+            foreach (var eco in modifiers.Owned)
+            {
+                var badge = new Label(eco.Glyph) { name = $"echo-badge-{eco.Id}", tooltip = eco.DisplayName };
+                badge.AddToClassList("echo-badge");
+                echoBadges.Add(badge);
+            }
+            echoesModule?.EnableInClassList("echoes-module--hidden", modifiers.Owned.Count == 0);
+        }
+
+        void OnReviveUsed(float ratio) =>
+            Announce($"Bombona de reserva activada: el tanque vuelve al {Mathf.RoundToInt(ratio * 100f)}%. No habrá otra.");
 
         void ShowObjective(TutorialProgress.Objective? current)
         {

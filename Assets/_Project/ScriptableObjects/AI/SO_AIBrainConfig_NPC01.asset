@@ -14,6 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.AI.AIBrainConfig
   aggressiveness: 0.3
   bluffFrequency: 0.15
-  foldThreshold: 0.2
-  maxRaiseMultiplier: 3
-  desperateThreshold: 0.2

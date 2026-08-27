@@ -17,18 +17,5 @@ namespace EcosDelAzar.AI
         [Tooltip("How often the NPC bluffs or raises without a clear advantage.")]
         [Range(0f, 1f)]
         public float bluffFrequency = 0.15f;
-
-        [Tooltip("Win probability below which the NPC considers folding.")]
-        [Range(0f, 1f)]
-        public float foldThreshold = 0.2f;
-
-        [Header("Betting Limits")]
-        [Tooltip("Maximum multiplier the NPC applies to the opponent's bet when raising.")]
-        [Min(1f)]
-        public float maxRaiseMultiplier = 2f;
-
-        [Tooltip("Coins ratio below which the NPC enters 'desperate' mode.")]
-        [Range(0f, 1f)]
-        public float desperateThreshold = 0.2f;
     }
 }

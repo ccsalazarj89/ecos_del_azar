@@ -68,11 +68,12 @@ namespace EcosDelAzar.Core
         [SerializeField] int minPercentReserve = 10;
 
         public int PercentPerStep => percentPerStep;
-        public int BuyPrice => buyPrice;
+        /// <summary>Buy price after run modifiers (Echo discounts). Sell price is never modified.</summary>
+        public int BuyPrice => Mathf.Max(1, Mathf.RoundToInt(buyPrice * (GameManager.Instance?.Modifiers?.OxygenBuyPriceMultiplier ?? 1f)));
         public int SellPrice => sellPrice;
         public int MinPercentReserve => minPercentReserve;
 
-        public int PriceOf(TradeMode mode) => mode == TradeMode.Buy ? buyPrice : sellPrice;
+        public int PriceOf(TradeMode mode) => mode == TradeMode.Buy ? BuyPrice : sellPrice;
 
         public int MaxSteps(TradeMode mode, Wallet wallet, OxygenTank tank)
         {
@@ -83,10 +84,10 @@ namespace EcosDelAzar.Core
 
             if (mode == TradeMode.Buy)
             {
-                if (buyPrice <= 0) return 0;
+                if (BuyPrice <= 0) return 0;
                 // Ceil so the last step can top off a partially empty tank.
                 int fits = Mathf.CeilToInt((tank.Max - tank.Current) / step);
-                return Mathf.Max(0, Mathf.Min(fits, wallet.Coins / buyPrice));
+                return Mathf.Max(0, Mathf.Min(fits, wallet.Coins / BuyPrice));
             }
 
             return Mathf.Max(0, Mathf.FloorToInt(SellableOxygen(tank) / step));
@@ -148,7 +149,7 @@ namespace EcosDelAzar.Core
             // pro rata, so the player never pays for oxygen the tank can't hold.
             float requested = steps * OxygenPerStep(tank);
             float gained = Mathf.Min(requested, headroom);
-            int cost = Mathf.CeilToInt(steps * buyPrice * (gained / requested));
+            int cost = Mathf.CeilToInt(steps * BuyPrice * (gained / requested));
 
             if (!wallet.CanAfford(cost))
                 return TradeQuote.Invalid(TradeMode.Buy, TradeError.NotEnoughCoins);

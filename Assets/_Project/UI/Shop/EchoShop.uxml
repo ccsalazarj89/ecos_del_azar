@@ -1,0 +1,33 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="EchoShop.uss" />
+    <ui:VisualElement name="shop-root" class="shop-root shop-hidden">
+        <ui:VisualElement class="shop-panel">
+            <ui:VisualElement class="shop-header">
+                <ui:VisualElement class="shop-titles">
+                    <ui:Label text="MINIBAR" class="shop-title"/>
+                    <ui:Label text="Recuerdos de quienes no salieron. Se pagan con lo que tengas." class="shop-subtitle"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="shop-resources">
+                    <ui:VisualElement class="shop-resource">
+                        <ui:Label text="MONEDAS" class="shop-resource__label"/>
+                        <ui:Label name="shop-coins" text="0" class="shop-resource__value shop-resource__value--coins"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="shop-resource">
+                        <ui:Label text="O2" class="shop-resource__label"/>
+                        <ui:Label name="shop-oxygen" text="100%" class="shop-resource__value shop-resource__value--oxygen"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="shop-resource">
+                        <ui:Label text="FICHAS" class="shop-resource__label"/>
+                        <ui:Label name="shop-chips" text="0" class="shop-resource__value shop-resource__value--chips"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="shop-cards" class="shop-cards"/>
+            <ui:Label name="shop-feedback" text="" class="shop-feedback"/>
+            <ui:VisualElement class="shop-footer">
+                <ui:Button name="btn-shop-close" text="SALIR" class="shop-close"/>
+                <ui:Label text="[ESC] Cerrar" class="shop-hint"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

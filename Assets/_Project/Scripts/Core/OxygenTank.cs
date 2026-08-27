@@ -39,7 +39,10 @@ namespace EcosDelAzar.Core
         {
             if (IsPaused || IsEmpty) return;
 
-            float drainRate = IsActiveDrain ? activeDrainRate : passiveDrainRate;
+            var mods = GameManager.Instance?.Modifiers;
+            float drainRate = IsActiveDrain
+                ? activeDrainRate * (mods?.ActiveDrainMultiplier ?? 1f)
+                : passiveDrainRate * (mods?.PassiveDrainMultiplier ?? 1f);
             Deplete(drainRate * Time.deltaTime);
         }
 

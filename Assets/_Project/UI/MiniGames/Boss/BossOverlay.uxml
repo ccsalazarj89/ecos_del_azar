@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="BossHighCardOverlay.uss" />
+    <Style src="BossOverlay.uss" />
 
     <!-- Barra del boss: palo + forzar victoria + toggle -->
     <ui:VisualElement name="boss-info-bar" class="boss-info-bar">

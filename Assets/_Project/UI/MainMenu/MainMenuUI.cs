@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using EcosDelAzar.Core;
 
@@ -46,6 +47,12 @@ namespace EcosDelAzar.UI
             if (newGameButton != null) newGameButton.clicked -= OnNewGameClicked;
             if (continueButton != null) continueButton.clicked -= Continue;
             if (quitButton != null) quitButton.clicked -= Quit;
+        }
+
+        void Update()
+        {
+            // Esc on the title screen quits; inside the game it closes panels instead.
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Quit();
         }
 
         void Refresh()

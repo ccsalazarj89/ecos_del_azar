@@ -1,5 +1,4 @@
 using System;
-using EcosDelAzar.MiniGames;
 
 namespace EcosDelAzar.Opponent
 {
@@ -18,23 +17,6 @@ namespace EcosDelAzar.Opponent
             PlayerBet = playerBet;
             MinimumBet = minimumBet;
             OwnCoins = ownCoins;
-        }
-    }
-
-    /// <summary>
-    /// Context passed to an opponent when requesting a combat action decision.
-    /// </summary>
-    public readonly struct ActionContext
-    {
-        public readonly float EstimatedWinProbability;
-        public readonly int OwnCoins;
-        public readonly int CurrentBet;
-
-        public ActionContext(float estimatedWinProbability, int ownCoins, int currentBet)
-        {
-            EstimatedWinProbability = estimatedWinProbability;
-            OwnCoins = ownCoins;
-            CurrentBet = currentBet;
         }
     }
 
@@ -59,12 +41,6 @@ namespace EcosDelAzar.Opponent
         /// MUST call onDecided exactly once with the chosen bet.
         /// </summary>
         void RequestBet(BetContext context, Action<int> onDecided);
-
-        /// <summary>
-        /// Request the opponent to decide their combat action.
-        /// MUST call onDecided exactly once with the chosen action.
-        /// </summary>
-        void RequestAction(ActionContext context, Action<CombatAction> onDecided);
 
         /// <summary>Reset state for a new session.</summary>
         void ResetSession();

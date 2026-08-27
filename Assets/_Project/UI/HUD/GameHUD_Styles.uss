@@ -435,3 +435,36 @@
     -unity-font-style: bold;
     color: rgb(240, 225, 190);
 }
+
+/* ── ECHOES — active passive upgrades, under the chips ── */
+
+.echoes-module {
+    margin-top: 8px;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 8px 14px;
+}
+
+.echoes-module--hidden {
+    display: none;
+}
+
+.echo-badges {
+    flex-direction: row;
+}
+
+.echo-badge {
+    min-width: 26px;
+    height: 26px;
+    padding: 0 6px;
+    margin-left: 6px;
+    border-radius: 4px;
+    background-color: rgba(120, 60, 200, 0.18);
+    border-width: 1px;
+    border-color: rgb(180, 120, 255);
+    color: rgb(220, 190, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+

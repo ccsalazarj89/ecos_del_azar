@@ -34,6 +34,11 @@ namespace EcosDelAzar.MiniGames.Betting
 
         Wallet wallet;
         int tableMinimumBet;
+        bool lastBetWasDouble;
+        bool insuranceAvailable;
+
+        /// <summary>True when the last lost round was refunded by the insurance Echo.</summary>
+        public bool LastLossInsured { get; private set; }
 
         /// <summary>
         /// Starts a seating. Pass the table's remembered state so a re-entered table
@@ -44,6 +49,9 @@ namespace EcosDelAzar.MiniGames.Betting
             wallet = GameManager.Instance?.Wallet;
             SyncFromWallet();
             tableMinimumBet = minimumBetOverride;
+            insuranceAvailable = GameManager.Instance?.Modifiers?.HasFirstLossInsurance ?? false;
+            lastBetWasDouble = false;
+            LastLossInsured = false;
             LastBet = MinimumBet;
             NpcProposedBet = MinimumBet;
 
@@ -59,10 +67,11 @@ namespace EcosDelAzar.MiniGames.Betting
         /// Player and opponent ante up the bet before the round plays. The
         /// combined pot is paid out to the winner on resolution.
         /// </summary>
-        public void PlaceBets(int playerBet)
+        public void PlaceBets(int playerBet, bool doubled = false)
         {
             playerBet = Mathf.Clamp(playerBet, MinimumBet, MaxBet);
             LastBet = playerBet;
+            lastBetWasDouble = doubled;
 
             PlayerCoins -= playerBet;
             if (opponent != null)
@@ -84,17 +93,36 @@ namespace EcosDelAzar.MiniGames.Betting
             int bet = LastBet;
             int pot = bet * 2; // both sides anted in PlaceBets
             LastWinnings = 0;
+            LastLossInsured = false;
+            var mods = GameManager.Instance?.Modifiers;
 
             switch (outcome)
             {
                 case RoundOutcome.Win:
                     PlayerCoins += pot;   // take own ante back + opponent's
                     LastWinnings = bet;   // net gain over the ante paid
+
+                    // "Codicia": doubling pays extra, out of the house pocket.
+                    if (lastBetWasDouble && mods != null && mods.DoubleWinMultiplier > 1f)
+                    {
+                        int bonus = Mathf.RoundToInt(bet * (mods.DoubleWinMultiplier - 1f));
+                        PlayerCoins += bonus;
+                        LastWinnings += bonus;
+                    }
                     break;
 
                 case RoundOutcome.Lose:
                     if (opponent != null) opponent.Coins += pot;
                     LastWinnings = -bet;
+
+                    // "Seguro del tahur": the house refunds the first loss of the seating.
+                    if (insuranceAvailable)
+                    {
+                        insuranceAvailable = false;
+                        LastLossInsured = true;
+                        PlayerCoins += bet;
+                        LastWinnings = 0;
+                    }
                     break;
 
                 case RoundOutcome.Draw:

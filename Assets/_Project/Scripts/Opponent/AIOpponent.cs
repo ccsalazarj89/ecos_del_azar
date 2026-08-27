@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using EcosDelAzar.AI;
-using EcosDelAzar.MiniGames;
 
 namespace EcosDelAzar.Opponent
 {
@@ -21,22 +20,6 @@ namespace EcosDelAzar.Opponent
 
             int bet = brain.DecideBet(context.PlayerBet, context.MinimumBet, Coins);
             onDecided?.Invoke(bet);
-        }
-
-        public override void RequestAction(ActionContext context, Action<CombatAction> onDecided)
-        {
-            if (brain == null)
-            {
-                onDecided?.Invoke(CombatAction.Stand);
-                return;
-            }
-
-            CombatAction action = brain.DecideAction(
-                context.EstimatedWinProbability,
-                Coins,
-                context.CurrentBet
-            );
-            onDecided?.Invoke(action);
         }
     }
 }

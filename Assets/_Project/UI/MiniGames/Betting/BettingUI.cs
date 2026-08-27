@@ -252,7 +252,11 @@ namespace EcosDelAzar.UI
             }
 
             if (resultAmount != null)
-                resultAmount.text = winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0";
+            {
+                bool insured = session.Betting.LastLossInsured;
+                resultAmount.text = insured ? "SEGURO: apuesta devuelta"
+                    : winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0";
+            }
         }
 
         // Resolution-time events only record what to show next; the actual

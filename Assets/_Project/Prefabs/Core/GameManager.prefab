@@ -160,6 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceecf9f29ec565243a6dc00b5aded248, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Core.GameManager
+  ecoCatalog: {fileID: 11400000, guid: e1000000000000000000000000000010, type: 2}
 --- !u!114 &4200000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0

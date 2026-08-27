@@ -1,0 +1,214 @@
+/* ═══════════════════════════════════════════════
+   MINIBAR — Echo shop. Purple accent = the Echoes,
+   gold/cyan/gold-chip tags = the three currencies.
+   ═══════════════════════════════════════════════ */
+
+.shop-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(4, 2, 8, 0.86);
+    justify-content: center;
+    align-items: center;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+    opacity: 1;
+}
+
+.shop-hidden {
+    opacity: 0;
+    display: none;
+}
+
+.shop-panel {
+    width: 1040px;
+    padding: 24px 30px;
+    background-color: rgba(14, 10, 18, 0.97);
+    border-width: 2px;
+    border-color: rgb(120, 80, 180);
+    border-top-width: 4px;
+    border-top-color: rgb(180, 120, 255);
+}
+
+.shop-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.shop-title {
+    font-size: 30px;
+    -unity-font-style: bold;
+    letter-spacing: 6px;
+    color: rgb(220, 190, 255);
+}
+
+.shop-subtitle {
+    font-size: 13px;
+    color: rgba(200, 180, 220, 0.7);
+    margin-top: 4px;
+}
+
+.shop-resources {
+    flex-direction: row;
+}
+
+.shop-resource {
+    align-items: flex-end;
+    margin-left: 22px;
+}
+
+.shop-resource__label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(200, 180, 150, 0.5);
+}
+
+.shop-resource__value {
+    font-size: 22px;
+    -unity-font-style: bold;
+}
+
+.shop-resource__value--coins { color: rgb(255, 220, 100); }
+.shop-resource__value--oxygen { color: rgb(0, 200, 240); }
+.shop-resource__value--chips { color: rgb(255, 200, 50); }
+
+/* ── Cards ── */
+
+.shop-cards {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.shop-card {
+    width: 300px;
+    min-height: 210px;
+    margin: 8px;
+    padding: 16px 14px 12px 14px;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(30, 20, 45, 0.95);
+    border-width: 2px;
+    border-color: rgb(110, 70, 170);
+    border-radius: 6px;
+    transition-property: scale, border-color, background-color, opacity;
+    transition-duration: 0.15s;
+}
+
+.shop-card:hover {
+    scale: 1.03;
+    border-color: rgb(200, 150, 255);
+    background-color: rgba(50, 30, 75, 0.95);
+}
+
+.shop-card--locked {
+    opacity: 0.55;
+}
+
+.shop-card--owned {
+    opacity: 0.45;
+    border-color: rgb(80, 160, 90);
+}
+
+.shop-card__glyph {
+    font-size: 30px;
+    -unity-font-style: bold;
+    color: rgb(220, 190, 255);
+    margin-bottom: 8px;
+    text-shadow: 0 0 14px rgba(180, 120, 255, 0.6);
+}
+
+.shop-card__title {
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(245, 235, 255);
+    margin-bottom: 8px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.shop-card__desc {
+    font-size: 12px;
+    color: rgb(190, 175, 210);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    flex-grow: 1;
+    margin-bottom: 10px;
+}
+
+.shop-card__price {
+    font-size: 12px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    padding: 5px 12px;
+    border-radius: 3px;
+    border-width: 1px;
+}
+
+.shop-card__price--coins {
+    color: rgb(255, 220, 100);
+    border-color: rgba(255, 200, 50, 0.5);
+    background-color: rgba(255, 200, 50, 0.08);
+}
+
+.shop-card__price--oxygen {
+    color: rgb(0, 200, 240);
+    border-color: rgba(0, 200, 240, 0.5);
+    background-color: rgba(0, 200, 240, 0.08);
+}
+
+.shop-card__price--chips {
+    color: rgb(255, 200, 50);
+    border-color: rgb(255, 200, 50);
+    background-color: rgba(255, 200, 50, 0.16);
+}
+
+/* ── Feedback + footer ── */
+
+.shop-feedback {
+    height: 22px;
+    margin-top: 10px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.shop-feedback--ok { color: rgb(120, 230, 140); }
+.shop-feedback--error { color: rgb(240, 90, 80); }
+
+.shop-footer {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.shop-close {
+    width: 160px;
+    height: 42px;
+    font-size: 14px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+    color: rgb(230, 220, 240);
+    background-color: rgb(55, 40, 75);
+    border-width: 2px;
+    border-color: rgb(120, 80, 180);
+    border-radius: 3px;
+}
+
+.shop-close:hover {
+    background-color: rgb(80, 55, 110);
+}
+
+.shop-hint {
+    margin-left: 14px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(200, 180, 220, 0.45);
+}

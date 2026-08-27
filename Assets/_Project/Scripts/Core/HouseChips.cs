@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace EcosDelAzar.Core
 {
@@ -33,5 +34,17 @@ namespace EcosDelAzar.Core
 
         public static bool Satisfies(int requiredChips, int requiredUpperFloorChips) =>
             Count >= requiredChips && UpperFloorCount >= requiredUpperFloorChips;
+
+        /// <summary>Spends chips at the minibar. Upper-floor chips are kept as long as possible so boss access is not lost by accident.</summary>
+        public static bool Spend(int amount)
+        {
+            if (amount <= 0 || Count < amount) return false;
+            int remaining = Count - amount;
+            RunPrefs.SetInt(CountKey, remaining);
+            RunPrefs.SetInt(UpperKey, Mathf.Min(UpperFloorCount, remaining));
+            RunPrefs.Save();
+            OnChipsChanged?.Invoke(remaining);
+            return true;
+        }
     }
 }

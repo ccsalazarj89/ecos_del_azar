@@ -8,7 +8,7 @@ namespace EcosDelAzar.MiniGames.Boss
     /// The boss's house rules: a suit is assigned to the boss for the session and
     /// the player's cards of that suit move the oxygen tank on each round. Also
     /// owns the "forced win" the player can buy with oxygen after two straight
-    /// losses. Works with any minigame that implements IBossGame.
+    /// losses. Works with any minigame that implements IBossGame (today: BossBlackjackGame).
     /// </summary>
     [RequireComponent(typeof(MiniGameSession))]
     public class BossOxygenModifier : MonoBehaviour
@@ -26,8 +26,6 @@ namespace EcosDelAzar.MiniGames.Boss
         [Header("Penalties (% of max)")]
         [Tooltip("Losing while holding a card of the boss suit.")]
         [SerializeField, Range(0f, 1f)] float losePenaltyPercent = 0.20f;
-        [Tooltip("Drawing a joker (High Card only).")]
-        [SerializeField, Range(0f, 1f)] float jokerDepletePercent = 0.50f;
         [Tooltip("Busting in Blackjack: the player's own call, so it costs air.")]
         [SerializeField, Range(0f, 1f)] float bustPenaltyPercent = 0.25f;
 
@@ -65,7 +63,7 @@ namespace EcosDelAzar.MiniGames.Boss
             bossGame = session?.Game as IBossGame;
             if (bossGame == null)
             {
-                Debug.LogError("[BossOxygenModifier] The session's game must implement IBossGame (BossBlackjackGame / BossHighCardGame). Disabled.");
+                Debug.LogError("[BossOxygenModifier] The session's game must implement IBossGame (BossBlackjackGame). Disabled.");
                 enabled = false;
                 return;
             }
@@ -120,12 +118,6 @@ namespace EcosDelAzar.MiniGames.Boss
 
             var cards = bossGame.PlayerRoundCards;
 
-            if (HasJoker(cards))
-            {
-                tank.Deplete(tank.Max * jokerDepletePercent);
-                return;
-            }
-
             if (result.Outcome == RoundOutcome.Lose)
             {
                 if (bossGame.PlayerBusted)
@@ -140,13 +132,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 float restore = BestRestorePercent(cards);
                 if (restore > 0f) tank.Restore(tank.Max * restore);
             }
-        }
-
-        static bool HasJoker(IReadOnlyList<Card> cards)
-        {
-            foreach (var c in cards)
-                if (c != null && c.Rank == Rank.Joker) return true;
-            return false;
         }
 
         bool HoldsBossSuit(IReadOnlyList<Card> cards)

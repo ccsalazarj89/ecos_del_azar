@@ -26,6 +26,10 @@
                     <ui:VisualElement name="chip-2" class="chip-slot"/>
                 </ui:VisualElement>
             </ui:VisualElement>
+            <ui:VisualElement name="EchoesModule" class="hud-module echoes-module echoes-module--hidden">
+                <ui:Label text="ECOS" class="chips-label"/>
+                <ui:VisualElement name="echo-badges" class="echo-badges"/>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Objective" class="objective objective--hidden" picking-mode="Ignore">
             <ui:VisualElement class="objective__badge">

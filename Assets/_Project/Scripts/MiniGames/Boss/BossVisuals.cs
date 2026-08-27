@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace EcosDelAzar.MiniGames.Boss
 {
-    public class BossHighCardVisuals : MonoBehaviour
+    public class BossVisuals : MonoBehaviour
     {
         [SerializeField] UIDocument uiDocument;
         [SerializeField] BossOxygenModifier oxygenModifier;
