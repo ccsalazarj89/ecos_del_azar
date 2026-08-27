@@ -67,6 +67,7 @@ namespace EcosDelAzar.MiniGames
 
         void LoadGame()
         {
+            TutorialProgress.Advance(TutorialProgress.Stage.Done);
             ElevatorSceneLoader.LoadMinigame(minigameSceneName, TableId, floorNumber, awardsHouseChip);
         }
 

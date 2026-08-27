@@ -225,7 +225,7 @@ namespace EcosDelAzar.MiniGames.Boss
 
         void OnCardDrawn(int cardIndex, Card card, bool isPlayerTurn)
         {
-            Debug.Log($"[BossHighCardVisuals] OnCardDrawn — índice={cardIndex}, carta={card}, botones={cardButtons.Count}");
+            Debug.Log($"[BossVisuals] OnCardDrawn — índice={cardIndex}, carta={card}, botones={cardButtons.Count}");
             if (cardIndex < 0 || cardIndex >= cardButtons.Count) return;
 
             var btn = cardButtons[cardIndex];

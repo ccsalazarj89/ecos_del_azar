@@ -55,6 +55,7 @@ namespace EcosDelAzar.Shop
             IsOpen = true;
             RaiseInteractionStarted();
             shopUI.Open(this);
+            ModalTracker.Opened();
         }
 
         public void Close()
@@ -62,6 +63,7 @@ namespace EcosDelAzar.Shop
             if (!IsOpen) return;
             IsOpen = false;
             shopUI?.Close();
+            ModalTracker.Closed();
             NotifyHintVisible();
         }
 
@@ -70,6 +72,7 @@ namespace EcosDelAzar.Shop
             if (!IsOpen) return;
             IsOpen = false;
             shopUI?.Close();
+            ModalTracker.Closed();
         }
 
         void OnExit(InputAction.CallbackContext _) => Close();

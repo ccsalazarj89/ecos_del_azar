@@ -400,7 +400,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9eb17572f2bbe8840983c1ff35779be5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Boss.BossHighCardVisuals
+  m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Boss.BossVisuals
   uiDocument: {fileID: 693285029}
   oxygenModifier: {fileID: 1462308661}
   suddenDeath: {fileID: 1462308660}
@@ -657,7 +657,6 @@ MonoBehaviour:
   kingRestorePercent: 0.7
   aceRestorePercent: 1
   losePenaltyPercent: 0.2
-  jokerDepletePercent: 0.5
   bustPenaltyPercent: 0.25
   forceWinOxygenCost: 0.3
 --- !u!114 &1462308662

@@ -6,8 +6,9 @@ namespace EcosDelAzar.NPC
 {
     /// <summary>
     /// Drives the lobby tutorial: move → talk to the concierge → trade at the O2
-    /// machine → use the elevator. Finds its actors at runtime (one of each per
-    /// lobby), so the scene only needs this component on any object. Runs once per run.
+    /// machine → use the elevator. The last step (sit at a table) completes on
+    /// floor 1, from MinigameEntryTrigger. Finds its actors at runtime (one of each
+    /// per lobby), so the scene only needs this component on any object. Runs once per run.
     /// </summary>
     public class TutorialSequence : MonoBehaviour
     {
@@ -65,7 +66,7 @@ namespace EcosDelAzar.NPC
 
         void OnElevatorUsed()
         {
-            TutorialProgress.Advance(TutorialProgress.Stage.Done);
+            TutorialProgress.Advance(TutorialProgress.Stage.PlayTable);
             enabled = false;
         }
     }

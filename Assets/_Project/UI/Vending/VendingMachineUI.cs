@@ -14,6 +14,7 @@ namespace EcosDelAzar.UI
     public class VendingMachineUI : MonoBehaviour
     {
         const string HiddenClass = "vending-hidden";
+        bool isOpen;
         const float LowOxygenThreshold = 0.35f;
         const float CriticalOxygenThreshold = 0.15f;
         const float FeedbackDuration = 2.5f;
@@ -130,6 +131,7 @@ namespace EcosDelAzar.UI
         {
             Initialize();
             if (!initialized || source == null) return;
+            if (!isOpen) { isOpen = true; ModalTracker.Opened(); }
 
             UnbindResources();
             machine = source;
@@ -145,6 +147,7 @@ namespace EcosDelAzar.UI
 
         public void Close()
         {
+            if (isOpen) { isOpen = false; ModalTracker.Closed(); }
             UnbindResources();
             machine = null;
             HideRoot();

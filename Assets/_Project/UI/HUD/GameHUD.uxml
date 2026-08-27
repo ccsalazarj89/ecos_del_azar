@@ -49,6 +49,16 @@
             <ui:Label text="clic para continuar" class="announcement__hint"/>
         </ui:VisualElement>
     </ui:VisualElement>
+    <ui:VisualElement name="PauseOverlay" class="pause pause--hidden">
+        <ui:VisualElement class="pause__panel">
+            <ui:Label text="PAUSA" class="pause__title"/>
+            <ui:Label text="El aire también se detiene. Por ahora." class="pause__subtitle"/>
+            <ui:Button name="btn-pause-resume" text="CONTINUAR" class="pause__button pause__button--primary"/>
+            <ui:Button name="btn-pause-menu" text="MENÚ PRINCIPAL" class="pause__button"/>
+            <ui:Button name="btn-pause-quit" text="SALIR DEL JUEGO" class="pause__button pause__button--danger"/>
+            <ui:Label text="[ESC] Continuar" class="pause__hint"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
     <ui:VisualElement name="RunEndOverlay" class="run-end run-end--hidden">
         <ui:VisualElement class="run-end__panel">
             <ui:Label name="run-end-title" text="" class="run-end__title"/>

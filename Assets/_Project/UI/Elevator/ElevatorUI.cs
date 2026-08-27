@@ -20,6 +20,8 @@ namespace EcosDelAzar.UI
 
         public enum CurrentFloorDisplayMode { ShowDisabled, Hide }
 
+        bool isOpen;
+
         enum FloorState { Current, Travel, Purchase, CannotAfford, NeedChips, Locked }
 
         void Awake()
@@ -54,6 +56,7 @@ namespace EcosDelAzar.UI
 
         public void Open(ElevatorFloorData[] floors)
         {
+            if (!isOpen) { isOpen = true; ModalTracker.Opened(); }
             Initialize();
             if (!initialized || floors == null) return;
 
@@ -64,6 +67,7 @@ namespace EcosDelAzar.UI
 
         public void Close()
         {
+            if (isOpen) { isOpen = false; ModalTracker.Closed(); }
             if (root == null) return;
             if (!root.ClassListContains(HiddenClass))
                 root.AddToClassList(HiddenClass);

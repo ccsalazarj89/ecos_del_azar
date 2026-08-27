@@ -92,6 +92,7 @@ namespace EcosDelAzar.NPC
         void StartDialogue()
         {
             dialogueActive = true;
+            ModalTracker.Opened();
             currentLine = 0;
             RaiseInteractionStarted();
             OnDialogueStarted?.Invoke();
@@ -119,6 +120,7 @@ namespace EcosDelAzar.NPC
         void EndDialogue(bool reachedEnd = false)
         {
             dialogueActive = false;
+            ModalTracker.Closed();
 
             if (reachedEnd && !completed)
             {

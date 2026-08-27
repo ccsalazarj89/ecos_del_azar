@@ -468,3 +468,82 @@
     -unity-text-align: middle-center;
 }
 
+
+/* ── PAUSE ── */
+
+.pause {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.pause--hidden {
+    display: none;
+}
+
+.pause__panel {
+    width: 420px;
+    padding: 30px 36px;
+    align-items: center;
+    background-color: rgba(14, 10, 8, 0.97);
+    border-width: 2px;
+    border-color: rgb(120, 85, 40);
+    border-top-width: 4px;
+    border-top-color: rgb(200, 140, 40);
+}
+
+.pause__title {
+    font-size: 32px;
+    -unity-font-style: bold;
+    letter-spacing: 8px;
+    color: rgb(255, 230, 150);
+    margin-bottom: 6px;
+}
+
+.pause__subtitle {
+    font-size: 13px;
+    color: rgba(200, 180, 150, 0.6);
+    margin-bottom: 22px;
+}
+
+.pause__button {
+    width: 300px;
+    height: 46px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+    color: rgb(220, 210, 195);
+    background-color: rgba(20, 18, 15, 0.9);
+    border-width: 2px;
+    border-left-width: 4px;
+    border-color: rgba(180, 120, 40, 0.3);
+    border-left-color: rgb(0, 180, 220);
+    border-radius: 3px;
+}
+
+.pause__button:hover {
+    border-color: rgba(180, 120, 40, 0.6);
+    scale: 1.02;
+}
+
+.pause__button--primary {
+    border-left-color: rgb(255, 185, 0);
+    color: rgb(255, 230, 150);
+}
+
+.pause__button--danger {
+    border-left-color: rgb(220, 60, 50);
+}
+
+.pause__hint {
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(200, 180, 150, 0.45);
+}

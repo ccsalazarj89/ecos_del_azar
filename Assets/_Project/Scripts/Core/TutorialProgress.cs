@@ -6,16 +6,16 @@ namespace EcosDelAzar.Core
     /// Run-scoped progress of the lobby tutorial. The sequence itself lives in
     /// the lobby (TutorialSequence); this holds the stage so the elevator and the
     /// HUD can read it from any scene and it survives reloads within the run.
-    /// Order: move → concierge (coins) → oxygen machine (sell air for coins) → elevator.
+    /// Order: move → concierge (coins) → oxygen machine (sell air for coins) → elevator → first table.
     /// The machine step comes before the elevator on purpose: it is the safety
     /// valve the player will need the first time a table leaves them broke.
     /// </summary>
     public static class TutorialProgress
     {
-        public enum Stage { Move = 0, TalkToConcierge = 1, TradeOxygen = 2, UseElevator = 3, Done = 4 }
+        public enum Stage { Move = 0, TalkToConcierge = 1, TradeOxygen = 2, UseElevator = 3, PlayTable = 4, Done = 5 }
 
         const string StageKey = "tutorial.stage";
-        const int StepCount = 4;
+        const int StepCount = 5;
 
         public static Stage Current
         {
@@ -69,6 +69,7 @@ namespace EcosDelAzar.Core
             Stage.TalkToConcierge => new Objective(2, "?", "Habla con el conserje  [E]"),
             Stage.TradeOxygen => new Objective(3, "O2", "Vende un poco de aire en la máquina de O2  [E]"),
             Stage.UseElevator => new Objective(4, "▲", "Sube en el ascensor  [E]"),
+            Stage.PlayTable => new Objective(5, "$", "Siéntate en una mesa y apuesta  [E]"),
             _ => null
         };
     }

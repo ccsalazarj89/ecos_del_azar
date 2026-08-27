@@ -115,6 +115,7 @@ namespace EcosDelAzar.Core
 
         void FinishRun()
         {
+            Time.timeScale = 1f;
             RunState.Clear();
             runEnding = false;
             SetState(GameState.MainMenu);
