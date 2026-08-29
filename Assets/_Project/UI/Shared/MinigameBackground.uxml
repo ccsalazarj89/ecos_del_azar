@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="MinigameBackground.uss" />
+    <ui:VisualElement name="minigame-background" class="minigame-background" picking-mode="Ignore">
+        <ui:VisualElement class="minigame-background__veil" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

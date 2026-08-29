@@ -1,0 +1,27 @@
+/* ═══════════════════════════════════════════════
+   MINIGAME BACKDROP — shared by every table scene.
+   To change the art: overwrite
+   Assets/_Project/Art/Sprites/MinigameBackground.jpg
+   (same file name = nothing else to touch), or point
+   background-image below at another texture.
+   ═══════════════════════════════════════════════ */
+
+.minigame-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("project://database/Assets/_Project/Art/Sprites/MinigameBackground.jpg?fileID=2800000&guid=edcc3c718cd110a478c2672e792e1983&type=3#MinigameBackground");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+/* Keeps the board and the betting panel legible over a busy photo. */
+.minigame-background__veil {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(6, 4, 3, 0.45);
+}

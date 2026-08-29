@@ -17,6 +17,9 @@ namespace EcosDelAzar.MiniGames.Boss
         [SerializeField] BossOxygenModifier oxygenModifier;
         [SerializeField] SuddenDeathRound suddenDeath;
         [SerializeField] BettingSystem bettingSystem;
+        [Tooltip("Optional: with it the sudden-death row shows real card art instead of text.")]
+        [SerializeField] CardSpriteMapper spriteMapper;
+        [SerializeField] Sprite cardBackSprite;
 
         Label bossSuitIcon;
         Label bossSuitName;
@@ -200,7 +203,7 @@ namespace EcosDelAzar.MiniGames.Boss
         {
             foreach (var btn in cardButtons)
             {
-                btn.text = "?";
+                SetCardFace(btn, null, faceDown: true);
                 btn.SetEnabled(true);
                 btn.style.borderTopColor = StyleKeyword.Null;
                 btn.RemoveFromClassList("sd-card--revealed");
@@ -218,7 +221,7 @@ namespace EcosDelAzar.MiniGames.Boss
             btn.AddToClassList("sd-card--revealed");
 
             bool isJoker = card.Rank == Rank.Joker;
-            btn.text = isJoker ? "JOKER" : CardToSymbol(card);
+            SetCardFace(btn, card, faceDown: false);
 
             if (isJoker)
             {
@@ -229,6 +232,22 @@ namespace EcosDelAzar.MiniGames.Boss
             }
 
             SetTurnLabel(isPlayerTurn: !isPlayerTurn);
+        }
+
+        // Real card art when a mapper is wired; the text symbol is the fallback.
+        void SetCardFace(Button btn, Card card, bool faceDown)
+        {
+            Sprite sprite = faceDown ? cardBackSprite : spriteMapper != null ? spriteMapper.GetSprite(card) : null;
+
+            if (sprite != null)
+            {
+                btn.style.backgroundImage = new StyleBackground(sprite);
+                btn.text = string.Empty;
+                return;
+            }
+
+            btn.style.backgroundImage = new StyleBackground();
+            btn.text = faceDown ? "?" : card.Rank == Rank.Joker ? "JOKER" : CardToSymbol(card);
         }
 
         void SetTurnLabel(bool isPlayerTurn)

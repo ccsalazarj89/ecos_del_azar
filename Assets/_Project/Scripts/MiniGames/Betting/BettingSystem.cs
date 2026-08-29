@@ -6,11 +6,11 @@ using EcosDelAzar.Core.Echoes;
 
 namespace EcosDelAzar.MiniGames.Betting
 {
-    /// <summary>The five combat actions of a round. Match/Double/PushLuck/Shield play on; Fold leaves.</summary>
-    public enum BetResponse { Match, Double, PushLuck, Shield, Fold }
+    /// <summary>The combat actions of a round. Match/Double/Shield play on; Fold leaves.</summary>
+    public enum BetResponse { Match, Double, Shield, Fold }
 
     /// <summary>How the player faces the round beyond the bet size.</summary>
-    public enum RoundStance { Stand, PushLuck, Shield }
+    public enum RoundStance { Stand, Shield }
 
     public class BettingSystem : MonoBehaviour
     {
@@ -45,15 +45,12 @@ namespace EcosDelAzar.MiniGames.Betting
         RoundStance stance;
 
         [Header("Combat actions")]
-        [Tooltip("Forzar la suerte: win pays this much extra of the bet; lose costs the same extra.")]
-        [SerializeField, Range(0f, 1f)] float pushLuckEdge = 0.5f;
         [Tooltip("Blindarse: share of the bet refunded on a loss.")]
         [SerializeField, Range(0f, 1f)] float shieldMitigation = 0.5f;
         [Tooltip("Blindarse costs air: % of the tank drained when chosen.")]
         [SerializeField, Range(0f, 0.3f)] float shieldOxygenCost = 0.05f;
 
         public RoundStance LastStance => stance;
-        public float PushLuckEdge => pushLuckEdge;
         public float ShieldMitigation => shieldMitigation;
         public float ShieldOxygenCost => shieldOxygenCost;
 
@@ -88,10 +85,10 @@ namespace EcosDelAzar.MiniGames.Betting
         }
 
         /// <summary>
-        /// Starts a seating. Pass the table's remembered state so a re-entered table
-        /// keeps its opponent stack and escalated minimum (-1 / 0 = table defaults).
+        /// Starts a seating. The dealer always sits down with a full stack; only the
+        /// table minimum carries over (0 = the table default).
         /// </summary>
-        public void Initialize(int opponentCoinsOverride = -1, int minimumBetOverride = 0)
+        public void Initialize(int minimumBetOverride = 0)
         {
             if (wallet != null) wallet.OnCoinsChanged -= OnWalletChanged;
             wallet = GameManager.Instance?.Wallet;
@@ -107,7 +104,6 @@ namespace EcosDelAzar.MiniGames.Betting
             if (opponent != null)
             {
                 opponent.ResetSession();
-                if (opponentCoinsOverride >= 0) opponent.Coins = opponentCoinsOverride;
                 OpponentCoins = opponent.Coins;
             }
         }
@@ -164,16 +160,6 @@ namespace EcosDelAzar.MiniGames.Betting
                     PlayerCoins += pot;   // take own ante back + opponent's
                     LastWinnings = bet;   // net gain over the ante paid
 
-                    // Forzar la suerte: the dealer pays the edge on top.
-                    if (stance == RoundStance.PushLuck)
-                    {
-                        int edge = Mathf.RoundToInt(bet * pushLuckEdge);
-                        edge = Mathf.Min(edge, opponent != null ? opponent.Coins : edge);
-                        PlayerCoins += edge;
-                        if (opponent != null) opponent.Coins -= edge;
-                        LastWinnings += edge;
-                    }
-
                     // "Codicia": a doubled win spends one charge and the house pays the extra.
                     if (lastBetWasDouble && mods != null && mods.TryConsume(EcoEffect.DoubleWinBonus, out float mult) && mult > 1f)
                     {
@@ -187,15 +173,6 @@ namespace EcosDelAzar.MiniGames.Betting
                     if (opponent != null) opponent.Coins += pot;
                     LastWinnings = -bet;
 
-                    // Forzar la suerte backfires: the edge goes to the dealer too.
-                    if (stance == RoundStance.PushLuck)
-                    {
-                        int edge = Mathf.Min(Mathf.RoundToInt(bet * pushLuckEdge), PlayerCoins);
-                        PlayerCoins -= edge;
-                        if (opponent != null) opponent.Coins += edge;
-                        LastWinnings -= edge;
-                    }
-
                     // Blindarse: part of the loss comes back.
                     if (stance == RoundStance.Shield)
                     {
@@ -205,11 +182,12 @@ namespace EcosDelAzar.MiniGames.Betting
                         LastWinnings += refund;
                     }
 
-                    // "Seguro del tahur": one charge refunds this loss.
-                    if (mods != null && mods.TryConsume(EcoEffect.FirstLossInsurance, out _))
+                    // "Seguro del tahur": one charge covers whatever this round actually cost
+                    // (the ante, minus a shield refund), so the panel can honestly say the bet came back.
+                    if (mods != null && LastWinnings < 0 && mods.TryConsume(EcoEffect.FirstLossInsurance, out _))
                     {
                         LastLossInsured = true;
-                        PlayerCoins += bet;
+                        PlayerCoins += -LastWinnings;
                         LastWinnings = 0;
                     }
                     break;
@@ -313,7 +291,7 @@ namespace EcosDelAzar.MiniGames.Betting
                 return;
             }
 
-            var context = new BetContext(LastBet, MinimumBet, opponent.Coins);
+            var context = new BetContext(LastBet, MinimumBet);
             opponent.RequestBet(context, OnNpcBetDecided);
         }
 

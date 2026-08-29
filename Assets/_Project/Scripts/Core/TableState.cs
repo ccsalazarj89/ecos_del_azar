@@ -2,9 +2,9 @@ namespace EcosDelAzar.Core
 {
     /// <summary>
     /// Per-run memory of each gambling table, keyed by the table id set on its
-    /// MinigameEntryTrigger. A table remembers the opponent's bankroll and the
-    /// last bet it proposed, so folding and walking back in does not reset the
-    /// stakes; once the opponent is broke the table is closed for the run.
+    /// MinigameEntryTrigger. A table remembers the last bet its dealer proposed —
+    /// he recalls your face, not your money — and whether he has been beaten.
+    /// His bankroll is NOT remembered: every seating is a closed duel.
     /// </summary>
     public static class TableState
     {
@@ -18,18 +18,14 @@ namespace EcosDelAzar.Core
             RunPrefs.Save();
         }
 
-        /// <summary>Opponent coins left at this table, or -1 when the table has never been played.</summary>
-        public static int GetOpponentCoins(string tableId) => RunPrefs.GetInt(Prefix + tableId + ".opponentCoins", -1);
-
         /// <summary>Minimum bet the table now demands (the opponent's last proposal), or 0 for the table default.</summary>
         public static int GetMinimumBet(string tableId) => RunPrefs.GetInt(Prefix + tableId + ".minBet", 0);
 
         /// <summary>True when the player walked away with the dealer's offer still on the table.</summary>
         public static bool HasStandingProposal(string tableId) => RunPrefs.GetInt(Prefix + tableId + ".proposal", 0) == 1;
 
-        public static void Save(string tableId, int opponentCoins, int minimumBet, bool standingProposal)
+        public static void Save(string tableId, int minimumBet, bool standingProposal)
         {
-            RunPrefs.SetInt(Prefix + tableId + ".opponentCoins", opponentCoins);
             RunPrefs.SetInt(Prefix + tableId + ".minBet", minimumBet);
             RunPrefs.SetInt(Prefix + tableId + ".proposal", standingProposal ? 1 : 0);
             RunPrefs.Save();

@@ -15,10 +15,10 @@ MonoBehaviour:
   minimumBet: 20
   dealers:
   - displayName: Dante
-    startingCoins: 1200
+    startingCoins: 600
     brain: {fileID: 11400000, guid: b0550000000000000000000000000004, type: 2}
     cheatChance: 0.15
   - displayName: Nadia
-    startingCoins: 1500
+    startingCoins: 800
     brain: {fileID: 11400000, guid: b0550000000000000000000000000004, type: 2}
     cheatChance: 0.25

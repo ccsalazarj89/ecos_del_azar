@@ -15,10 +15,10 @@ MonoBehaviour:
   minimumBet: 10
   dealers:
   - displayName: Rosa
-    startingCoins: 500
+    startingCoins: 220
     brain: {fileID: 11400000, guid: fe37ee38d689fa947acad7ea030b80eb, type: 2}
     cheatChance: 0
   - displayName: Tomás
-    startingCoins: 700
+    startingCoins: 300
     brain: {fileID: 11400000, guid: fe37ee38d689fa947acad7ea030b80eb, type: 2}
     cheatChance: 0

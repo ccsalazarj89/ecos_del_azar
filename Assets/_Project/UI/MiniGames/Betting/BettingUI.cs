@@ -47,7 +47,6 @@ namespace EcosDelAzar.UI
         Button btnMatch;
         Button btnDouble;
         Button btnFold;
-        Button btnPushLuck;
         Button btnShield;
         Label stanceHint;
 
@@ -102,7 +101,6 @@ namespace EcosDelAzar.UI
             btnMatch = root.Q<Button>("btn-match");
             btnDouble = root.Q<Button>("btn-double");
             btnFold = root.Q<Button>("btn-fold");
-            btnPushLuck = root.Q<Button>("btn-pushluck");
             btnShield = root.Q<Button>("btn-shield");
             stanceHint = root.Q<Label>("stance-hint");
 
@@ -135,7 +133,6 @@ namespace EcosDelAzar.UI
             btnMatch?.RegisterCallback<ClickEvent>(OnMatch);
             btnDouble?.RegisterCallback<ClickEvent>(OnDouble);
             btnFold?.RegisterCallback<ClickEvent>(OnFoldClicked);
-            btnPushLuck?.RegisterCallback<ClickEvent>(OnPushLuck);
             btnShield?.RegisterCallback<ClickEvent>(OnShield);
             btnLeave?.RegisterCallback<ClickEvent>(OnLeave);
         }
@@ -152,7 +149,6 @@ namespace EcosDelAzar.UI
             btnMatch?.UnregisterCallback<ClickEvent>(OnMatch);
             btnDouble?.UnregisterCallback<ClickEvent>(OnDouble);
             btnFold?.UnregisterCallback<ClickEvent>(OnFoldClicked);
-            btnPushLuck?.UnregisterCallback<ClickEvent>(OnPushLuck);
             btnShield?.UnregisterCallback<ClickEvent>(OnShield);
             btnLeave?.UnregisterCallback<ClickEvent>(OnLeave);
         }
@@ -236,7 +232,7 @@ namespace EcosDelAzar.UI
             if (tableMinNote != null)
             {
                 bool remembered = session.Betting.TableMinimumActive;
-                tableMinNote.text = remembered ? $"El crupier no baja de {session.Betting.MinimumBet}" : string.Empty;
+                tableMinNote.text = remembered ? $"El crupier se rehizo, pero no baja de {session.Betting.MinimumBet}" : string.Empty;
                 tableMinNote.style.display = remembered ? DisplayStyle.Flex : DisplayStyle.None;
             }
         }
@@ -293,7 +289,6 @@ namespace EcosDelAzar.UI
                 // push-luck moves win and loss, the shield only softens a loss.
                 string stance = session.Betting.LastStance switch
                 {
-                    RoundStance.PushLuck when outcome != RoundOutcome.Draw => "  (forzaste la suerte)",
                     RoundStance.Shield when outcome == RoundOutcome.Lose => "  (blindado)",
                     _ => string.Empty
                 };
@@ -358,13 +353,12 @@ namespace EcosDelAzar.UI
             bool canMatch = session.Betting.MaxBet >= npcBet;
             if (btnMatch != null) btnMatch.text = $"PLANTARSE ({npcBet})";
             if (btnMatch != null) btnMatch.SetEnabled(canMatch);
-            if (btnPushLuck != null) btnPushLuck.SetEnabled(canMatch);
             if (btnShield != null) btnShield.SetEnabled(canMatch);
 
             if (stanceHint != null)
             {
                 var b = session.Betting;
-                stanceHint.text = $"Forzar la suerte: ±{Mathf.RoundToInt(b.PushLuckEdge * 100)}% extra  ·  Blindarse: recuperas el {Mathf.RoundToInt(b.ShieldMitigation * 100)}% si pierdes, cuesta {Mathf.RoundToInt(b.ShieldOxygenCost * 100)}% de O2";
+                stanceHint.text = $"Blindarse: recuperas el {Mathf.RoundToInt(b.ShieldMitigation * 100)}% de la apuesta si pierdes, y cuesta {Mathf.RoundToInt(b.ShieldOxygenCost * 100)}% de O2";
             }
         }
 
@@ -468,13 +462,6 @@ namespace EcosDelAzar.UI
         {
             if (session == null) return;
             session.Leave();
-        }
-
-        void OnPushLuck(ClickEvent _)
-        {
-            if (session == null) return;
-            currentBet = session.Betting.NpcProposedBet;
-            session.RespondToProposal(BetResponse.PushLuck);
         }
 
         void OnShield(ClickEvent _)

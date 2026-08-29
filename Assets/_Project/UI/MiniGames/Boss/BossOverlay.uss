@@ -207,8 +207,9 @@
 }
 
 .sd-card {
-    width: 70px;
-    height: 100px;
+    width: 84px;
+    height: 118px;
+    -unity-background-scale-mode: scale-to-fit;
     font-size: 28px;
     -unity-font-style: bold;
     color: rgb(255, 220, 80);

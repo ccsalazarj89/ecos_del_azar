@@ -69,7 +69,6 @@ namespace EcosDelAzar.MiniGames
             int nextBet = doubled ? bettingSystem.LastBet * 2 : bettingSystem.NpcProposedBet;
             var stance = response switch
             {
-                BetResponse.PushLuck => RoundStance.PushLuck,
                 BetResponse.Shield => RoundStance.Shield,
                 _ => RoundStance.Stand
             };
@@ -91,12 +90,14 @@ namespace EcosDelAzar.MiniGames
         void BeginSession()
         {
             ApplyTableProfile();
-            int opponentCoins = HasTable ? TableState.GetOpponentCoins(TableId) : -1;
+            // Each seating is a closed duel: the dealer sits down with a full stack every
+            // time. Persisting it let the player bank progress by standing up while ahead
+            // and grind any table down with no risk.
             // The table sets the floor of the stakes; the dealer's remembered raise can only push it up.
             int minimumBet = HasTable
                 ? Mathf.Max(ElevatorSceneLoader.CurrentTableMinimumBet, TableState.GetMinimumBet(TableId))
                 : 0;
-            bettingSystem.Initialize(opponentCoins, minimumBet);
+            bettingSystem.Initialize(minimumBet);
 
             if (bettingSystem.IsPlayerBroke)
             {
@@ -148,7 +149,7 @@ namespace EcosDelAzar.MiniGames
         {
             if (!HasTable) return;
             int minimum = Mathf.Min(bettingSystem.NpcProposedBet, bettingSystem.OpponentCoins);
-            TableState.Save(TableId, bettingSystem.OpponentCoins, minimum, bettingSystem.HasStandingProposal);
+            TableState.Save(TableId, minimum, bettingSystem.HasStandingProposal);
         }
     }
 }

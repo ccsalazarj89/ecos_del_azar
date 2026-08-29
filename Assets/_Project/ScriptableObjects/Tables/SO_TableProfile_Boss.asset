@@ -15,6 +15,6 @@ MonoBehaviour:
   minimumBet: 100
   dealers:
   - displayName: El Director
-    startingCoins: 4000
+    startingCoins: 2500
     brain: {fileID: 11400000, guid: b0550000000000000000000000000002, type: 2}
     cheatChance: 0

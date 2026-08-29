@@ -57,7 +57,6 @@
                 <ui:Button name="btn-fold" text="RETIRARSE" class="action-btn action-btn--fold" />
             </ui:VisualElement>
             <ui:VisualElement class="proposal-buttons proposal-buttons--second">
-                <ui:Button name="btn-pushluck" text="FORZAR LA SUERTE" class="action-btn action-btn--pushluck" />
                 <ui:Button name="btn-shield" text="BLINDARSE" class="action-btn action-btn--shield" />
             </ui:VisualElement>
             <ui:Label name="stance-hint" text="" class="stance-hint" />

@@ -15,10 +15,10 @@ MonoBehaviour:
   minimumBet: 20
   dealers:
   - displayName: Sergei
-    startingCoins: 1400
+    startingCoins: 700
     brain: {fileID: 11400000, guid: b0550000000000000000000000000004, type: 2}
     cheatChance: 0
   - displayName: Lucía
-    startingCoins: 1800
+    startingCoins: 800
     brain: {fileID: 11400000, guid: b0550000000000000000000000000004, type: 2}
     cheatChance: 0
