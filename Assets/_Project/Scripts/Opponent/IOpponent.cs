@@ -10,13 +10,11 @@ namespace EcosDelAzar.Opponent
     {
         public readonly int PlayerBet;
         public readonly int MinimumBet;
-        public readonly int OwnCoins;
 
-        public BetContext(int playerBet, int minimumBet, int ownCoins)
+        public BetContext(int playerBet, int minimumBet)
         {
             PlayerBet = playerBet;
             MinimumBet = minimumBet;
-            OwnCoins = ownCoins;
         }
     }
 
