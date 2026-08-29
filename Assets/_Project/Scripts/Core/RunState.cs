@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace EcosDelAzar.Core
 {
     /// <summary>
@@ -28,14 +26,12 @@ namespace EcosDelAzar.Core
             RunPrefs.Save();
 
             GameManager.Instance?.ResetRunValues();
-            Debug.Log("[RunState] New run started.");
         }
 
         /// <summary>Ends the run (death or victory). "Continuar" disappears from the menu.</summary>
         public static void Clear()
         {
             RunPrefs.DeleteAll();
-            Debug.Log("[RunState] Run cleared.");
         }
 
         public static void MarkScene(string sceneName)

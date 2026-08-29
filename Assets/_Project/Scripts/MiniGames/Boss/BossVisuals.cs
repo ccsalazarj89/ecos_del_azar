@@ -2,20 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using EcosDelAzar.MiniGames.Betting;
 
 namespace EcosDelAzar.MiniGames.Boss
 {
+    /// <summary>
+    /// Boss-table overlay: the boss's suit badge, a short toast, and the
+    /// sudden-death panels (proposal, cards, result). Renders only; rules live
+    /// in BossOxygenModifier and SuddenDeathRound.
+    /// </summary>
     public class BossVisuals : MonoBehaviour
     {
         [SerializeField] UIDocument uiDocument;
         [SerializeField] BossOxygenModifier oxygenModifier;
         [SerializeField] SuddenDeathRound suddenDeath;
+        [SerializeField] BettingSystem bettingSystem;
 
-        VisualElement bossInfoBar;
-        Label bosssSuitIcon;
-        Button btnForceWin;
-        Button btnToggleBar;
-        Button btnRestoreBar;
+        Label bossSuitIcon;
+        Label bossSuitName;
+        Label bossSuitRule;
+
+        VisualElement toast;
+        Label toastTitle;
+        Label toastSub;
+        Coroutine toastCoroutine;
 
         VisualElement proposalPanel;
         Label sdPotLabel;
@@ -24,153 +34,122 @@ namespace EcosDelAzar.MiniGames.Boss
 
         VisualElement cardsPanel;
         Label sdTurnLabel;
-        List<Button> cardButtons = new();
+        readonly List<Button> cardButtons = new();
 
         VisualElement resultPanel;
         Label sdResultLabel;
         Label sdResultSub;
-
-        VisualElement forceWinToast;
-        Coroutine toastCoroutine;
 
         void OnEnable()
         {
             var root = uiDocument?.rootVisualElement;
             if (root == null) return;
 
-            bossInfoBar   = root.Q<VisualElement>("boss-info-bar");
-            bosssSuitIcon = root.Q<Label>("boss-suit-icon");
-            btnForceWin   = root.Q<Button>("btn-force-win");
-            btnToggleBar  = root.Q<Button>("btn-toggle-bar");
-            btnRestoreBar = root.Q<Button>("btn-restore-bar");
+            bossSuitIcon = root.Q<Label>("boss-suit-icon");
+            bossSuitName = root.Q<Label>("boss-suit-name");
+            bossSuitRule = root.Q<Label>("boss-suit-rule");
 
-            if (btnToggleBar  != null) btnToggleBar.clicked  += OnToggleBar;
-            if (btnRestoreBar != null) btnRestoreBar.clicked += OnRestoreBar;
-
-            if (PlayerPrefs.GetInt(PrefBarVisible, 1) == 0)
-                SetBarVisible(false, animate: false);
-
-            MakeDraggable(bossInfoBar);
+            toast = root.Q<VisualElement>("boss-toast");
+            toastTitle = root.Q<Label>("toast-title");
+            toastSub = root.Q<Label>("toast-sub");
 
             proposalPanel = root.Q<VisualElement>("sudden-death-proposal");
-            sdPotLabel    = root.Q<Label>("sd-pot-label");
-            btnAcceptSd   = root.Q<Button>("btn-accept-sd");
-            btnDeclineSd  = root.Q<Button>("btn-decline-sd");
+            sdPotLabel = root.Q<Label>("sd-pot-label");
+            btnAcceptSd = root.Q<Button>("btn-accept-sd");
+            btnDeclineSd = root.Q<Button>("btn-decline-sd");
 
-            cardsPanel  = root.Q<VisualElement>("sudden-death-cards");
+            cardsPanel = root.Q<VisualElement>("sudden-death-cards");
             sdTurnLabel = root.Q<Label>("sd-turn-label");
             cardButtons.Clear();
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < SuddenDeathRound.TotalCards; i++)
             {
                 int idx = i;
                 var btn = root.Q<Button>($"card-{i}");
-                if (btn != null)
-                {
-                    btn.clicked += () => suddenDeath?.PlayerPickCard(idx);
-                    cardButtons.Add(btn);
-                }
+                if (btn == null) continue;
+                btn.clicked += () => suddenDeath?.PlayerPickCard(idx);
+                cardButtons.Add(btn);
             }
 
-            forceWinToast = root.Q<VisualElement>("force-win-toast");
-
-            resultPanel   = root.Q<VisualElement>("sudden-death-result");
+            resultPanel = root.Q<VisualElement>("sudden-death-result");
             sdResultLabel = root.Q<Label>("sd-result-label");
-            sdResultSub   = root.Q<Label>("sd-result-sub");
+            sdResultSub = root.Q<Label>("sd-result-sub");
 
-            if (btnForceWin  != null) btnForceWin.clicked  += OnForceWinClicked;
-            if (btnAcceptSd  != null) btnAcceptSd.clicked  += OnAcceptSuddenDeath;
+            if (btnAcceptSd != null) btnAcceptSd.clicked += OnAcceptSuddenDeath;
             if (btnDeclineSd != null) btnDeclineSd.clicked += OnDeclineSuddenDeath;
-
-            if (oxygenModifier != null)
-            {
-                ShowBossSuit(oxygenModifier.AssignedSuit);
-                oxygenModifier.OnForceWinAvailabilityChanged += RefreshForceWinButton;
-            }
 
             if (suddenDeath != null)
             {
-                suddenDeath.OnSuddenDeathProposed  += ShowProposalPanel;
-                suddenDeath.OnCardDrawn            += OnCardDrawn;
-                suddenDeath.OnSuddenDeathComplete  += ShowResultPanel;
+                suddenDeath.OnSuddenDeathProposed += ShowProposalPanel;
+                suddenDeath.OnCardDrawn += OnCardDrawn;
+                suddenDeath.OnReshuffled += OnReshuffled;
+                suddenDeath.OnDeclined += OnDeclined;
+                suddenDeath.OnSuddenDeathComplete += ShowResultPanel;
             }
 
+            if (oxygenModifier != null) ShowBossSuit(oxygenModifier.AssignedSuit);
             HideAllOverlays();
-            RefreshForceWinButton();
         }
 
         void OnDisable()
         {
-            if (btnForceWin  != null) btnForceWin.clicked  -= OnForceWinClicked;
-            if (btnAcceptSd  != null) btnAcceptSd.clicked  -= OnAcceptSuddenDeath;
+            if (btnAcceptSd != null) btnAcceptSd.clicked -= OnAcceptSuddenDeath;
             if (btnDeclineSd != null) btnDeclineSd.clicked -= OnDeclineSuddenDeath;
-            if (btnToggleBar  != null) btnToggleBar.clicked  -= OnToggleBar;
-            if (btnRestoreBar != null) btnRestoreBar.clicked -= OnRestoreBar;
-
-            if (oxygenModifier != null)
-                oxygenModifier.OnForceWinAvailabilityChanged -= RefreshForceWinButton;
 
             if (suddenDeath != null)
             {
-                suddenDeath.OnSuddenDeathProposed  -= ShowProposalPanel;
-                suddenDeath.OnCardDrawn            -= OnCardDrawn;
-                suddenDeath.OnSuddenDeathComplete  -= ShowResultPanel;
+                suddenDeath.OnSuddenDeathProposed -= ShowProposalPanel;
+                suddenDeath.OnCardDrawn -= OnCardDrawn;
+                suddenDeath.OnReshuffled -= OnReshuffled;
+                suddenDeath.OnDeclined -= OnDeclined;
+                suddenDeath.OnSuddenDeathComplete -= ShowResultPanel;
             }
         }
 
         void ShowBossSuit(Suit suit)
         {
-            if (bosssSuitIcon == null) return;
-
-            (string icon, string colorHex) = suit switch
+            (string icon, string name, Color color) = suit switch
             {
-                Suit.Hearts   => ("♥", "#DC3C32"),
-                Suit.Diamonds => ("♦", "#DC3C32"),
-                Suit.Spades   => ("♠", "#E8D080"),
-                Suit.Clubs    => ("♣", "#E8D080"),
-                _             => ("?",  "#888888")
+                Suit.Hearts => ("♥", "CORAZONES", new Color(0.86f, 0.24f, 0.2f)),
+                Suit.Diamonds => ("♦", "DIAMANTES", new Color(0.86f, 0.24f, 0.2f)),
+                Suit.Spades => ("♠", "PICAS", new Color(0.91f, 0.82f, 0.5f)),
+                Suit.Clubs => ("♣", "TRÉBOLES", new Color(0.91f, 0.82f, 0.5f)),
+                _ => ("?", "?", Color.gray)
             };
 
-            bosssSuitIcon.text = icon;
-            bosssSuitIcon.style.color = new StyleColor(HexToColor(colorHex));
+            if (bossSuitIcon != null)
+            {
+                bossSuitIcon.text = icon;
+                bossSuitIcon.style.color = color;
+            }
+
+            if (bossSuitName != null)
+            {
+                bossSuitName.text = name;
+                bossSuitName.style.color = color;
+            }
+
+            // The rule is not obvious from a suit symbol: spell out what it does.
+            if (bossSuitRule != null)
+                bossSuitRule.text = $"Con J, Q, K o As de {name.ToLowerInvariant()} en tu mano: ganas aire si vences la ronda, lo pierdes si caes.";
         }
 
-        void OnForceWinClicked()
+        void ShowToast(string title, string sub = "")
         {
-            if (oxygenModifier == null) return;
-            bool activated = oxygenModifier.TryActivateForceWin();
-            if (activated) RefreshForceWinButton();
-        }
-
-        void RefreshForceWinButton()
-        {
-            if (btnForceWin == null) return;
-
-            bool available = oxygenModifier != null && oxygenModifier.IsForceWinAvailable;
-            btnForceWin.SetEnabled(available);
-            btnForceWin.EnableInClassList("force-win-btn--disabled", !available);
-
-            if (available)
-                ShowForceWinToast();
-        }
-
-        void ShowForceWinToast()
-        {
-            if (forceWinToast == null) return;
+            if (toast == null) return;
+            if (toastTitle != null) toastTitle.text = title;
+            if (toastSub != null) toastSub.text = sub;
             if (toastCoroutine != null) StopCoroutine(toastCoroutine);
             toastCoroutine = StartCoroutine(ToastRoutine());
         }
 
         IEnumerator ToastRoutine()
         {
-            forceWinToast.RemoveFromClassList("force-win-toast--hidden");
-            forceWinToast.style.display = DisplayStyle.Flex;
-
+            toast.RemoveFromClassList("boss-toast--hidden");
+            toast.style.display = DisplayStyle.Flex;
             yield return new WaitForSeconds(3f);
-
-            forceWinToast.AddToClassList("force-win-toast--hidden");
+            toast.AddToClassList("boss-toast--hidden");
             yield return new WaitForSeconds(0.5f);
-
-            forceWinToast.style.display = DisplayStyle.None;
+            toast.style.display = DisplayStyle.None;
             toastCoroutine = null;
         }
 
@@ -179,13 +158,8 @@ namespace EcosDelAzar.MiniGames.Boss
             HideAllOverlays();
             if (proposalPanel == null) return;
 
-            if (sdPotLabel != null && suddenDeath != null)
-            {
-                var betting = GetComponentInParent<EcosDelAzar.MiniGames.Betting.BettingSystem>(true)
-                           ?? GetComponent<EcosDelAzar.MiniGames.Betting.BettingSystem>();
-                if (betting != null)
-                    sdPotLabel.text = $"POT TOTAL: {betting.PlayerCoins + betting.OpponentCoins} fichas";
-            }
+            if (sdPotLabel != null && bettingSystem != null)
+                sdPotLabel.text = $"POT TOTAL: {bettingSystem.PlayerCoins + bettingSystem.OpponentCoins} fichas  ·  Rechazar cuesta {suddenDeath.DeclineFeeFor(bettingSystem.PlayerCoins)}";
 
             proposalPanel.style.display = DisplayStyle.Flex;
         }
@@ -203,6 +177,17 @@ namespace EcosDelAzar.MiniGames.Boss
             suddenDeath?.Decline();
         }
 
+        void OnDeclined(int fee)
+        {
+            if (fee > 0) ShowToast("DUELO RECHAZADO", $"El director se queda {fee} monedas.");
+        }
+
+        void OnReshuffled(int round)
+        {
+            ResetCardButtons();
+            if (sdTurnLabel != null) sdTurnLabel.text = $"RONDA {round} — Sin comodín. Se reparte de nuevo...";
+        }
+
         void ShowCardsPanel()
         {
             if (cardsPanel == null) return;
@@ -217,6 +202,7 @@ namespace EcosDelAzar.MiniGames.Boss
             {
                 btn.text = "?";
                 btn.SetEnabled(true);
+                btn.style.borderTopColor = StyleKeyword.Null;
                 btn.RemoveFromClassList("sd-card--revealed");
                 btn.RemoveFromClassList("sd-card--joker");
                 btn.RemoveFromClassList("sd-card--winner");
@@ -225,7 +211,6 @@ namespace EcosDelAzar.MiniGames.Boss
 
         void OnCardDrawn(int cardIndex, Card card, bool isPlayerTurn)
         {
-            Debug.Log($"[BossVisuals] OnCardDrawn — índice={cardIndex}, carta={card}, botones={cardButtons.Count}");
             if (cardIndex < 0 || cardIndex >= cardButtons.Count) return;
 
             var btn = cardButtons[cardIndex];
@@ -238,33 +223,18 @@ namespace EcosDelAzar.MiniGames.Boss
             if (isJoker)
             {
                 btn.AddToClassList("sd-card--joker");
-
-                if (isPlayerTurn) MarkLoser(cardIndex);
-                else              MarkWinner(cardIndex);
+                if (isPlayerTurn) btn.style.borderTopColor = new StyleColor(new Color(0.85f, 0.23f, 0.2f));
+                else btn.AddToClassList("sd-card--winner");
+                return;
             }
 
-            if (!isJoker)
-                SetTurnLabel(isPlayerTurn: !isPlayerTurn);
-        }
-
-        void MarkLoser(int idx)
-        {
-            if (idx >= 0 && idx < cardButtons.Count)
-                cardButtons[idx].style.borderTopColor = new StyleColor(new Color(0.85f, 0.23f, 0.2f));
-        }
-
-        void MarkWinner(int idx)
-        {
-            if (idx >= 0 && idx < cardButtons.Count)
-                cardButtons[idx].AddToClassList("sd-card--winner");
+            SetTurnLabel(isPlayerTurn: !isPlayerTurn);
         }
 
         void SetTurnLabel(bool isPlayerTurn)
         {
             if (sdTurnLabel == null) return;
-            sdTurnLabel.text = isPlayerTurn
-                ? "TU TURNO — Elige una carta"
-                : "TURNO DEL BOSS...";
+            sdTurnLabel.text = isPlayerTurn ? "TU TURNO — Elige una carta" : "TURNO DEL BOSS...";
         }
 
         void ShowResultPanel(bool playerWon)
@@ -280,9 +250,7 @@ namespace EcosDelAzar.MiniGames.Boss
             }
 
             if (sdResultSub != null)
-                sdResultSub.text = playerWon
-                    ? "Te llevas todo el pot"
-                    : "El boss se lleva todo el pot";
+                sdResultSub.text = playerWon ? "Te llevas todo el pot" : "El boss se lleva todo el pot";
 
             if (cardsPanel != null) cardsPanel.style.display = DisplayStyle.None;
             resultPanel.style.display = DisplayStyle.Flex;
@@ -291,129 +259,31 @@ namespace EcosDelAzar.MiniGames.Boss
         void HideAllOverlays()
         {
             if (proposalPanel != null) proposalPanel.style.display = DisplayStyle.None;
-            if (cardsPanel   != null) cardsPanel.style.display    = DisplayStyle.None;
-            if (resultPanel  != null) resultPanel.style.display   = DisplayStyle.None;
+            if (cardsPanel != null) cardsPanel.style.display = DisplayStyle.None;
+            if (resultPanel != null) resultPanel.style.display = DisplayStyle.None;
         }
 
-        string CardToSymbol(Card card)
+        static string CardToSymbol(Card card)
         {
-            string rankStr = card.Rank switch
+            string rank = card.Rank switch
             {
-                Rank.Jack  => "J",
+                Rank.Jack => "J",
                 Rank.Queen => "Q",
-                Rank.King  => "K",
-                Rank.Ace   => "A",
-                Rank.Joker => "★",
-                _          => ((int)card.Rank).ToString()
+                Rank.King => "K",
+                Rank.Ace => "A",
+                _ => ((int)card.Rank).ToString()
             };
 
-            string suitStr = card.Suit switch
+            string suit = card.Suit switch
             {
-                Suit.Hearts   => "♥",
+                Suit.Hearts => "♥",
                 Suit.Diamonds => "♦",
-                Suit.Spades   => "♠",
-                Suit.Clubs    => "♣",
-                _             => ""
+                Suit.Spades => "♠",
+                Suit.Clubs => "♣",
+                _ => ""
             };
 
-            return $"{rankStr}{suitStr}";
-        }
-
-        static Color HexToColor(string hex)
-        {
-            ColorUtility.TryParseHtmlString(hex, out Color c);
-            return c;
-        }
-
-        const string PrefBarVisible = "boss_bar_visible";
-
-        void OnToggleBar()  => SetBarVisible(false);
-        void OnRestoreBar() => SetBarVisible(true);
-
-        void SetBarVisible(bool visible, bool animate = true)
-        {
-            if (bossInfoBar  != null) bossInfoBar.style.display  = visible ? DisplayStyle.Flex : DisplayStyle.None;
-            if (btnRestoreBar != null) btnRestoreBar.style.display = visible ? DisplayStyle.None : DisplayStyle.Flex;
-
-            if (btnRestoreBar != null && oxygenModifier != null)
-            {
-                string icon = oxygenModifier.AssignedSuit switch
-                {
-                    Suit.Hearts   => "♥",
-                    Suit.Diamonds => "♦",
-                    Suit.Spades   => "♠",
-                    Suit.Clubs    => "♣",
-                    _             => "B"
-                };
-                btnRestoreBar.text = icon;
-            }
-
-            PlayerPrefs.SetInt(PrefBarVisible, visible ? 1 : 0);
-            PlayerPrefs.Save();
-        }
-
-        const string PrefBarX = "boss_bar_x";
-        const string PrefBarY = "boss_bar_y";
-
-        void MakeDraggable(VisualElement el)
-        {
-            if (el == null) return;
-
-            el.RegisterCallback<GeometryChangedEvent>(OnBarReady);
-
-            bool dragging = false;
-            Vector2 pointerStart = Vector2.zero;
-            Vector2 posStart     = Vector2.zero;
-
-            el.RegisterCallback<PointerDownEvent>(evt =>
-            {
-                el.style.translate = new StyleTranslate(new Translate(0, 0));
-                el.style.left   = el.layout.x;
-                el.style.top    = el.layout.y;
-                el.style.bottom = StyleKeyword.Auto;
-
-                dragging     = true;
-                pointerStart = evt.position;
-                posStart     = new Vector2(el.layout.x, el.layout.y);
-                el.CapturePointer(evt.pointerId);
-                evt.StopPropagation();
-            });
-
-            el.RegisterCallback<PointerMoveEvent>(evt =>
-            {
-                if (!dragging) return;
-                Vector2 delta = (Vector2)evt.position - pointerStart;
-                el.style.left = posStart.x + delta.x;
-                el.style.top  = posStart.y + delta.y;
-            });
-
-            el.RegisterCallback<PointerUpEvent>(evt =>
-            {
-                if (!dragging) return;
-                dragging = false;
-                el.ReleasePointer(evt.pointerId);
-
-                PlayerPrefs.SetFloat(PrefBarX, el.layout.x);
-                PlayerPrefs.SetFloat(PrefBarY, el.layout.y);
-                PlayerPrefs.Save();
-            });
-        }
-
-        void OnBarReady(GeometryChangedEvent evt)
-        {
-            if (bossInfoBar == null) return;
-
-            if (!PlayerPrefs.HasKey(PrefBarX)) return;
-
-            bossInfoBar.UnregisterCallback<GeometryChangedEvent>(OnBarReady);
-
-            float x = PlayerPrefs.GetFloat(PrefBarX);
-            float y = PlayerPrefs.GetFloat(PrefBarY);
-
-            bossInfoBar.style.translate = new StyleTranslate(new Translate(0, 0));
-            bossInfoBar.style.left   = x;
-            bossInfoBar.style.top    = y;
-            bossInfoBar.style.bottom = StyleKeyword.Auto;
+            return rank + suit;
         }
     }
 }

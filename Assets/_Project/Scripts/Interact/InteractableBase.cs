@@ -18,6 +18,9 @@ namespace EcosDelAzar.UI
         /// <summary>Subclasses return a hint that replaces the label default (e.g. "Mesa vacía").</summary>
         public virtual string HintOverride => null;
 
+        /// <summary>Subclasses explain a refusal (e.g. "No te llega para la apuesta mínima").</summary>
+        public virtual string BlockedReason => null;
+
         public event Action<bool> OnPlayerRangeChanged;
         public event Action OnInteractionStarted;
         public event Action OnInteractionBlocked;
@@ -48,7 +51,11 @@ namespace EcosDelAzar.UI
 
         protected void RaiseInteractionStarted() => OnInteractionStarted?.Invoke();
 
-        protected void RaiseInteractionBlocked() => OnInteractionBlocked?.Invoke();
+        protected void RaiseInteractionBlocked()
+        {
+            OnInteractionBlocked?.Invoke();
+            Core.UINotice.Show(BlockedReason);
+        }
 
         /// <summary>Re-emits the in-range state so the hint reappears after an interaction ends.</summary>
         protected void NotifyHintVisible()

@@ -9,7 +9,8 @@ namespace EcosDelAzar.Environment
     /// bounds sit between the camera and the player fades to a translucent ghost,
     /// so the isometric view is never blocked. Works with whole walls or pieces:
     /// no per-wall setup, no trigger volumes. Colliders are never touched, so
-    /// faded walls still block the player.
+    /// faded walls still block the player. Anything under a neverFade transform is
+    /// skipped and stays solid.
     /// Materials must support the URP Lit surface switch (URP/Lit, Simple Lit...).
     /// Others (e.g. Synty shader graphs) fall back to hiding the renderer.
     /// </summary>
@@ -28,6 +29,10 @@ namespace EcosDelAzar.Environment
         [SerializeField] float boundsPadding = 0.5f;
         [Tooltip("Height above the player's pivot that must stay visible.")]
         [SerializeField] float playerHeight = 1.8f;
+
+        [Header("Exceptions")]
+        [Tooltip("Renderers under these transforms never fade: props, signs, doors, feature walls.")]
+        [SerializeField] Transform[] neverFade;
 
         [Header("Collision")]
         [Tooltip("Adds a BoxCollider to any wall renderer that has no collider, so walls always bound the map.")]
@@ -54,6 +59,14 @@ namespace EcosDelAzar.Environment
         {
             foreach (var r in GetComponentsInChildren<Renderer>(true))
             {
+                // Props, signs and doors marked as exceptions keep their solid look.
+                if (IsException(r.transform))
+                {
+                    if (ensureColliders && r.GetComponent<Collider>() == null)
+                        r.gameObject.AddComponent<BoxCollider>();
+                    continue;
+                }
+
                 var opaque = r.sharedMaterials;
                 var translucent = new Material[opaque.Length];
                 bool supported = opaque.Length > 0;
@@ -75,6 +88,15 @@ namespace EcosDelAzar.Environment
 
                 walls.Add(new Wall { renderer = r, opaque = opaque, translucent = translucent, supportsFade = supported });
             }
+        }
+
+        bool IsException(Transform t)
+        {
+            if (neverFade != null)
+                foreach (var root in neverFade)
+                    if (root != null && t.IsChildOf(root)) return true;
+
+            return false;
         }
 
         void Start()

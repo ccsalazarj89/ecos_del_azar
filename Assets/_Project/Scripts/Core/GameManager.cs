@@ -154,7 +154,10 @@ namespace EcosDelAzar.Core
         {
             // Hub floors are the resume points of a run; minigame scenes are not.
             if (scene.name.StartsWith(HubScenePrefix))
+            {
                 RunState.MarkScene(scene.name);
+                if (OxygenTank != null) OxygenTank.FloorDrainMultiplier = 1f; // a FloorDrain in the scene raises it in Start
+            }
             Modifiers?.SaveTimers();
         }
 
@@ -164,10 +167,10 @@ namespace EcosDelAzar.Core
             if (Modifiers != null && OxygenTank != null && Modifiers.TryConsume(EcoEffect.ReviveOnce, out float revive))
             {
                 OxygenTank.Restore(OxygenTank.Max * revive);
+                OxygenTank.Report(OxygenTank.Max * revive, "Bombona de reserva");
                 return;
             }
 
-            Debug.Log("[GameManager] Player oxygen depleted — run over.");
             EndRun("TE HAS QUEDADO SIN AIRE", "El casino se queda con todo lo que ganaste. La próxima vez, respira antes de apostar.");
         }
     }

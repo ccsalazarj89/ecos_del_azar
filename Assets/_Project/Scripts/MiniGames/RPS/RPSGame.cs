@@ -21,6 +21,9 @@ namespace EcosDelAzar.MiniGames.RPS
         [Range(0f, 1f)]
         [SerializeField] float opponentCheatChance = 0f;
 
+        /// <summary>Set by the table profile: upper-floor dealers may peek at your hand.</summary>
+        public void SetCheatChance(float chance) => opponentCheatChance = Mathf.Clamp01(chance);
+
         public RPSChoice PlayerChoice { get; private set; }
         public RPSChoice OpponentChoice { get; private set; }
         public bool AwaitingPlayerInput { get; private set; }

@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.UI.WorldInteractLabel
   hintText: '[E] Interactuar'
-  blockedText: No disponible
+  blockedText: Sin monedas
   triggerSource: {fileID: 0}
   blockedDuration: 2
   faceCamera: 1
@@ -259,6 +259,7 @@ MonoBehaviour:
   interactAction: {fileID: 8038336070660516234, guid: d2b0bd47aafe82049b853d85d945ac0d, type: 3}
   minigameSceneName: 
   minimumBetRequired: 10
+  profile: {fileID: 0}
   tableId: 
   floorNumber: 1
   seatAnchor: {fileID: 6666000000000002}

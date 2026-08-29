@@ -9,7 +9,6 @@ namespace EcosDelAzar.MiniGames
     public abstract class MiniGameBase : MonoBehaviour
     {
         public MiniGameState State { get; private set; } = MiniGameState.Idle;
-        public RoundResult LastResult { get; private set; }
         public bool InProgress => State != MiniGameState.Idle;
 
         /// <summary>Shown by the betting panel while the round is being played.</summary>
@@ -18,7 +17,10 @@ namespace EcosDelAzar.MiniGames
         public event Action OnRoundStarted;
         public event Action<RoundResult> OnRoundResolved;
         public event Action OnReadyForNextRound;
-        public event Action OnMatchEnded;
+        /// <summary>The status shown by the betting panel changed mid-round.</summary>
+        public event Action OnStatusTextChanged;
+
+        protected void RaiseStatusChanged() => OnStatusTextChanged?.Invoke();
 
         public void Begin()
         {
@@ -40,16 +42,15 @@ namespace EcosDelAzar.MiniGames
             StopAllCoroutines();
             State = MiniGameState.Idle;
             OnEnd();
-            OnMatchEnded?.Invoke();
         }
 
         IEnumerator ExecuteRound()
         {
             yield return PlayRoundRoutine();
 
-            LastResult = EvaluateResult();
+            var result = EvaluateResult();
             State = MiniGameState.Resolved;
-            OnRoundResolved?.Invoke(LastResult);
+            OnRoundResolved?.Invoke(result);
 
             yield return new WaitForSeconds(GetResultDisplayTime());
 

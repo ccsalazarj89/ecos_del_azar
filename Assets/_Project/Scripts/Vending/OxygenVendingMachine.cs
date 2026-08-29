@@ -24,7 +24,6 @@ namespace EcosDelAzar.Vending
         public OxygenTank Tank => GameManager.Instance?.OxygenTank;
 
         public event Action<TradeQuote> OnTradeCompleted;
-        public event Action<TradeQuote> OnTradeRejected;
 
         protected override void OnEnable()
         {
@@ -84,7 +83,6 @@ namespace EcosDelAzar.Vending
                 GameManager.Instance?.Modifiers?.TryConsume(EcoEffect.OxygenBuyDiscount, out _);
 
             if (result.IsValid) OnTradeCompleted?.Invoke(result);
-            else OnTradeRejected?.Invoke(result);
 
             return result;
         }

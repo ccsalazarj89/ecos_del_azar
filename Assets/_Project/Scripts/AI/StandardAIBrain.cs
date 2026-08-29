@@ -12,22 +12,28 @@ namespace EcosDelAzar.AI
     {
         [SerializeField] AIBrainConfig config;
 
-        public int DecideBet(int opponentBet, int minimumBet, int ownCoins)
+        public int DecideBet(int opponentBet, int minimumBet, int ownCoins, int startingCoins)
         {
             if (ownCoins <= 0) return 0;
+
+            // A dealer short of air (low stack) stops playing safe and pushes to recover.
+            float air = startingCoins > 0 ? (float)ownCoins / startingCoins : 1f;
+            float aggressiveness = air < config.desperateThreshold
+                ? Mathf.Clamp01(config.aggressiveness + config.desperateBoost)
+                : config.aggressiveness;
 
             float roll = Random.value;
             int maxProposal = Mathf.Min(opponentBet * 2, ownCoins);
 
             // Aggressive: raise (capped at double)
-            if (roll < config.aggressiveness)
+            if (roll < aggressiveness)
             {
-                int raised = Mathf.RoundToInt(opponentBet * Mathf.Lerp(1.2f, 2f, config.aggressiveness));
+                int raised = Mathf.RoundToInt(opponentBet * Mathf.Lerp(1.2f, 2f, aggressiveness));
                 return Mathf.Clamp(raised, minimumBet, maxProposal);
             }
 
             // Bluff: slight raise
-            if (roll < config.aggressiveness + config.bluffFrequency)
+            if (roll < aggressiveness + config.bluffFrequency)
             {
                 int bluffBet = Mathf.RoundToInt(opponentBet * 1.5f);
                 return Mathf.Clamp(bluffBet, minimumBet, maxProposal);

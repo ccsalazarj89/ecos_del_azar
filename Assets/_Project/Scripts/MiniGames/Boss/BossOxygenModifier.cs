@@ -5,49 +5,33 @@ using EcosDelAzar.Core;
 namespace EcosDelAzar.MiniGames.Boss
 {
     /// <summary>
-    /// The boss's house rules: a suit is assigned to the boss for the session and
-    /// the player's cards of that suit move the oxygen tank on each round. Also
-    /// owns the "forced win" the player can buy with oxygen after two straight
-    /// losses. Works with any minigame that implements IBossGame (today: BossBlackjackGame).
+    /// The boss's house rule: the Director owns a suit for the whole run, and the
+    /// figures of that suit in the player's hand move the oxygen tank — they save
+    /// the player on a win and cost air on a loss (symmetric on purpose: rewarding
+    /// only J/Q/K/A while punishing any card of the suit read as an arbitrary tax). Works with any minigame that implements IBossGame (today: BossBlackjackGame).
     /// </summary>
     [RequireComponent(typeof(MiniGameSession))]
     public class BossOxygenModifier : MonoBehaviour
     {
+        const string SuitKey = "boss.suit";
+
         [Header("Boss suit")]
         [Tooltip("None = random at the start of each session.")]
         [SerializeField] Suit forcedBossSuit = Suit.None;
 
-        [Header("Restore on a win holding the boss suit (% of max, best card counts)")]
+        [Header("Boss-suit figures: restore on a win (% of max, best card counts)")]
         [SerializeField, Range(0f, 1f)] float jackRestorePercent  = 0.30f;
         [SerializeField, Range(0f, 1f)] float queenRestorePercent = 0.50f;
         [SerializeField, Range(0f, 1f)] float kingRestorePercent  = 0.70f;
         [SerializeField, Range(0f, 1f)] float aceRestorePercent   = 1.00f;
 
         [Header("Penalties (% of max)")]
-        [Tooltip("Losing while holding a card of the boss suit.")]
+        [Tooltip("Losing while holding a FIGURE or ace of the boss suit.")]
         [SerializeField, Range(0f, 1f)] float losePenaltyPercent = 0.20f;
         [Tooltip("Busting in Blackjack: the player's own call, so it costs air.")]
         [SerializeField, Range(0f, 1f)] float bustPenaltyPercent = 0.25f;
 
-        [Header("Forced win")]
-        [Tooltip("% of max oxygen it costs to activate the forced win.")]
-        [SerializeField, Range(0f, 1f)] float forceWinOxygenCost = 0.30f;
-
         public Suit AssignedSuit { get; private set; }
-        public int ConsecutiveLosses { get; private set; }
-
-        public bool CanAffordForceWin
-        {
-            get
-            {
-                var tank = GameManager.Instance?.OxygenTank;
-                return tank != null && tank.Current >= tank.Max * forceWinOxygenCost;
-            }
-        }
-
-        public bool IsForceWinAvailable => ConsecutiveLosses >= 2 && CanAffordForceWin;
-
-        public event System.Action OnForceWinAvailabilityChanged;
 
         MiniGameSession session;
         IBossGame bossGame;
@@ -77,23 +61,6 @@ namespace EcosDelAzar.MiniGames.Boss
                 session.Game.OnRoundResolved -= HandleRoundResolved;
         }
 
-        public bool TryActivateForceWin()
-        {
-            if (bossGame == null || bossGame.IsForceWinQueued) return false;
-
-            var tank = GameManager.Instance?.OxygenTank;
-            if (tank == null) return false;
-
-            float cost = tank.Max * forceWinOxygenCost;
-            if (tank.Current < cost) return false;
-
-            tank.Deplete(cost);
-            bossGame.QueueForceWin();
-            ConsecutiveLosses = 0;
-            OnForceWinAvailabilityChanged?.Invoke();
-            return true;
-        }
-
         void AssignBossSuit()
         {
             if (forcedBossSuit != Suit.None)
@@ -102,8 +69,19 @@ namespace EcosDelAzar.MiniGames.Boss
                 return;
             }
 
+            // The suit is the Director's trait, not a per-seating roll: drawing it again
+            // on every re-entry would let the player stand up and reroll a bad suit.
+            int saved = RunPrefs.GetInt(SuitKey, -1);
+            if (saved >= 0 && saved <= (int)Suit.Clubs)
+            {
+                AssignedSuit = (Suit)saved;
+                return;
+            }
+
             Suit[] validSuits = { Suit.Hearts, Suit.Diamonds, Suit.Spades, Suit.Clubs };
             AssignedSuit = validSuits[Random.Range(0, validSuits.Length)];
+            RunPrefs.SetInt(SuitKey, (int)AssignedSuit);
+            RunPrefs.Save();
         }
 
         void HandleRoundResolved(RoundResult result)
@@ -111,35 +89,42 @@ namespace EcosDelAzar.MiniGames.Boss
             var tank = GameManager.Instance?.OxygenTank;
             if (tank == null) return;
 
-            bool prevAvailable = IsForceWinAvailable;
-            ConsecutiveLosses = result.Outcome == RoundOutcome.Lose ? ConsecutiveLosses + 1 : 0;
-            if (prevAvailable != IsForceWinAvailable)
-                OnForceWinAvailabilityChanged?.Invoke();
-
             var cards = bossGame.PlayerRoundCards;
 
             if (result.Outcome == RoundOutcome.Lose)
             {
                 if (bossGame.PlayerBusted)
+                {
                     tank.Deplete(tank.Max * bustPenaltyPercent);
-                else if (HoldsBossSuit(cards))
+                    tank.Report(-tank.Max * bustPenaltyPercent, "Te pasaste de 21");
+                }
+                else if (BestRestorePercent(cards) > 0f)
+                {
                     tank.Deplete(tank.Max * losePenaltyPercent);
+                    tank.Report(-tank.Max * losePenaltyPercent, $"Caíste con una figura de {SuitName(AssignedSuit)}");
+                }
                 return;
             }
 
             if (result.Outcome == RoundOutcome.Win)
             {
                 float restore = BestRestorePercent(cards);
-                if (restore > 0f) tank.Restore(tank.Max * restore);
+                if (restore > 0f)
+                {
+                    tank.Restore(tank.Max * restore);
+                    tank.Report(tank.Max * restore, $"Venciste con una figura de {SuitName(AssignedSuit)}");
+                }
             }
         }
 
-        bool HoldsBossSuit(IReadOnlyList<Card> cards)
+        static string SuitName(Suit suit) => suit switch
         {
-            foreach (var c in cards)
-                if (c != null && c.Suit == AssignedSuit) return true;
-            return false;
-        }
+            Suit.Hearts => "corazones",
+            Suit.Diamonds => "diamantes",
+            Suit.Spades => "picas",
+            Suit.Clubs => "tréboles",
+            _ => "?"
+        };
 
         float BestRestorePercent(IReadOnlyList<Card> cards)
         {

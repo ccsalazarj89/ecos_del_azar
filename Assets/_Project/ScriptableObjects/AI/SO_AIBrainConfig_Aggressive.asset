@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d1d1e19737bd5f43892af78d4952b38, type: 3}
-  m_Name: SO_AIBrainConfig_Boss
+  m_Name: SO_AIBrainConfig_Aggressive
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.AI.AIBrainConfig
-  aggressiveness: 0.75
-  bluffFrequency: 0.3
-  desperateThreshold: 0.3
+  aggressiveness: 0.55
+  bluffFrequency: 0.25
+  desperateThreshold: 0.35
   desperateBoost: 0.35

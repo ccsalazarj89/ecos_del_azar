@@ -28,6 +28,10 @@ namespace EcosDelAzar.UI
         VisualElement oxygenBarFill;
         VisualElement oxygenModule;
         Label oxygenWarning;
+        Label oxygenEvent;
+        Coroutine oxygenEventRoutine;
+        Label notice;
+        Coroutine noticeRoutine;
         VisualElement[] chipSlots = new VisualElement[ChipSlots];
         VisualElement announcement;
         Label announcementText;
@@ -57,6 +61,8 @@ namespace EcosDelAzar.UI
             oxygenBarFill = root.Q("oxygen-fill");
             oxygenModule = root.Q("OxygenModule");
             oxygenWarning = root.Q<Label>("oxygen-warning");
+            oxygenEvent = root.Q<Label>("oxygen-event");
+            notice = root.Q<Label>("hud-notice");
             announcement = root.Q("Announcement");
             announcementText = root.Q<Label>("announcement-text");
             echoesModule = root.Q("EchoesModule");
@@ -73,6 +79,7 @@ namespace EcosDelAzar.UI
             TutorialProgress.OnObjectiveChanged += ShowObjective;
             ShowObjective(TutorialProgress.CurrentObjectiveOrNull);
             ModalTracker.OnAnyOpenChanged += OnModalChanged;
+            UINotice.OnMessage += ShowNotice;
         }
 
         void Start()
@@ -94,6 +101,7 @@ namespace EcosDelAzar.UI
                 oxygenTank.OnOxygenChanged += UpdateOxygen;
                 UpdateOxygen(oxygenTank.Current);
             }
+            if (oxygenTank != null) oxygenTank.OnOxygenEvent += ShowOxygenEvent;
 
             gameManager.OnStateChanged += UpdateVisibility;
             UpdateVisibility(gameManager.State);
@@ -116,6 +124,9 @@ namespace EcosDelAzar.UI
             if (oxygenTank != null)
                 oxygenTank.OnOxygenChanged -= UpdateOxygen;
 
+            if (oxygenTank != null)
+                oxygenTank.OnOxygenEvent -= ShowOxygenEvent;
+
             if (gameManager != null)
                 gameManager.OnStateChanged -= UpdateVisibility;
 
@@ -123,6 +134,7 @@ namespace EcosDelAzar.UI
             announcement?.UnregisterCallback<ClickEvent>(OnAnnouncementClicked);
             TutorialProgress.OnObjectiveChanged -= ShowObjective;
             ModalTracker.OnAnyOpenChanged -= OnModalChanged;
+            UINotice.OnMessage -= ShowNotice;
 
             if (modifiers != null)
             {
@@ -186,6 +198,44 @@ namespace EcosDelAzar.UI
                 oxygenWarning.EnableInClassList("oxygen-warning--hidden", !low);
                 oxygenWarning.EnableInClassList("oxygen-warning--critical", critical);
             }
+        }
+
+        void ShowNotice(string message)
+        {
+            if (notice == null) return;
+            notice.text = message;
+            notice.RemoveFromClassList("hud-notice--hidden");
+            if (noticeRoutine != null) StopCoroutine(noticeRoutine);
+            noticeRoutine = StartCoroutine(HideNoticeLater());
+        }
+
+        IEnumerator HideNoticeLater()
+        {
+            yield return new WaitForSecondsRealtime(5f);
+            notice.AddToClassList("hud-notice--hidden");
+            noticeRoutine = null;
+        }
+
+        // A one-line note under the O2 bar: the tank moved and this is why. Non-blocking by design.
+        void ShowOxygenEvent(int percent, string reason)
+        {
+            if (oxygenEvent == null || percent == 0) return;
+
+            bool gain = percent > 0;
+            oxygenEvent.text = $"{(gain ? "+" : "")}{percent}% O2 · {reason}";
+            oxygenEvent.EnableInClassList("oxygen-event--gain", gain);
+            oxygenEvent.EnableInClassList("oxygen-event--loss", !gain);
+            oxygenEvent.RemoveFromClassList("oxygen-event--hidden");
+
+            if (oxygenEventRoutine != null) StopCoroutine(oxygenEventRoutine);
+            oxygenEventRoutine = StartCoroutine(HideOxygenEventLater());
+        }
+
+        IEnumerator HideOxygenEventLater()
+        {
+            yield return new WaitForSecondsRealtime(4f);
+            oxygenEvent.AddToClassList("oxygen-event--hidden");
+            oxygenEventRoutine = null;
         }
 
         void OnChipsChanged(int count)

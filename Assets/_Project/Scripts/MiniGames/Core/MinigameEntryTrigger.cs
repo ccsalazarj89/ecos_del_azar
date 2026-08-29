@@ -18,6 +18,8 @@ namespace EcosDelAzar.MiniGames
 
         [SerializeField] string minigameSceneName;
         [SerializeField] int minimumBetRequired = 10;
+        [Tooltip("Dealer, bankroll and stakes for this table. Overrides the scene defaults.")]
+        [SerializeField] TableProfile profile;
 
         [Header("Table identity")]
         [Tooltip("Unique per run. Leave empty to use <scene>/<object name>.")]
@@ -40,12 +42,23 @@ namespace EcosDelAzar.MiniGames
         public Transform StandAnchor => standAnchor;
 
         /// <summary>The table's live minimum: its default, or the opponent's last proposal if higher.</summary>
-        public int CurrentMinimumBet => Mathf.Max(minimumBetRequired, TableState.GetMinimumBet(TableId));
+        int BaseMinimumBet => profile != null ? profile.MinimumBet : minimumBetRequired;
+        public int CurrentMinimumBet => Mathf.Max(BaseMinimumBet, TableState.GetMinimumBet(TableId));
 
         public bool CanAfford => GameManager.Instance?.Wallet != null
             && GameManager.Instance.Wallet.Coins >= CurrentMinimumBet;
 
         public override string HintOverride => IsBeaten ? BeatenHint : null;
+
+        public override string BlockedReason
+        {
+            get
+            {
+                if (IsBeaten) return "Mesa vacía — busca otra";
+                int coins = GameManager.Instance?.Wallet?.Coins ?? 0;
+                return $"Te faltan {CurrentMinimumBet - coins} monedas (mínimo {CurrentMinimumBet}). Vende oxígeno en la máquina de O2";
+            }
+        }
 
         protected override void OnInteract()
         {
@@ -68,7 +81,7 @@ namespace EcosDelAzar.MiniGames
         void LoadGame()
         {
             TutorialProgress.Advance(TutorialProgress.Stage.Done);
-            ElevatorSceneLoader.LoadMinigame(minigameSceneName, TableId, floorNumber, awardsHouseChip);
+            ElevatorSceneLoader.LoadMinigame(minigameSceneName, TableId, floorNumber, awardsHouseChip, BaseMinimumBet, profile);
         }
 
         void OnDrawGizmosSelected()

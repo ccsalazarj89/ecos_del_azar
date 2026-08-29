@@ -401,9 +401,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb17572f2bbe8840983c1ff35779be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Boss.BossVisuals
-  uiDocument: {fileID: 693285029}
+  uiDocument: {fileID: 8800000000000003}
   oxygenModifier: {fileID: 1462308661}
   suddenDeath: {fileID: 1462308660}
+  bettingSystem: {fileID: 1462308656}
 --- !u!1 &761132603
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,7 +577,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.MiniGameSession
   miniGame: {fileID: 1462308659}
-  config: {fileID: 11400000, guid: dd7758ae682ea9c4fb4a121705296f90, type: 2}
   bettingSystem: {fileID: 1462308656}
 --- !u!114 &1462308656
 MonoBehaviour:
@@ -590,7 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccdcc98457a88e145bc5ce9780fb21e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Betting.BettingSystem
-  minimumBet: 10
+  minimumBet: 100
   opponent: {fileID: 1897634373}
 --- !u!4 &1462308658
 Transform:
@@ -636,8 +636,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.Boss.SuddenDeathRound
   triggerMultiplier: 2
+  declineFee: 0.1
   bossDrawDelay: 1.5
   revealDelay: 0.8
+  reshuffleDelay: 1.2
   bettingSystem: {fileID: 1462308656}
 --- !u!114 &1462308661
 MonoBehaviour:
@@ -658,7 +660,6 @@ MonoBehaviour:
   aceRestorePercent: 1
   losePenaltyPercent: 0.2
   bustPenaltyPercent: 0.25
-  forceWinOxygenCost: 0.3
 --- !u!114 &1462308662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,7 +710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb292dd7c3b5186409d64d4cb9ad19cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Opponent.AIOpponent
-  startingCoins: 3000
+  startingCoins: 4000
   brain: {fileID: 11400000, guid: b0550000000000000000000000000002, type: 2}
 --- !u!4 &1897634374
 Transform:
@@ -736,3 +737,56 @@ SceneRoots:
   - {fileID: 683616460}
   - {fileID: 693285027}
   - {fileID: 1897634374}
+  - {fileID: 8800000000000002}
+--- !u!1 &8800000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8800000000000002}
+  - component: {fileID: 8800000000000003}
+  m_Layer: 0
+  m_Name: BossOverlayPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8800000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8800000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: a4e96af32e634af46aefcefeb067c2b7, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: a04e0cf5e5486e2449be6f4b683bd57e, type: 3}
+  m_SortingOrder: 5
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080

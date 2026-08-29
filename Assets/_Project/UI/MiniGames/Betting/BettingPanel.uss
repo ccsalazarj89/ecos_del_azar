@@ -267,7 +267,8 @@
 }
 
 .action-btn--match {
-    width: 120px;
+    width: 150px;
+    font-size: 12px;
     background-color: rgb(35, 100, 45);
     border-color: rgb(50, 140, 60);
 }
@@ -277,7 +278,8 @@
 }
 
 .action-btn--double {
-    width: 120px;
+    width: 150px;
+    font-size: 12px;
     background-color: rgb(160, 110, 20);
     border-color: rgb(200, 140, 30);
 }
@@ -357,4 +359,40 @@
 .action-btn--standup:hover {
     color: rgb(240, 200, 120);
     border-color: rgb(200, 150, 50);
+}
+
+/* ── Combat actions (Forzar la suerte / Blindarse) ── */
+
+.proposal-buttons--second {
+    margin-top: 6px;
+}
+
+.action-btn--pushluck {
+    width: 180px;
+    font-size: 12px;
+    background-color: rgb(120, 50, 130);
+    border-color: rgb(170, 90, 190);
+}
+
+.action-btn--pushluck:hover {
+    background-color: rgb(150, 65, 160);
+}
+
+.action-btn--shield {
+    width: 180px;
+    font-size: 12px;
+    background-color: rgb(30, 80, 120);
+    border-color: rgb(60, 130, 190);
+}
+
+.action-btn--shield:hover {
+    background-color: rgb(40, 100, 150);
+}
+
+.stance-hint {
+    margin-top: 6px;
+    font-size: 11px;
+    color: rgba(200, 180, 150, 0.6);
+    -unity-text-align: middle-center;
+    white-space: normal;
 }

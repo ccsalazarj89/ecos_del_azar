@@ -113,6 +113,7 @@ namespace EcosDelAzar.UI
         {
             if (label == null) return;
 
+            // 3D labels stay short; the reason goes to the HUD notice (UINotice).
             string hint = interactable?.HintOverride ?? hintText;
             label.text = showingBlocked ? blockedText : hint;
             label.color = showingBlocked ? blockedColor : hintColor;

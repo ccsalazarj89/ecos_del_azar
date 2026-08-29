@@ -21,6 +21,7 @@ namespace EcosDelAzar.UI
         // Coins
         Label playerCoinsLabel;
         Label opponentCoinsLabel;
+        Label opponentNameLabel;
 
         // Bet phase
         Label betAmountLabel;
@@ -46,6 +47,9 @@ namespace EcosDelAzar.UI
         Button btnMatch;
         Button btnDouble;
         Button btnFold;
+        Button btnPushLuck;
+        Button btnShield;
+        Label stanceHint;
 
         // Game over phase
         Label gameOverText;
@@ -76,6 +80,7 @@ namespace EcosDelAzar.UI
 
             playerCoinsLabel = root.Q<Label>("player-coins");
             opponentCoinsLabel = root.Q<Label>("opponent-coins");
+            opponentNameLabel = root.Q<Label>("opponent-name");
 
             betAmountLabel = root.Q<Label>("bet-amount");
             btnBetDown = root.Q<Button>("btn-bet-down");
@@ -97,6 +102,9 @@ namespace EcosDelAzar.UI
             btnMatch = root.Q<Button>("btn-match");
             btnDouble = root.Q<Button>("btn-double");
             btnFold = root.Q<Button>("btn-fold");
+            btnPushLuck = root.Q<Button>("btn-pushluck");
+            btnShield = root.Q<Button>("btn-shield");
+            stanceHint = root.Q<Label>("stance-hint");
 
             gameOverText = root.Q<Label>("gameover-text");
             gameOverSubtext = root.Q<Label>("gameover-subtext");
@@ -127,6 +135,8 @@ namespace EcosDelAzar.UI
             btnMatch?.RegisterCallback<ClickEvent>(OnMatch);
             btnDouble?.RegisterCallback<ClickEvent>(OnDouble);
             btnFold?.RegisterCallback<ClickEvent>(OnFoldClicked);
+            btnPushLuck?.RegisterCallback<ClickEvent>(OnPushLuck);
+            btnShield?.RegisterCallback<ClickEvent>(OnShield);
             btnLeave?.RegisterCallback<ClickEvent>(OnLeave);
         }
 
@@ -142,6 +152,8 @@ namespace EcosDelAzar.UI
             btnMatch?.UnregisterCallback<ClickEvent>(OnMatch);
             btnDouble?.UnregisterCallback<ClickEvent>(OnDouble);
             btnFold?.UnregisterCallback<ClickEvent>(OnFoldClicked);
+            btnPushLuck?.UnregisterCallback<ClickEvent>(OnPushLuck);
+            btnShield?.UnregisterCallback<ClickEvent>(OnShield);
             btnLeave?.UnregisterCallback<ClickEvent>(OnLeave);
         }
 
@@ -155,6 +167,7 @@ namespace EcosDelAzar.UI
             {
                 session.Game.OnRoundStarted += ShowPlayingPhase;
                 session.Game.OnReadyForNextRound += HandleReadyForNextRound;
+                session.Game.OnStatusTextChanged += RefreshPlayingStatus;
             }
 
             if (session.Betting != null)
@@ -176,6 +189,7 @@ namespace EcosDelAzar.UI
             {
                 session.Game.OnRoundStarted -= ShowPlayingPhase;
                 session.Game.OnReadyForNextRound -= HandleReadyForNextRound;
+                session.Game.OnStatusTextChanged -= RefreshPlayingStatus;
             }
 
             if (session.Betting != null)
@@ -190,7 +204,8 @@ namespace EcosDelAzar.UI
         void OnSessionReady()
         {
             currentBet = session.Betting.MinimumBet;
-            ShowBetPhase();
+            if (session.Betting.HasStandingProposal) ShowProposalPhase(session.Betting.NpcProposedBet);
+            else ShowBetPhase();
         }
 
         // ─── Phase Display ───
@@ -233,9 +248,14 @@ namespace EcosDelAzar.UI
             RefreshCoins();
             if (currentBetDisplay != null)
                 currentBetDisplay.text = $"Apuesta: {currentBet}";
+            RefreshPlayingStatus();
+            SetPhase(playingPhase);
+        }
+
+        void RefreshPlayingStatus()
+        {
             if (playingStatus != null && session?.Game != null)
                 playingStatus.text = session.Game.PlayingStatusText;
-            SetPhase(playingPhase);
         }
 
         // Driven by BettingSystem.OnRoundSettled, which fires after coins are
@@ -268,8 +288,17 @@ namespace EcosDelAzar.UI
             if (resultAmount != null)
             {
                 bool insured = session.Betting.LastLossInsured;
+
+                // The stance note only makes sense where the stance changed the payout:
+                // push-luck moves win and loss, the shield only softens a loss.
+                string stance = session.Betting.LastStance switch
+                {
+                    RoundStance.PushLuck when outcome != RoundOutcome.Draw => "  (forzaste la suerte)",
+                    RoundStance.Shield when outcome == RoundOutcome.Lose => "  (blindado)",
+                    _ => string.Empty
+                };
                 resultAmount.text = insured ? "SEGURO: apuesta devuelta"
-                    : winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0";
+                    : (winnings > 0 ? $"+{winnings}" : winnings < 0 ? $"{winnings}" : "±0") + stance;
             }
         }
 
@@ -320,10 +349,23 @@ namespace EcosDelAzar.UI
                 proposalText.text = $"El rival propone: {npcBet} monedas";
 
             if (btnDouble != null)
+            {
+                // Say the number: "SUBIR" alone hid how much the player was committing.
                 btnDouble.SetEnabled(session.Betting.MaxBet >= npcBet * 2);
+                btnDouble.text = $"SUBIR A {npcBet * 2}";
+            }
 
-            if (btnMatch != null)
-                btnMatch.SetEnabled(session.Betting.MaxBet >= npcBet);
+            bool canMatch = session.Betting.MaxBet >= npcBet;
+            if (btnMatch != null) btnMatch.text = $"PLANTARSE ({npcBet})";
+            if (btnMatch != null) btnMatch.SetEnabled(canMatch);
+            if (btnPushLuck != null) btnPushLuck.SetEnabled(canMatch);
+            if (btnShield != null) btnShield.SetEnabled(canMatch);
+
+            if (stanceHint != null)
+            {
+                var b = session.Betting;
+                stanceHint.text = $"Forzar la suerte: ±{Mathf.RoundToInt(b.PushLuckEdge * 100)}% extra  ·  Blindarse: recuperas el {Mathf.RoundToInt(b.ShieldMitigation * 100)}% si pierdes, cuesta {Mathf.RoundToInt(b.ShieldOxygenCost * 100)}% de O2";
+            }
         }
 
         void ShowGameOver(bool playerWon)
@@ -428,6 +470,20 @@ namespace EcosDelAzar.UI
             session.Leave();
         }
 
+        void OnPushLuck(ClickEvent _)
+        {
+            if (session == null) return;
+            currentBet = session.Betting.NpcProposedBet;
+            session.RespondToProposal(BetResponse.PushLuck);
+        }
+
+        void OnShield(ClickEvent _)
+        {
+            if (session == null) return;
+            currentBet = session.Betting.NpcProposedBet;
+            session.RespondToProposal(BetResponse.Shield);
+        }
+
         void OnFoldClicked(ClickEvent _)
         {
             if (session == null) return;
@@ -446,6 +502,7 @@ namespace EcosDelAzar.UI
         {
             if (session?.Betting == null) return;
             if (playerCoinsLabel != null) playerCoinsLabel.text = session.Betting.PlayerCoins.ToString();
+            if (opponentNameLabel != null && session.Betting.Opponent != null) opponentNameLabel.text = session.Betting.Opponent.DisplayName.ToUpperInvariant();
             if (opponentCoinsLabel != null) opponentCoinsLabel.text = session.Betting.OpponentCoins.ToString();
         }
     }

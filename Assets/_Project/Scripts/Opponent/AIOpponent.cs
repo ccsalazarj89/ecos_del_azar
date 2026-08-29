@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using EcosDelAzar.MiniGames;
 using EcosDelAzar.AI;
 
 namespace EcosDelAzar.Opponent
@@ -8,6 +9,12 @@ namespace EcosDelAzar.Opponent
     public class AIOpponent : OpponentBase
     {
         [SerializeField] StandardAIBrain brain;
+
+        public override void Configure(TableProfile.Dealer dealer)
+        {
+            base.Configure(dealer);
+            if (dealer?.brain != null) brain = dealer.brain;
+        }
 
         public override void RequestBet(BetContext context, Action<int> onDecided)
         {
@@ -18,7 +25,7 @@ namespace EcosDelAzar.Opponent
                 return;
             }
 
-            int bet = brain.DecideBet(context.PlayerBet, context.MinimumBet, Coins);
+            int bet = brain.DecideBet(context.PlayerBet, context.MinimumBet, Coins, StartingCoins);
             onDecided?.Invoke(bet);
         }
     }

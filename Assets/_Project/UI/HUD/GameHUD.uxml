@@ -12,6 +12,7 @@
                     <ui:VisualElement name="oxygen-fill" class="oxygen-bar-fill"/>
                 </ui:VisualElement>
                 <ui:Label name="oxygen-warning" text="" class="oxygen-warning oxygen-warning--hidden"/>
+                <ui:Label name="oxygen-event" text="" class="oxygen-event oxygen-event--hidden"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="TopRight" picking-mode="Ignore" class="hud-top-right">
@@ -31,6 +32,9 @@
                 <ui:Label text="ECOS" class="chips-label"/>
                 <ui:VisualElement name="echo-badges" class="echo-badges"/>
             </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="BottomCenter" class="hud-bottom-center" picking-mode="Ignore">
+            <ui:Label name="hud-notice" text="" class="hud-notice hud-notice--hidden"/>
         </ui:VisualElement>
         <ui:VisualElement name="Objective" picking-mode="Ignore" class="objective objective--hidden">
             <ui:VisualElement class="objective__badge">

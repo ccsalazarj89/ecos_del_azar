@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using EcosDelAzar.MiniGames;
 
 namespace EcosDelAzar.Elevator
 {
@@ -11,6 +12,8 @@ namespace EcosDelAzar.Elevator
         public static string CurrentTableId { get; private set; }
         public static int CurrentTableFloor { get; private set; }
         public static bool CurrentTableAwardsChip { get; private set; }
+        public static int CurrentTableMinimumBet { get; private set; }
+        public static TableProfile CurrentTableProfile { get; private set; }
 
         static string returnedTableId;
 
@@ -35,13 +38,15 @@ namespace EcosDelAzar.Elevator
             SceneManager.LoadScene(floor.SceneName);
         }
 
-        public static void LoadMinigame(string sceneName, string tableId, int tableFloor, bool awardsChip = true)
+        public static void LoadMinigame(string sceneName, string tableId, int tableFloor, bool awardsChip, int minimumBet, TableProfile profile)
         {
             if (string.IsNullOrWhiteSpace(sceneName)) return;
             LastHubScene = SceneManager.GetActiveScene().name;
             CurrentTableId = tableId;
             CurrentTableFloor = tableFloor;
             CurrentTableAwardsChip = awardsChip;
+            CurrentTableMinimumBet = minimumBet;
+            CurrentTableProfile = profile;
             SceneManager.LoadScene(sceneName);
         }
 

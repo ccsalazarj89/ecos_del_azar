@@ -2221,6 +2221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Environment.WallOcclusionFader
   player: {fileID: 0}
+  neverFade: []
   viewCamera: {fileID: 0}
   hiddenAlpha: 0.25
   fadeSpeed: 6

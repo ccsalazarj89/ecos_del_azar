@@ -119,6 +119,7 @@ namespace EcosDelAzar.Shop
                 case EcoPriceKind.OxygenPercent:
                     var tank = GameManager.Instance.OxygenTank;
                     tank.Deplete(OxygenCost(eco, tank));
+                    tank.Report(-OxygenCost(eco, tank), $"Pagaste {eco.DisplayName} con aire");
                     break;
                 default:
                     HouseChips.Spend(eco.Price);

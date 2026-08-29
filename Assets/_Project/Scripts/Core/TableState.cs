@@ -24,10 +24,14 @@ namespace EcosDelAzar.Core
         /// <summary>Minimum bet the table now demands (the opponent's last proposal), or 0 for the table default.</summary>
         public static int GetMinimumBet(string tableId) => RunPrefs.GetInt(Prefix + tableId + ".minBet", 0);
 
-        public static void Save(string tableId, int opponentCoins, int minimumBet)
+        /// <summary>True when the player walked away with the dealer's offer still on the table.</summary>
+        public static bool HasStandingProposal(string tableId) => RunPrefs.GetInt(Prefix + tableId + ".proposal", 0) == 1;
+
+        public static void Save(string tableId, int opponentCoins, int minimumBet, bool standingProposal)
         {
             RunPrefs.SetInt(Prefix + tableId + ".opponentCoins", opponentCoins);
             RunPrefs.SetInt(Prefix + tableId + ".minBet", minimumBet);
+            RunPrefs.SetInt(Prefix + tableId + ".proposal", standingProposal ? 1 : 0);
             RunPrefs.Save();
         }
     }

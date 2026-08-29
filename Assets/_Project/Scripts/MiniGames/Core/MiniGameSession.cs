@@ -15,16 +15,12 @@ namespace EcosDelAzar.MiniGames
     public class MiniGameSession : MonoBehaviour
     {
         [SerializeField] MiniGameBase miniGame;
-        [SerializeField] MiniGameConfig config;
         [SerializeField] BettingSystem bettingSystem;
 
         public MiniGameBase Game => miniGame;
         public BettingSystem Betting => bettingSystem;
-        public MiniGameConfig Config => config;
-        public int RoundsPlayed { get; private set; }
 
         public event Action OnSessionStarted;
-        public event Action OnSessionEnded;
 
         string TableId => ElevatorSceneLoader.CurrentTableId;
         bool HasTable => !string.IsNullOrEmpty(TableId);
@@ -52,11 +48,11 @@ namespace EcosDelAzar.MiniGames
                 bettingSystem.OnGameOver -= OnGameOver;
         }
 
-        public void StartRound(int playerBet)
+        public void StartRound(int playerBet, RoundStance stance = RoundStance.Stand)
         {
             if (miniGame.State != MiniGameState.WaitingForBet) return;
 
-            bettingSystem.PlaceBets(playerBet);
+            bettingSystem.PlaceBets(playerBet, false, stance);
             miniGame.PlayRound();
         }
 
@@ -71,8 +67,14 @@ namespace EcosDelAzar.MiniGames
 
             bool doubled = response == BetResponse.Double;
             int nextBet = doubled ? bettingSystem.LastBet * 2 : bettingSystem.NpcProposedBet;
+            var stance = response switch
+            {
+                BetResponse.PushLuck => RoundStance.PushLuck,
+                BetResponse.Shield => RoundStance.Shield,
+                _ => RoundStance.Stand
+            };
 
-            bettingSystem.PlaceBets(nextBet, doubled);
+            bettingSystem.PlaceBets(nextBet, doubled, stance);
             miniGame.PlayRound();
         }
 
@@ -83,16 +85,17 @@ namespace EcosDelAzar.MiniGames
 
             PersistTableState();
             miniGame.End();
-            OnSessionEnded?.Invoke();
             ElevatorSceneLoader.ReturnToHub();
         }
 
         void BeginSession()
         {
-            RoundsPlayed = 0;
-
+            ApplyTableProfile();
             int opponentCoins = HasTable ? TableState.GetOpponentCoins(TableId) : -1;
-            int minimumBet = HasTable ? TableState.GetMinimumBet(TableId) : 0;
+            // The table sets the floor of the stakes; the dealer's remembered raise can only push it up.
+            int minimumBet = HasTable
+                ? Mathf.Max(ElevatorSceneLoader.CurrentTableMinimumBet, TableState.GetMinimumBet(TableId))
+                : 0;
             bettingSystem.Initialize(opponentCoins, minimumBet);
 
             if (bettingSystem.IsPlayerBroke)
@@ -106,14 +109,13 @@ namespace EcosDelAzar.MiniGames
                 GameManager.Instance.OxygenTank.IsActiveDrain = true;
 
             miniGame.Begin();
+            if (HasTable && TableState.HasStandingProposal(TableId)) bettingSystem.RestoreProposal();
             OnSessionStarted?.Invoke();
         }
 
         void OnRoundResolved(RoundResult result)
         {
             bettingSystem.ResolveResult(result.Outcome);
-            RoundsPlayed++;
-            // No round cap: the match runs until the player folds or someone goes broke.
         }
 
         void OnGameOver(bool playerWon)
@@ -129,13 +131,24 @@ namespace EcosDelAzar.MiniGames
             // The betting UI shows the game-over panel; leaving is the player's click.
         }
 
+        // The table decides who deals: name, bankroll, brain and (for RPS) cheating.
+        void ApplyTableProfile()
+        {
+            var profile = ElevatorSceneLoader.CurrentTableProfile;
+            if (profile == null) return;
+
+            var dealer = profile.DealerFor(TableId);
+            bettingSystem.Opponent?.Configure(dealer);
+            if (miniGame is RPS.RPSGame rps && dealer != null) rps.SetCheatChance(dealer.cheatChance);
+        }
+
         // The table remembers the opponent's stack and its last proposal, so folding
         // and re-entering cannot reset the stakes (see docs: "Design note: folding").
         void PersistTableState()
         {
             if (!HasTable) return;
             int minimum = Mathf.Min(bettingSystem.NpcProposedBet, bettingSystem.OpponentCoins);
-            TableState.Save(TableId, bettingSystem.OpponentCoins, minimum);
+            TableState.Save(TableId, bettingSystem.OpponentCoins, minimum, bettingSystem.HasStandingProposal);
         }
     }
 }

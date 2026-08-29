@@ -10,7 +10,10 @@ namespace EcosDelAzar.MiniGames.Blackjack
     /// </summary>
     public class BlackjackGame : MiniGameBase
     {
-        public override string PlayingStatusText => "Tu turno: pide o plántate";
+        // The opening deal is four cards over ~1.6 s; saying "your turn" during it made
+        // the second card look like an automatic hit.
+        public override string PlayingStatusText =>
+            AwaitingPlayerInput ? "Tu turno: pide o plántate" : "Repartiendo cartas...";
 
         [Header("Rules")]
         [Tooltip("Score at or above which the dealer stops taking cards. Standard = 17.")]
@@ -48,13 +51,17 @@ namespace EcosDelAzar.MiniGames.Blackjack
             OnPlayerCardDealt?.Invoke(card);
 
             if (PlayerHand.IsBust || PlayerHand.Score == 21)
+            {
                 AwaitingPlayerInput = false;
+                RaiseStatusChanged();
+            }
         }
 
         public void Stand()
         {
             if (!AwaitingPlayerInput) return;
             AwaitingPlayerInput = false;
+            RaiseStatusChanged();
             OnPlayerStood?.Invoke();
         }
 
@@ -86,6 +93,7 @@ namespace EcosDelAzar.MiniGames.Blackjack
             if (!PlayerHand.IsBlackjack)
             {
                 AwaitingPlayerInput = true;
+                RaiseStatusChanged();
                 OnAwaitingPlayerAction?.Invoke();
 
                 while (AwaitingPlayerInput)

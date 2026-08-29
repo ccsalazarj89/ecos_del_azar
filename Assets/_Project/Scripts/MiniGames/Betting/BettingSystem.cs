@@ -6,7 +6,11 @@ using EcosDelAzar.Core.Echoes;
 
 namespace EcosDelAzar.MiniGames.Betting
 {
-    public enum BetResponse { Match, Double, Fold }
+    /// <summary>The five combat actions of a round. Match/Double/PushLuck/Shield play on; Fold leaves.</summary>
+    public enum BetResponse { Match, Double, PushLuck, Shield, Fold }
+
+    /// <summary>How the player faces the round beyond the bet size.</summary>
+    public enum RoundStance { Stand, PushLuck, Shield }
 
     public class BettingSystem : MonoBehaviour
     {
@@ -15,6 +19,7 @@ namespace EcosDelAzar.MiniGames.Betting
 
         [Header("Opponent")]
         [SerializeField] OpponentBase opponent;
+        public OpponentBase Opponent => opponent;
 
         public int PlayerCoins { get; private set; }
         public int OpponentCoins { get; private set; }
@@ -35,13 +40,52 @@ namespace EcosDelAzar.MiniGames.Betting
 
         Wallet wallet;
         int tableMinimumBet;
+        bool syncingToWallet;
         bool lastBetWasDouble;
+        RoundStance stance;
+
+        [Header("Combat actions")]
+        [Tooltip("Forzar la suerte: win pays this much extra of the bet; lose costs the same extra.")]
+        [SerializeField, Range(0f, 1f)] float pushLuckEdge = 0.5f;
+        [Tooltip("Blindarse: share of the bet refunded on a loss.")]
+        [SerializeField, Range(0f, 1f)] float shieldMitigation = 0.5f;
+        [Tooltip("Blindarse costs air: % of the tank drained when chosen.")]
+        [SerializeField, Range(0f, 0.3f)] float shieldOxygenCost = 0.05f;
+
+        public RoundStance LastStance => stance;
+        public float PushLuckEdge => pushLuckEdge;
+        public float ShieldMitigation => shieldMitigation;
+        public float ShieldOxygenCost => shieldOxygenCost;
 
         /// <summary>True when the last lost round was refunded by the insurance Echo.</summary>
         public bool LastLossInsured { get; private set; }
 
+        /// <summary>The dealer has made an offer and the player has not answered it yet.</summary>
+        public bool HasStandingProposal { get; private set; }
+
         /// <summary>True when the table minimum comes from a previous seating (dealer remembers his raise).</summary>
         public bool TableMinimumActive => tableMinimumBet > minimumBet;
+
+        void OnDisable()
+        {
+            if (wallet != null) wallet.OnCoinsChanged -= OnWalletChanged;
+        }
+
+        /// <summary>Re-opens the dealer's last offer on a re-entered table (no new ante yet).</summary>
+        public void RestoreProposal()
+        {
+            if (MaxBet < MinimumBet) return;
+            NpcProposedBet = MinimumBet;
+            HasStandingProposal = true;
+        }
+
+        // Coins can change outside the table (debug cheats, a revive refund...). Keep the local copy honest.
+        void OnWalletChanged(int coins)
+        {
+            if (syncingToWallet || PlayerCoins == coins) return;
+            PlayerCoins = coins;
+            OnCoinsUpdated?.Invoke();
+        }
 
         /// <summary>
         /// Starts a seating. Pass the table's remembered state so a re-entered table
@@ -49,13 +93,16 @@ namespace EcosDelAzar.MiniGames.Betting
         /// </summary>
         public void Initialize(int opponentCoinsOverride = -1, int minimumBetOverride = 0)
         {
+            if (wallet != null) wallet.OnCoinsChanged -= OnWalletChanged;
             wallet = GameManager.Instance?.Wallet;
+            if (wallet != null) wallet.OnCoinsChanged += OnWalletChanged;
             SyncFromWallet();
             tableMinimumBet = minimumBetOverride;
             lastBetWasDouble = false;
             LastLossInsured = false;
             LastBet = MinimumBet;
             NpcProposedBet = MinimumBet;
+            HasStandingProposal = false;
 
             if (opponent != null)
             {
@@ -69,11 +116,24 @@ namespace EcosDelAzar.MiniGames.Betting
         /// Player and opponent ante up the bet before the round plays. The
         /// combined pot is paid out to the winner on resolution.
         /// </summary>
-        public void PlaceBets(int playerBet, bool doubled = false)
+        public void PlaceBets(int playerBet, bool doubled = false, RoundStance roundStance = RoundStance.Stand)
         {
             playerBet = Mathf.Clamp(playerBet, MinimumBet, MaxBet);
             LastBet = playerBet;
             lastBetWasDouble = doubled;
+            stance = roundStance;
+            HasStandingProposal = false;
+
+            // Blindarse is paid in air, up front, whatever the outcome.
+            if (stance == RoundStance.Shield)
+            {
+                var tank = GameManager.Instance?.OxygenTank;
+                if (tank != null)
+                {
+                    tank.Deplete(tank.Max * shieldOxygenCost);
+                    tank.Report(-tank.Max * shieldOxygenCost, "Te blindaste");
+                }
+            }
 
             PlayerCoins -= playerBet;
             if (opponent != null)
@@ -104,6 +164,16 @@ namespace EcosDelAzar.MiniGames.Betting
                     PlayerCoins += pot;   // take own ante back + opponent's
                     LastWinnings = bet;   // net gain over the ante paid
 
+                    // Forzar la suerte: the dealer pays the edge on top.
+                    if (stance == RoundStance.PushLuck)
+                    {
+                        int edge = Mathf.RoundToInt(bet * pushLuckEdge);
+                        edge = Mathf.Min(edge, opponent != null ? opponent.Coins : edge);
+                        PlayerCoins += edge;
+                        if (opponent != null) opponent.Coins -= edge;
+                        LastWinnings += edge;
+                    }
+
                     // "Codicia": a doubled win spends one charge and the house pays the extra.
                     if (lastBetWasDouble && mods != null && mods.TryConsume(EcoEffect.DoubleWinBonus, out float mult) && mult > 1f)
                     {
@@ -116,6 +186,24 @@ namespace EcosDelAzar.MiniGames.Betting
                 case RoundOutcome.Lose:
                     if (opponent != null) opponent.Coins += pot;
                     LastWinnings = -bet;
+
+                    // Forzar la suerte backfires: the edge goes to the dealer too.
+                    if (stance == RoundStance.PushLuck)
+                    {
+                        int edge = Mathf.Min(Mathf.RoundToInt(bet * pushLuckEdge), PlayerCoins);
+                        PlayerCoins -= edge;
+                        if (opponent != null) opponent.Coins += edge;
+                        LastWinnings -= edge;
+                    }
+
+                    // Blindarse: part of the loss comes back.
+                    if (stance == RoundStance.Shield)
+                    {
+                        int refund = Mathf.RoundToInt(bet * shieldMitigation);
+                        PlayerCoins += refund;
+                        if (opponent != null) opponent.Coins -= refund;
+                        LastWinnings += refund;
+                    }
 
                     // "Seguro del tahur": one charge refunds this loss.
                     if (mods != null && mods.TryConsume(EcoEffect.FirstLossInsurance, out _))
@@ -142,6 +230,7 @@ namespace EcosDelAzar.MiniGames.Betting
 
             if (IsPlayerBroke || IsOpponentBroke)
             {
+                HasStandingProposal = false;
                 OnGameOver?.Invoke(IsOpponentBroke);
                 return;
             }
@@ -154,6 +243,7 @@ namespace EcosDelAzar.MiniGames.Betting
         /// </summary>
         public void PlayerFolds()
         {
+            // The offer stays on the table for next time.
             SyncToWallet();
         }
 
@@ -163,6 +253,18 @@ namespace EcosDelAzar.MiniGames.Betting
         }
 
         // ------------------------------------------------------------------ muerte súbita
+
+        /// <summary>Declining the boss's challenge is not free: the house keeps a share of the player's coins.</summary>
+        public int TakeDeclineFee(float share)
+        {
+            int fee = Mathf.RoundToInt(PlayerCoins * Mathf.Clamp01(share));
+            if (fee <= 0) return 0;
+            PlayerCoins -= fee;
+            if (opponent != null) { opponent.Coins += fee; OpponentCoins = opponent.Coins; }
+            SyncToWallet();
+            OnCoinsUpdated?.Invoke();
+            return fee;
+        }
 
         /// <summary>
         /// Pone todas las fichas de ambos lados en el pot para la muerte súbita.
@@ -220,6 +322,7 @@ namespace EcosDelAzar.MiniGames.Betting
             // Never propose more than either side can put on the table. MaxBet >= MinimumBet
             // is guaranteed here because broke sides end the match before a proposal.
             NpcProposedBet = Mathf.Clamp(proposedBet, MinimumBet, Mathf.Max(MinimumBet, MaxBet));
+            HasStandingProposal = true;
             OnNpcProposal?.Invoke(NpcProposedBet);
         }
 
@@ -231,11 +334,13 @@ namespace EcosDelAzar.MiniGames.Betting
         void SyncToWallet()
         {
             if (wallet == null) return;
+            syncingToWallet = true;
             int diff = PlayerCoins - wallet.Coins;
             if (diff > 0)
                 wallet.Add(diff);
             else if (diff < 0)
                 wallet.TrySpend(-diff);
+            syncingToWallet = false;
         }
     }
 }

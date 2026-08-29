@@ -1,160 +1,108 @@
 /* ═══════════════════════════════════════════════
-   BOSS HIGH CARD OVERLAY — Casino Post-Apocalyptic
+   BOSS OVERLAY — suit badge, toast, sudden death
    ═══════════════════════════════════════════════ */
 
-/* ── Barra de info del boss (siempre visible) ── */
+/* ── Boss suit badge: sits between the board and the betting panel ── */
 
-.boss-info-bar {
+/* Docked under the HUD oxygen module (top-left), same width, out of the play area. */
+.boss-suit-badge {
     position: absolute;
-    bottom: 310px;
-    left: 50%;
-    translate: -50% 0;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 480px;
-    background-color: rgba(14, 10, 8, 0.92);
-    border-radius: 4px;
-    border-width: 2px;
-    border-color: rgb(160, 40, 40);
-    border-bottom-width: 4px;
-    border-bottom-color: rgb(220, 60, 50);
-    padding: 8px 20px;
+    top: 152px;
+    left: 30px;
+    width: 260px;
+    flex-direction: column;
+    padding: 8px 14px 10px 14px;
+    background-color: rgba(14, 10, 8, 0.9);
+    border-width: 1px;
+    border-color: rgba(220, 60, 50, 0.4);
+    border-left-width: 4px;
+    border-left-color: rgb(220, 60, 50);
 }
 
-.boss-suit-group {
-    align-items: center;
+.boss-suit-header {
     flex-direction: row;
-}
-
-.boss-suit-title {
-    font-size: 11px;
-    color: rgba(200, 150, 130, 0.6);
-    letter-spacing: 3px;
-    margin-right: 10px;
+    align-items: center;
 }
 
 .boss-suit-icon {
-    font-size: 32px;
+    font-size: 26px;
+    margin: 0;
+    padding: 0;
     -unity-font-style: bold;
     color: rgb(220, 60, 50);
-    text-shadow: 0 0 12px rgba(220, 60, 50, 0.6);
+    text-shadow: 0 0 10px rgba(220, 60, 50, 0.6);
+    margin-right: 10px;
+    min-width: 26px;
+    -unity-text-align: middle-center;
 }
 
-/* ── Botón colapsar / restaurar barra ── */
+.boss-suit-titles {
+    flex-direction: column;
+    justify-content: center;
+}
 
-.bar-toggle-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
-    -unity-font-style: bold;
-    color: rgba(200, 180, 150, 0.6);
-    background-color: transparent;
-    border-width: 0;
-    margin-left: 10px;
+/* Labels carry a default margin in the runtime theme; zero it so the title and
+   the suit name read as one block instead of two separated lines. */
+.boss-suit-title {
+    font-size: 9px;
+    color: rgba(200, 150, 130, 0.7);
+    letter-spacing: 3px;
+    margin: 0;
     padding: 0;
-    transition-property: color, scale;
-    transition-duration: 0.1s;
 }
 
-.bar-toggle-btn:hover {
-    color: rgb(255, 220, 100);
-    scale: 1.2;
-}
-
-.bar-restore-btn {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    width: 44px;
-    height: 44px;
-    font-size: 22px;
+.boss-suit-name {
+    font-size: 15px;
     -unity-font-style: bold;
-    color: rgb(220, 60, 50);
-    background-color: rgba(14, 10, 8, 0.92);
-    border-width: 2px;
-    border-color: rgb(160, 40, 40);
-    border-radius: 50%;
-    padding: 0;
-    transition-property: scale, background-color;
-    transition-duration: 0.12s;
-}
-
-.bar-restore-btn:hover {
-    scale: 1.15;
-    background-color: rgba(40, 20, 20, 0.95);
-}
-
-/* ── Botón Victoria Forzada ── */
-
-.force-win-btn {
-    height: 42px;
-    font-size: 12px;
-    -unity-font-style: bold;
+    color: rgb(240, 200, 190);
     letter-spacing: 1px;
-    color: rgb(255, 230, 100);
-    background-color: rgba(140, 100, 20, 0.5);
-    border-width: 2px;
-    border-color: rgb(180, 130, 30);
-    border-radius: 3px;
-    padding: 0 16px;
-    transition-property: scale, background-color, border-color;
-    transition-duration: 0.12s;
+    margin: 0;
+    padding: 0;
 }
 
-.force-win-btn:hover {
-    scale: 1.06;
-    background-color: rgba(180, 130, 25, 0.7);
-    border-color: rgb(220, 170, 40);
+.boss-suit-rule {
+    margin: 6px 0 0 0;
+    padding: 0;
+    font-size: 11px;
+    color: rgba(220, 190, 180, 0.75);
+    white-space: normal;
 }
 
-.force-win-btn:active {
-    scale: 0.95;
-}
+/* ── Toast ── */
 
-.force-win-btn--disabled {
-    color: rgba(180, 160, 120, 0.35);
-    background-color: rgba(60, 50, 30, 0.4);
-    border-color: rgba(100, 80, 40, 0.4);
-}
-
-/* ── Toast: victoria forzada disponible ── */
-
-.force-win-toast {
+.boss-toast {
     position: absolute;
     top: 80px;
     left: 50%;
     translate: -50% 0;
-    background-color: rgba(140, 100, 10, 0.95);
+    background-color: rgba(60, 20, 18, 0.95);
     border-width: 2px;
-    border-color: rgb(220, 170, 40);
+    border-color: rgb(220, 60, 50);
     border-radius: 4px;
-    padding: 12px 24px;
+    padding: 10px 22px;
     align-items: center;
     opacity: 1;
     transition-property: opacity;
     transition-duration: 0.5s;
 }
 
-.force-win-toast--hidden {
+.boss-toast--hidden {
     opacity: 0;
 }
 
-.force-win-toast-label {
-    font-size: 18px;
+.boss-toast-label {
+    font-size: 16px;
     -unity-font-style: bold;
-    color: rgb(255, 230, 80);
-    letter-spacing: 2px;
+    color: rgb(255, 200, 180);
+    letter-spacing: 3px;
     -unity-text-align: middle-center;
-    text-shadow: 0 0 10px rgba(255, 200, 0, 0.6);
 }
 
-.force-win-toast-sub {
+.boss-toast-sub {
     font-size: 12px;
-    color: rgba(255, 220, 150, 0.8);
+    color: rgba(255, 220, 200, 0.8);
     -unity-text-align: middle-center;
     margin-top: 4px;
-    letter-spacing: 1px;
 }
 
 /* ── Overlay compartido (propuesta, cartas, resultado) ── */

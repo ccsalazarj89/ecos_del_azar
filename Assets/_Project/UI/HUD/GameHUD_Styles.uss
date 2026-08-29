@@ -672,3 +672,52 @@
     color: rgb(255, 60, 60);
     text-shadow: 0 0 8px rgba(255, 40, 40, 0.7);
 }
+
+/* ── OXYGEN EVENT — one-off gain/loss note under the bar, never blocks input ── */
+
+.oxygen-event {
+    margin-top: 4px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    white-space: normal;
+    transition-property: opacity, translate;
+    transition-duration: 0.3s;
+    opacity: 1;
+}
+
+.oxygen-event--hidden {
+    display: none;
+}
+
+.oxygen-event--loss {
+    color: rgb(255, 90, 80);
+}
+
+.oxygen-event--gain {
+    color: rgb(80, 220, 140);
+}
+
+/* ── HUD NOTICE — why an interaction was refused, bottom centre ── */
+
+.hud-notice {
+    max-width: 620px;
+    padding: 8px 18px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    white-space: normal;
+    -unity-text-align: middle-center;
+    color: rgb(255, 210, 170);
+    background-color: rgba(14, 10, 8, 0.92);
+    border-width: 1px;
+    border-color: rgba(220, 100, 60, 0.5);
+    border-left-width: 4px;
+    border-left-color: rgb(220, 100, 60);
+    transition-property: opacity;
+    transition-duration: 0.25s;
+    opacity: 1;
+}
+
+.hud-notice--hidden {
+    display: none;
+}

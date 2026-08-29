@@ -22,6 +22,9 @@ namespace EcosDelAzar.Core
         public bool IsFull => Current >= maxOxygen;
         public bool IsActiveDrain { get; set; }
 
+        /// <summary>Set by the floor (FloorDrain). Minigame scenes inherit the floor they were entered from.</summary>
+        public float FloorDrainMultiplier { get; set; } = 1f;
+
         /// <summary>
         /// Cuando es true, el tanque no drena nada (p. ej. mientras GameManager.State == MainMenu o Paused).
         /// </summary>
@@ -29,6 +32,16 @@ namespace EcosDelAzar.Core
 
         public event Action<float> OnOxygenChanged;
         public event Action OnDepleted;
+
+        /// <summary>A notable one-off change (a penalty or a gift), as a signed % of the tank, with its reason.</summary>
+        public event Action<int, string> OnOxygenEvent;
+
+        /// <summary>Deplete/Restore with a reason so the HUD can tell the player why the air moved.</summary>
+        public void Report(float amount, string reason)
+        {
+            if (Max <= 0f || Mathf.Abs(amount) < 0.01f) return;
+            OnOxygenEvent?.Invoke(Mathf.RoundToInt(amount / Max * 100f), reason);
+        }
 
         void Awake()
         {
@@ -44,7 +57,7 @@ namespace EcosDelAzar.Core
             float drainRate = IsActiveDrain
                 ? activeDrainRate * (mods?.ActiveDrainMultiplier ?? 1f)
                 : passiveDrainRate * (mods?.PassiveDrainMultiplier ?? 1f);
-            Deplete(drainRate * Time.deltaTime);
+            Deplete(drainRate * FloorDrainMultiplier * Time.deltaTime);
         }
 
         public void Deplete(float amount)

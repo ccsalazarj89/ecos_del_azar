@@ -13,7 +13,7 @@
                 <ui:Label text="VS" class="vs-label" />
             </ui:VisualElement>
             <ui:VisualElement class="coins-group">
-                <ui:Label text="RIVAL" class="coins-label" />
+                <ui:Label name="opponent-name" text="RIVAL" class="coins-label" />
                 <ui:Label name="opponent-coins" text="0" class="coins-value coins-value--opponent" />
             </ui:VisualElement>
         </ui:VisualElement>
@@ -52,10 +52,15 @@
         <ui:VisualElement name="proposal-phase" class="phase">
             <ui:Label name="proposal-text" text="" class="proposal-text" />
             <ui:VisualElement class="proposal-buttons">
-                <ui:Button name="btn-match" text="IGUALAR" class="action-btn action-btn--match" />
-                <ui:Button name="btn-double" text="DOBLAR" class="action-btn action-btn--double" />
+                <ui:Button name="btn-match" text="PLANTARSE" class="action-btn action-btn--match" />
+                <ui:Button name="btn-double" text="SUBIR" class="action-btn action-btn--double" />
                 <ui:Button name="btn-fold" text="RETIRARSE" class="action-btn action-btn--fold" />
             </ui:VisualElement>
+            <ui:VisualElement class="proposal-buttons proposal-buttons--second">
+                <ui:Button name="btn-pushluck" text="FORZAR LA SUERTE" class="action-btn action-btn--pushluck" />
+                <ui:Button name="btn-shield" text="BLINDARSE" class="action-btn action-btn--shield" />
+            </ui:VisualElement>
+            <ui:Label name="stance-hint" text="" class="stance-hint" />
         </ui:VisualElement>
 
         <!-- Phase 5: Game Over -->

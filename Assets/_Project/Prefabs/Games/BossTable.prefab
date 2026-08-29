@@ -323,6 +323,10 @@ PrefabInstance:
       value: SCN_Game_Blackjack_FinalBoss
       objectReference: {fileID: 0}
     - target: {fileID: 7851814361567837909, guid: 9e11092f3541ff745beb11a1c8672934, type: 3}
+      propertyPath: profile
+      value: 
+      objectReference: {fileID: 11400000, guid: 7ab1e5000000000000000000000000a5, type: 2}
+    - target: {fileID: 7851814361567837909, guid: 9e11092f3541ff745beb11a1c8672934, type: 3}
       propertyPath: minimumBetRequired
       value: 100
       objectReference: {fileID: 0}

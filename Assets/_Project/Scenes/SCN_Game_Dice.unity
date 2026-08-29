@@ -494,7 +494,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.MiniGameSession
   miniGame: {fileID: 1462308657}
-  config: {fileID: 11400000, guid: 6f76af0ae0924e9499ccbf343b8cc8a9, type: 2}
   bettingSystem: {fileID: 1462308656}
 --- !u!114 &1462308656
 MonoBehaviour:
