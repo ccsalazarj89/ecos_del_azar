@@ -132,7 +132,8 @@ namespace EcosDelAzar.MiniGames
             // The betting UI shows the game-over panel; leaving is the player's click.
         }
 
-        // The table decides who deals: name, bankroll, brain and (for RPS) cheating.
+        // The table decides who deals: name, bankroll, brain, and the house rule of
+        // its game (cheating in RPS, the dealer's stand threshold in blackjack).
         void ApplyTableProfile()
         {
             var profile = ElevatorSceneLoader.CurrentTableProfile;
@@ -141,6 +142,7 @@ namespace EcosDelAzar.MiniGames
             var dealer = profile.DealerFor(TableId);
             bettingSystem.Opponent?.Configure(dealer);
             if (miniGame is RPS.RPSGame rps && dealer != null) rps.SetCheatChance(dealer.cheatChance);
+            if (miniGame is Blackjack.BlackjackGame bj && dealer != null) bj.SetDealerStandsAt(dealer.dealerStandsAt);
         }
 
         // The table remembers the opponent's stack and its last proposal, so folding

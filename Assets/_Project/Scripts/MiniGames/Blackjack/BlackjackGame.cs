@@ -19,6 +19,9 @@ namespace EcosDelAzar.MiniGames.Blackjack
         [Tooltip("Score at or above which the dealer stops taking cards. Standard = 17.")]
         [SerializeField, Range(15, 21)] int dealerStandsAt = 17;
 
+        /// <summary>Set by the table profile so each dealer can run a slightly different house rule.</summary>
+        public void SetDealerStandsAt(int value) => dealerStandsAt = Mathf.Clamp(value, 15, 21);
+
         [Header("Timings")]
         [SerializeField] float dealDelay = 0.4f;
         [SerializeField] float dealerActionDelay = 0.6f;

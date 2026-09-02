@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c0d1e2f3a4b5c6d7e8f90a1b2c3d4e5, type: 3}
   m_Name: SO_TableProfile_RPS_Floor2
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.TableProfile
-  minimumBet: 20
+  minimumBet: 25
   dealers:
   - displayName: Dante
-    startingCoins: 600
+    startingCoins: 250
     brain: {fileID: 11400000, guid: b0550000000000000000000000000004, type: 2}
-    cheatChance: 0.15
+    cheatChance: 0
   - displayName: Nadia
-    startingCoins: 800
+    startingCoins: 450
     brain: {fileID: 11400000, guid: b0550000000000000000000000000004, type: 2}
-    cheatChance: 0.25
+    cheatChance: 0

@@ -2634,7 +2634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d5e6f708192a3b4c5d6e7f8091a2b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Environment.FloorDrain
-  drainMultiplier: 1.25
+  drainMultiplier: 1.35
 --- !u!114 &930145296573236510
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -15,10 +15,10 @@ MonoBehaviour:
   minimumBet: 10
   dealers:
   - displayName: Ivo
-    startingCoins: 240
+    startingCoins: 75
     brain: {fileID: 11400000, guid: fe37ee38d689fa947acad7ea030b80eb, type: 2}
     cheatChance: 0
   - displayName: Marga
-    startingCoins: 300
+    startingCoins: 150
     brain: {fileID: 11400000, guid: fe37ee38d689fa947acad7ea030b80eb, type: 2}
     cheatChance: 0

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c0d1e2f3a4b5c6d7e8f90a1b2c3d4e5, type: 3}
   m_Name: SO_TableProfile_Boss
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.MiniGames.TableProfile
-  minimumBet: 100
+  minimumBet: 50
   dealers:
   - displayName: El Director
-    startingCoins: 2500
+    startingCoins: 1400
     brain: {fileID: 11400000, guid: b0550000000000000000000000000002, type: 2}
     cheatChance: 0
+    dealerStandsAt: 17

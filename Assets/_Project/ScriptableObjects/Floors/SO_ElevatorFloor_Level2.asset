@@ -19,4 +19,4 @@ MonoBehaviour:
   sceneName: SCN_Floor_02_Level2
   unlockedByDefault: 0
   canBePurchased: 1
-  accessCost: 200
+  accessCost: 100

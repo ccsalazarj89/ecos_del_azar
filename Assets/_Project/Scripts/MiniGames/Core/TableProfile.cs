@@ -20,6 +20,8 @@ namespace EcosDelAzar.MiniGames
             public StandardAIBrain brain;
             [Tooltip("RPS only: chance the dealer picks the winning hand after seeing yours.")]
             [Range(0f, 1f)] public float cheatChance;
+            [Tooltip("Blackjack only: score at or above which the dealer stops. 17 is the house-optimal rule; 16 and 18 both favour the player.")]
+            [Range(15, 21)] public int dealerStandsAt = 17;
         }
 
         [SerializeField] int minimumBet = 10;
