@@ -320,6 +320,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a21228a3fb640314e96ecbe1aea6afdd, type: 3}
+--- !u!1 &126674087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3123972946447844184, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
+  m_PrefabInstance: {fileID: 639179104}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &126674088
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126674087}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: d1e91f4e741f14d448e0238ba47bc964, type: 3}
+  m_Controller: {fileID: 9100000, guid: a12fe1c602ab8684f8d7cb7cd79b1d2a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &141566139 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 979510781280667374, guid: a21228a3fb640314e96ecbe1aea6afdd, type: 3}
@@ -741,6 +768,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3123972946447844184, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 126674088}
     - targetCorrespondingSourceObject: {fileID: 5072237681099590812, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -2221,12 +2251,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EcosDelAzar.Environment.WallOcclusionFader
   player: {fileID: 0}
-  neverFade: []
   viewCamera: {fileID: 0}
   hiddenAlpha: 0.25
   fadeSpeed: 6
   boundsPadding: 0.5
   playerHeight: 1.8
+  neverFade: []
   ensureColliders: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
