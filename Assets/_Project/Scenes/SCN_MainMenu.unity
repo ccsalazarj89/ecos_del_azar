@@ -222,8 +222,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
@@ -299,8 +299,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: a4e96af32e634af46aefcefeb067c2b7, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: a7558c3794a942b9afa3c623f341954c, type: 3}
@@ -322,9 +322,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96279afb07a1426dbd2cffda68e47268, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  firstSceneName: SCN_Floor_00_Lobby
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &300010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -336,6 +335,10 @@ PrefabInstance:
     - target: {fileID: 3044952834084647710, guid: c3bd0fb02a80e3244a0cd05b6717f683, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5832839045989619446, guid: c3bd0fb02a80e3244a0cd05b6717f683, type: 3}
+      propertyPath: initialCoins
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -33,7 +33,7 @@
                 <ui:VisualElement name="echo-badges" class="echo-badges"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="BottomCenter" class="hud-bottom-center" picking-mode="Ignore">
+        <ui:VisualElement name="BottomCenter" picking-mode="Ignore" class="hud-bottom-center">
             <ui:Label name="hud-notice" text="" class="hud-notice hud-notice--hidden"/>
         </ui:VisualElement>
         <ui:VisualElement name="Objective" picking-mode="Ignore" class="objective objective--hidden">
@@ -81,6 +81,8 @@
                     <ui:Label text="POLYGON Casino · POLYGON Generic" class="credits__role"/>
                     <ui:Label text="Mixamo" class="credits__name"/>
                     <ui:Label text="Animaciones del personaje" class="credits__role"/>
+                    <ui:Label text="Música" class="credits__name"/>
+                    <ui:Label text="Música libre de Pixabay" class="credits__role"/>
                     <ui:Label text="HERRAMIENTAS" class="credits__heading"/>
                     <ui:Label text="Unity 6 · URP · UI Toolkit · Input System" class="credits__role"/>
                 </ui:VisualElement>

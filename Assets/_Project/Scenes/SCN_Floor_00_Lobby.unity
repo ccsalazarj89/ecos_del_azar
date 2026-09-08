@@ -955,6 +955,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 298688756490950744, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
+      propertyPath: coinsReward
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 1369627885818836912, guid: a3d606a4e7c985b43bd8db81026db693, type: 3}
       propertyPath: m_Radius
       value: 1.8
@@ -2659,6 +2663,10 @@ PrefabInstance:
     - target: {fileID: 3044952834084647710, guid: c3bd0fb02a80e3244a0cd05b6717f683, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5832839045989619446, guid: c3bd0fb02a80e3244a0cd05b6717f683, type: 3}
+      propertyPath: initialCoins
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
